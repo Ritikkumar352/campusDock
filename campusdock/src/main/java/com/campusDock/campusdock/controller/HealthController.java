@@ -1,4 +1,4 @@
-package com.campusDock.campusdock;
+package com.campusDock.campusdock.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
