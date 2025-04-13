@@ -1,4 +1,4 @@
-package com.campusDock.campusdock.service;
+package com.campusDock.campusdock.service.ServiceImpl;
 
 import org.springframework.stereotype.Service;
 

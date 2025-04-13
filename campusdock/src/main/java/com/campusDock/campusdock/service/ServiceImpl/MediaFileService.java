@@ -1,4 +1,4 @@
-package com.campusDock.campusdock.service;
+package com.campusDock.campusdock.service.ServiceImpl;
 
 import com.campusDock.campusdock.entity.MediaFiles;
 import com.campusDock.campusdock.repository.MediaFileRepo;
@@ -6,13 +6,9 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -27,48 +23,47 @@ public class MediaFileService {
         this.mediaFileRepo = mediaFileRepo;
     }
 
-    public ResponseEntity<Map<String, String>> uploadMedia(
-            MultipartFile file
-    ) {
-        Map<String, String> response = new HashMap<>();
-        Blob blob = null;
+
+    // upload and save
+    public MediaFiles uploadMedia(MultipartFile file) {
+        if (file.isEmpty()) throw new IllegalArgumentException("File is empty");
+
         String uniqueName = UUID.randomUUID() + "_" + file.getOriginalFilename();
         String contentType = file.getContentType();
-        if(file.isEmpty()) response.put("status", "files cannot be empty");
+
         try {
+            // Upload to GCS
             BlobId blobId = BlobId.of(bucketName, uniqueName);
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
                     .setContentType(contentType)
                     .build();
-            blob = storage.create(blobInfo, file.getBytes());
+            Blob blob = storage.create(blobInfo, file.getBytes());
 
-            response.put("messaage", "File uploaded successfully");
+            // Save to DB
+            MediaFiles mediaFile = MediaFiles.builder()
+                    .fileName(uniqueName)
+                    .type(contentType)
+                    .size(file.getSize())
+                    .URL("https://storage.googleapis.com/" + bucketName + "/" + uniqueName)
+                    .build();
+
+            return mediaFileRepo.save(mediaFile);
         } catch (Exception e) {
-            e.printStackTrace();
-            response.put("response", "error");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new RuntimeException("Upload failed: " + e.getMessage());
         }
-
-        boolean saveResponse=saveToDB(file);
-        if(saveResponse) {
-            response.put("status", "Saved to database");
-        }else{
-            response.put("status", "File uploaded but,MetaData is not save to database");
-        }
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-
-
-    private boolean saveToDB(
-        MultipartFile file
-    ) {
-        MediaFiles mediaFile= MediaFiles.builder()
+    private boolean saveToDB(MultipartFile file) {
+        MediaFiles mediaFile = MediaFiles.builder()
                 .fileName(file.getOriginalFilename())
                 .size(file.getSize())
                 .type(file.getContentType())
                 .build();
-        MediaFiles res=mediaFileRepo.save(mediaFile);
+        MediaFiles res = mediaFileRepo.save(mediaFile);
         return !(res.getId() == null);
+    }
+
+    public MediaFiles save(MediaFiles mediaFile) {
+        return mediaFileRepo.save(mediaFile);
     }
 }
