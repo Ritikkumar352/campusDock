@@ -1,8 +1,13 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
+# Ignore sensitive & generated files
+*.json
+.env
+
+# Ignore build files
+/target
+
+
 !**/src/test/**/target/
+
 
 ### STS ###
 .apt_generated
@@ -31,4 +36,5 @@ build/
 
 ### VS Code ###
 .vscode/
-.env
+
+

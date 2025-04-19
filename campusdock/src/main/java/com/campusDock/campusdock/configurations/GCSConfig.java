@@ -15,7 +15,7 @@ public class GCSConfig {
     @Bean
     public Storage storage() throws IOException {
         GoogleCredentials credentials = GoogleCredentials
-                .fromStream(new ClassPathResource("campus-dock-key.json").getInputStream());
+                .fromStream(new ClassPathResource("campusdock-b5136519fb65.json").getInputStream());
 
         return StorageOptions.newBuilder()
                 .setCredentials(credentials)
