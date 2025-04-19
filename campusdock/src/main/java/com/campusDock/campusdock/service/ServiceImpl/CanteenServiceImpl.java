@@ -1,8 +1,9 @@
 package com.campusDock.campusdock.service.ServiceImpl;
 
 import com.campusDock.campusdock.entity.Canteen;
+import com.campusDock.campusdock.entity.DTO.CanteenDto;
 import com.campusDock.campusdock.entity.DTO.CanteenRequestDto;
-import com.campusDock.campusdock.entity.MediaFiles;
+import com.campusDock.campusdock.entity.MediaFile;
 import com.campusDock.campusdock.repository.CanteenRepo;
 import com.campusDock.campusdock.service.CanteenService;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 
 @Service
@@ -41,7 +43,7 @@ public class CanteenServiceImpl implements CanteenService {
         Canteen savedCanteen = canteenRepo.save(canteen);
 
         try {
-            MediaFiles media = mediaFileService.uploadMedia(file);
+            MediaFile media = mediaFileService.uploadMedia(file);
             media.setCanteen_media(savedCanteen);
             mediaFileService.save(media);
             response.put("canteen_id", savedCanteen.getId().toString());
@@ -54,4 +56,7 @@ public class CanteenServiceImpl implements CanteenService {
         }
     }
 
+    public ResponseEntity<CanteenDto> getCanteenById(UUID canteen_id) {
+
+    }
 }

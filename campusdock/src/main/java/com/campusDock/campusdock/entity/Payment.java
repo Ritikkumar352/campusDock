@@ -10,26 +10,23 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "payments")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Order {
+public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
     @JsonBackReference
-    private User user;
+    private Order order;
 
-    @ManyToOne
-    @JoinColumn(name = "canteen_id", referencedColumnName = "id")
-    @JsonBackReference
-    private Canteen canteen;
+    private double amount;
 
-    @Column(name = "created_at")
-    private String createdAt;
+    @Column(nullable = false)
+    private String status; // e.g., Pending, Completed, Failed
 }

@@ -1,6 +1,6 @@
 package com.campusDock.campusdock.controller;
 
-import com.campusDock.campusdock.entity.MediaFiles;
+import com.campusDock.campusdock.entity.MediaFile;
 import com.campusDock.campusdock.service.ServiceImpl.MediaFileService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +18,7 @@ public class MediaFileController {
     }
 
     @PostMapping("/upload")
-    public MediaFiles uploadMedia(MultipartFile file) {
+    public MediaFile uploadMedia(MultipartFile file) {
         return mediaFileService.uploadMedia(file);
     }
 

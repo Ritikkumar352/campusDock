@@ -1,5 +1,7 @@
 package com.campusDock.campusdock.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,31 +11,38 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.UUID;
 
-
 @Entity
-@Table(name = "canteen")
+@Table(name = "canteens")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Canteen {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @Column(nullable = false)
     private String name;
-    @Column(name = "canteen_desc", nullable = true)
+
+    private boolean isOpen;
+
+    @Column(name = "created_at")
+    private String createdAt;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
-    private boolean is_open = true;  // default open
-    private UUID college_id;
-    private String created_at;  // Canteen opened date
 
-    // 1. Canteen menu Relation
+    @ManyToOne
+    @JoinColumn(name = "college_id", referencedColumnName = "id")
+    @JsonBackReference
+    private College college;
+
     @OneToMany(mappedBy = "canteen", cascade = CascadeType.ALL)
-    private List<MenuItems> menu_items;
+    @JsonManagedReference
+    private List<MenuItem> menuItems;
 
-    // 2. Canteen Media relation
-    @OneToMany(mappedBy = "canteen_media", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MediaFiles> media_files;
+    @OneToMany(mappedBy = "canteen", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<MediaFile> MediaFile;
 }
-
