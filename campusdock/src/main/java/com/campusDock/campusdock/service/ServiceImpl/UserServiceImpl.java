@@ -2,7 +2,7 @@ package com.campusDock.campusdock.service.ServiceImpl;
 
 import com.campusDock.campusdock.entity.College;
 import com.campusDock.campusdock.entity.DTO.CreateUserDto;
-import com.campusDock.campusdock.entity.DTO.UserResponseDto;
+//import com.campusDock.campusdock.entity.DTO.UserResponseDto;
 import com.campusDock.campusdock.entity.User;
 import com.campusDock.campusdock.repository.CollegeRepo;
 import com.campusDock.campusdock.repository.UserRepo;
