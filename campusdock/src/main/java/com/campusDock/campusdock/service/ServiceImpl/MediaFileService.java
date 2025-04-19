@@ -6,6 +6,7 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +17,8 @@ public class MediaFileService {
 
     private final Storage storage;
     private final MediaFileRepo mediaFileRepo;
-    private final String bucketName = null;
+    @Value("${gcp.bucket.name}")
+    private String bucketName;
 
     public MediaFileService(Storage storage, MediaFileRepo mediaFileRepo) {
         this.storage = storage;
@@ -44,10 +46,10 @@ public class MediaFileService {
                     .fileName(uniqueName)
                     .type(contentType)
                     .size(file.getSize())
-                    .URL("https://storage.googleapis.com/" + bucketName + "/" + uniqueName)
+                    .url("https://storage.googleapis.com/" + bucketName + "/" + uniqueName)
                     .build();
-
-            return mediaFileRepo.save(mediaFile);
+//            return mediaFileRepo.save(mediaFile);
+             return save(mediaFile);
         } catch (Exception e) {
             throw new RuntimeException("Upload failed: " + e.getMessage());
         }

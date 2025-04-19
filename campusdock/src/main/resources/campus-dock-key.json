@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "campusdock",
+  "private_key_id": "016b8fac0d3e1924a48304a9f4f0853b6c733278",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCyNu5qNAXsi85+\nD/DrCIkDg69AcAjgRK/qQTfUaRlu0FxW9laoFAFAZlG6KbIenZvzx+vOLH/Wj0ee\nEyymI4FRCqByxGusr6kgcgw4tnvTYlHX0rk2aJJykMNcJIPXaNfRktc2oZKfPgvJ\n8tEk0wb6xZQ/LJ9j1pO6IFeS/tnTD3Rw1ErhpU1o9VNxrprRs3BAgaCbnIYe7bY2\n887TIVQX/QZ0Z33dF+eyJ0AT97luIPfpBw0eGW32kYVcKFEB88kEmRP6ytXp3kit\nsJ7g2uYu06sEI82nAvqsaKHgYMjzCsfKpiLucI9avwTR9/1BL1cm9wOFxkTvjPLD\nPfaaKxvJAgMBAAECggEADNzqoec92zgvEAnCA5DS5NpLGq1LcrZ6dP++khoA4C7x\nT0SJ9ik1euq3sOZkCRIqqLKQGko7cubWDjqHkTlEUu9fq9DyDZ2DKUiaCbjgIJ56\n1kdLH3p2QYch1qN7EZ/rXeDJoFOSo+REUQ/x2QTTPuPmYpXrrjbVZEyDzaQP4Ewh\nItshm+reZfQN+cnRhePhT7URfKgA94NEK6BxeP7Ay7LKDL2XmtykVZCe12r8lhuO\nV9fT2vIjM932XeNdftf/YOzibgnLIiG7D8iKEVz3JeoisuXCPnPV6mSn4s3hmxuL\nCTdfV4tEDnPV37C85zznmpA4ZTvE+UDOkXKo7BBhwQKBgQDiJco2jzw2k0H5oHp/\nDP/+ekp9/YbWRdjGjRBFZf8W9sMKn4+7sDffuQpyof2T7X4zRWgiCd2ljoOBTADA\n91o4KdxNigk8M+pifHNbSSSOo7FQv0aZGV7OG2A9aAUPABr6fWE/yGzKtS7L5G3t\nOpzIBpapCOoBzN1FOD7iZcpJYQKBgQDJvVbgkTe6eboC7ELTYqsScAXLZ6d+DpEJ\nUnqwHJrXq+BxUuTBbwJ3vwthirgbS7ndy/iqSGs84q5jGwGr7cgOY6/OyuheMlPJ\n99b/0BpvlEPcMfqEWt9m2stNnshLo9UnW0qDOcom+HQhTZ92PuT99ykBNMcJPVoj\nREbO5GLjaQKBgHp1PCqPJWvoEbG61Jo3z+ddETloL7uX1uqtOEJcGOW2eacnAA4C\nPj9HVAD+9vFDiTL6QoksDnm30j4Ridb0GkaPZFwYgye2dRUfjte/o6wZt8qhyPje\nZBf3ewXFbffRdsptWlvPjBm4Qr7l0yDCvGMULkEaMp0G8kqpSmQN+pwBAoGBAJIK\nqiDJn5Ez26+P/1RtgjBHvjogoITF4MLh3YUuP/3PJByFiKprRVsQhxmmxV6lNDlX\nFn2XDWK3Ksz92Pjwmrmn+rZ19z9xqWx1KURpDyolJ/b4i0VTT5Ry4WgggRkY0g66\nrLdQl4IcrF0Lh1ufbkBXs2x3G3sZ2e3b2HKfrOK5AoGBAMO3FuDXh2WA0r+lzvyn\nzBhyoc+hk2+KRNlWgaH7lMG1Pflv5NglCCySe7stgt0QXaxwFfFpKz0Ra/4ZJ2GR\nGPLCA6O8kQlfwIM0NygWRnSBCMnUFJw722bN4+yMlqk4S3ufKteDEvnZpHX30Tvp\nrNL7lu+pEGC1BoAcE5z8T/Rb\n-----END PRIVATE KEY-----\n",
+  "client_email": "campusdock-service@campusdock.iam.gserviceaccount.com",
+  "client_id": "100007117324414533748",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/campusdock-service%40campusdock.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

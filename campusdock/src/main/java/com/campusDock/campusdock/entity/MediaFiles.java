@@ -19,7 +19,8 @@ public class MediaFiles {
     @GeneratedValue
     private UUID id;
     private String fileName;
-    private String URL;
+    private String url;
+    private String downloadUrl;
     private String type;
     private long size;
     private LocalDateTime uploadDate;
