@@ -1,10 +1,12 @@
 package com.campusDock.campusdock.service.ServiceImpl;
 
 import com.campusDock.campusdock.entity.Canteen;
+import com.campusDock.campusdock.entity.College;
 import com.campusDock.campusdock.entity.DTO.CanteenDto;
 import com.campusDock.campusdock.entity.DTO.CanteenRequestDto;
 import com.campusDock.campusdock.entity.MediaFile;
 import com.campusDock.campusdock.repository.CanteenRepo;
+import com.campusDock.campusdock.repository.CollegeRepo;
 import com.campusDock.campusdock.service.CanteenService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +22,11 @@ import java.util.UUID;
 public class CanteenServiceImpl implements CanteenService {
     private final CanteenRepo canteenRepo;
     private final MediaFileServiceImpl mediaFileServiceImpl;
-
-    public CanteenServiceImpl(CanteenRepo canteenRepo, MediaFileServiceImpl mediaFileServiceImpl) {
+    private final CollegeRepo collegeRepo;
+    public CanteenServiceImpl(CanteenRepo canteenRepo, MediaFileServiceImpl mediaFileServiceImpl,CollegeRepo collegeRepo) {
         this.canteenRepo = canteenRepo;
         this.mediaFileServiceImpl = mediaFileServiceImpl;
+        this.collegeRepo=collegeRepo;
     }
 
     public ResponseEntity<Map<String, String>> registerCanteen(
@@ -31,16 +34,21 @@ public class CanteenServiceImpl implements CanteenService {
             MultipartFile file
     ) {
         Map<String, String> response = new HashMap<>();
+        System.out.println("Received file: " + file.getOriginalFilename());
 
         // save canteen
+        College college = collegeRepo.findById(canteenRequestDto.getCollege())
+                .orElseThrow(() -> new RuntimeException("College not found"));
+
         Canteen canteen = Canteen.builder()
                 .name(canteenRequestDto.getName())
                 .description(canteenRequestDto.getDescription())
-                .isOpen(canteenRequestDto.is_open())
-//                .college(canteenRequestDto)
-                .createdAt(canteenRequestDto.getCreated_at())
+                .isOpen(canteenRequestDto.isOpen())
+                .college(college) // Set actual College entity and receiving
                 .build();
+
         Canteen savedCanteen = canteenRepo.save(canteen);
+
 
         try {
             MediaFile media = mediaFileServiceImpl.uploadMedia(file);
