@@ -1,6 +1,6 @@
 package com.campusDock.campusdock.service.ServiceImpl;
 
-import com.campusDock.campusdock.entity.MediaFiles;
+import com.campusDock.campusdock.entity.MediaFile;
 import com.campusDock.campusdock.repository.MediaFileRepo;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
@@ -27,7 +27,7 @@ public class MediaFileService {
 
 
     // upload and save
-    public MediaFiles uploadMedia(MultipartFile file) {
+    public MediaFile uploadMedia(MultipartFile file) {
         if (file.isEmpty()) throw new IllegalArgumentException("File is empty");
 
         String uniqueName = UUID.randomUUID() + "_" + file.getOriginalFilename();
@@ -42,7 +42,7 @@ public class MediaFileService {
             Blob blob = storage.create(blobInfo, file.getBytes());
 
             // Save to DB
-            MediaFiles mediaFile = MediaFiles.builder()
+            MediaFile mediaFile = MediaFile.builder()
                     .fileName(uniqueName)
                     .type(contentType)
                     .size(file.getSize())
@@ -56,16 +56,16 @@ public class MediaFileService {
     }
 
     private boolean saveToDB(MultipartFile file) {
-        MediaFiles mediaFile = MediaFiles.builder()
+        MediaFile mediaFile = MediaFile.builder()
                 .fileName(file.getOriginalFilename())
                 .size(file.getSize())
                 .type(file.getContentType())
                 .build();
-        MediaFiles res = mediaFileRepo.save(mediaFile);
+        MediaFile res = mediaFileRepo.save(mediaFile);
         return !(res.getId() == null);
     }
 
-    public MediaFiles save(MediaFiles mediaFile) {
+    public MediaFile save(MediaFile mediaFile) {
         return mediaFileRepo.save(mediaFile);
     }
 }

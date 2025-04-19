@@ -1,24 +1,37 @@
 package com.campusDock.campusdock.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
+@Table(name = "order_items")
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class OrderItem {
     @Id
-    @GeneratedValue
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
+    @JsonBackReference
+    private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "menu_id", referencedColumnName = "id")
+    @JsonBackReference
+    private MenuItem menuItem;
 
     private int quantity;
+
+    @Column(name = "subtotal")
     private double subtotal;
 }
-

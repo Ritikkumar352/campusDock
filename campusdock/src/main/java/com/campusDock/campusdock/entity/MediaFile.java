@@ -10,26 +10,31 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "media_files")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Order {
+public class MediaFile {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonBackReference
-    private User user;
+    private String fileName;
+
+    private String url;
+
+    private String type;
+
+    private long size;
 
     @ManyToOne
     @JoinColumn(name = "canteen_id", referencedColumnName = "id")
     @JsonBackReference
     private Canteen canteen;
 
-    @Column(name = "created_at")
-    private String createdAt;
+    @ManyToOne
+    @JoinColumn(name = "menu_id", referencedColumnName = "id")
+    @JsonBackReference
+    private MenuItem menuItem;
 }
