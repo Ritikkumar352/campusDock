@@ -13,10 +13,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "carts")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,4 +22,25 @@ public class Cart {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonBackReference
     private User user;
+
+    public Cart(UUID id, User user) {
+        this.id = id;
+        this.user = user;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

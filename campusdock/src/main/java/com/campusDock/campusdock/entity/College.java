@@ -115,5 +115,53 @@ public class College {
     @OneToMany(mappedBy = "college", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Canteen> canteens;
+
+    public College(List<Canteen> canteens, String domain, UUID id, String name, List<User> users) {
+        this.canteens = canteens;
+        this.domain = domain;
+        this.id = id;
+        this.name = name;
+        this.users = users;
+    }
+
+    public List<Canteen> getCanteens() {
+        return canteens;
+    }
+
+    public void setCanteens(List<Canteen> canteens) {
+        this.canteens = canteens;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
 }
 

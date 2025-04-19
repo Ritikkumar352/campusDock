@@ -17,7 +17,7 @@ public class CollegeResponseDto {
         this.id = college.getId();
         this.name = college.getName();
         this.domain = college.getDomain();
-        this.studentNames = college.getCollegeUsers()
+        this.studentNames = college.getUsers()
                 .stream()
                 .map(User::getName)
                 .collect(Collectors.toList());
