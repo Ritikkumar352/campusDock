@@ -26,22 +26,18 @@ public class CanteenController {
             @RequestPart(value = "canteen", required = false) CanteenRequestDto canteenRequest,
             @RequestPart(value = "media_file", required = false) MultipartFile file
     ) {
-        int s= canteenService.registerCanteen(canteenRequest, file).getStatusCodeValue();
-        System.out.println(s);
-        return null;
+        return canteenService.registerCanteen(canteenRequest, file);
     }
 
-    // 2. Get all Canteen in a college
-//    @GetMapping("/{coll")
-//
-//
-//    // 2. Get a canteen by canteen id
-//    @GetMapping("/{canteenId}")
-//    public ResponseEntity<CanteenDto> getCanteenById(@PathVariable("canteenId") UUID canteenId) {
-//        return canteenService.getCanteenById(canteenId);
-//    }
+    // 2. Get all canteen by college Id (TODO add later in this controller)
 
-    // 3. update open status
+    // 3. Get a canteen by canteen id
+    @GetMapping("/{canteenId}")
+    public ResponseEntity<CanteenDto> getCanteenById(@PathVariable("canteenId") UUID canteenId) {
+        return canteenService.getCanteenById(canteenId);
+    }
+
+    // 4. update open status
     @PatchMapping("/{canteenId}/toggle-open")
     public ResponseEntity<CanteenDto> toggleCanteenOpen(@PathVariable("canteenId") UUID canteenId) {
         return null;

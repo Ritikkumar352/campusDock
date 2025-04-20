@@ -28,13 +28,15 @@ public class MediaFile {
 
     private long size;
 
+    // 1. Media - Canteen
     @ManyToOne
     @JoinColumn(name = "canteen_id", referencedColumnName = "id")
     @JsonBackReference
     private Canteen canteen;
 
+    // 2. Media - MenuItems
     @ManyToOne
     @JoinColumn(name = "menu_id", referencedColumnName = "id")
     @JsonBackReference
-    private MenuItem menuItem;
+    private MenuItems menuItems;
 }

@@ -1,5 +1,6 @@
 package com.campusDock.campusdock.entity;
 
+import com.campusDock.campusdock.entity.Enum.PaymentStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,7 @@ public class Payment {
 
     private double amount;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status; // e.g., Pending, Completed, Failed
+    private PaymentStatus status; // e.g., Pending, Completed, Failed
 }
