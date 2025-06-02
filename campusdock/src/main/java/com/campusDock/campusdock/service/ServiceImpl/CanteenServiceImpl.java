@@ -23,12 +23,14 @@ public class CanteenServiceImpl implements CanteenService {
     private final CanteenRepo canteenRepo;
     private final MediaFileServiceImpl mediaFileServiceImpl;
     private final CollegeRepo collegeRepo;
-    public CanteenServiceImpl(CanteenRepo canteenRepo, MediaFileServiceImpl mediaFileServiceImpl,CollegeRepo collegeRepo) {
+
+    public CanteenServiceImpl(CanteenRepo canteenRepo, MediaFileServiceImpl mediaFileServiceImpl, CollegeRepo collegeRepo) {
         this.canteenRepo = canteenRepo;
         this.mediaFileServiceImpl = mediaFileServiceImpl;
-        this.collegeRepo=collegeRepo;
+        this.collegeRepo = collegeRepo;
     }
 
+    // 1. Register Canteen
     public ResponseEntity<Map<String, String>> registerCanteen(
             CanteenRequestDto canteenRequestDto,
             MultipartFile file
@@ -46,7 +48,7 @@ public class CanteenServiceImpl implements CanteenService {
                 .isOpen(canteenRequestDto.isOpen())
                 .college(college) // Set actual College entity and receiving
                 .build();
-
+        // save canteen
         Canteen savedCanteen = canteenRepo.save(canteen);
 
 
@@ -64,7 +66,27 @@ public class CanteenServiceImpl implements CanteenService {
         }
     }
 
+    // 2. Get Canteen Details by Id
+    // TODO -> Generate view url(per or temp)
     public ResponseEntity<CanteenDto> getCanteenById(UUID canteen_id) {
-        return null;
+        Canteen foundCanteen = canteenRepo.findById(canteen_id)
+                .orElseThrow(() -> new RuntimeException("Canteen not found"));
+
+        String mediaUrl = null;
+        if (foundCanteen.getMediaFile() != null && !foundCanteen.getMediaFile().isEmpty()) {
+            mediaUrl = foundCanteen.getMediaFile().get(0).getUrl();
+        }
+
+        CanteenDto canteenDto = CanteenDto.builder()
+                .id(foundCanteen.getId())
+                .name(foundCanteen.getName())
+                .description(foundCanteen.getDescription())
+                .isOpen(foundCanteen.isOpen())
+                .createdAt(foundCanteen.getCreatedAt())
+                .collegeId(foundCanteen.getCollege().getId())
+                .mediaUrl(mediaUrl)
+                .build();
+
+        return ResponseEntity.ok(canteenDto);
     }
 }

@@ -17,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MenuItem {
+public class MenuItems {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -34,12 +34,14 @@ public class MenuItem {
 
     private String timeToCook;
 
+    // 1. MenuItems - Canteen
     @ManyToOne
     @JoinColumn(name = "canteen_id", referencedColumnName = "id")
     @JsonBackReference
     private Canteen canteen;
 
-    @OneToMany(mappedBy = "menuItem", cascade = CascadeType.ALL)
+    // 2. MenuItems - Media
+    @OneToMany(mappedBy = "menuItems", cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonManagedReference
     private List<MediaFile> MediaFile;
 }

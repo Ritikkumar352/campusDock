@@ -5,12 +5,7 @@ package com.campusDock.campusdock.entity;
 import com.campusDock.campusdock.entity.Enum.CartItemStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.awt.*;
 import java.util.UUID;
 
 @Entity
@@ -28,7 +23,7 @@ public class CartItem {
     @ManyToOne
     @JoinColumn(name = "menu_id", referencedColumnName = "id")
     @JsonBackReference
-    private MenuItem menuItem;
+    private MenuItems menuItems;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -36,10 +31,10 @@ public class CartItem {
 
     private int quantity;
 
-    public CartItem(Cart cart, UUID id, MenuItem menuItem, int quantity, CartItemStatus status) {
+    public CartItem(Cart cart, UUID id, MenuItems menuItems, int quantity, CartItemStatus status) {
         this.cart = cart;
         this.id = id;
-        this.menuItem = menuItem;
+        this.menuItems = menuItems;
         this.quantity = quantity;
         this.status = status;
     }
@@ -60,12 +55,12 @@ public class CartItem {
         this.id = id;
     }
 
-    public MenuItem getMenuItem() {
-        return menuItem;
+    public MenuItems getMenuItem() {
+        return menuItems;
     }
 
-    public void setMenuItem(MenuItem menuItem) {
-        this.menuItem = menuItem;
+    public void setMenuItem(MenuItems menuItems) {
+        this.menuItems = menuItems;
     }
 
     public int getQuantity() {
