@@ -1,7 +1,7 @@
 package com.campusDock.campusdock.service.ServiceImpl;
 
 import com.campusDock.campusdock.entity.Canteen;
-import com.campusDock.campusdock.entity.DTO.MenuItemRequestDto;
+import com.campusDock.campusdock.dto.MenuItemRequestDto;
 import com.campusDock.campusdock.entity.MediaFile;
 import com.campusDock.campusdock.entity.MenuItems;
 import com.campusDock.campusdock.repository.CanteenRepo;

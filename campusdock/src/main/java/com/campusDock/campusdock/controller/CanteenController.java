@@ -1,17 +1,19 @@
 package com.campusDock.campusdock.controller;
 
-import com.campusDock.campusdock.entity.DTO.CanteenDto;
-import com.campusDock.campusdock.entity.DTO.CanteenRequestDto;
+import com.campusDock.campusdock.dto.CanteenDto;
+import com.campusDock.campusdock.dto.CanteenListDto;
+import com.campusDock.campusdock.dto.CanteenRequestDto;
 import com.campusDock.campusdock.service.ServiceImpl.CanteenServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/canteens")
+@RequestMapping("/api/v1/colleges")
 public class CanteenController {
 
     private final CanteenServiceImpl canteenService;
@@ -21,7 +23,7 @@ public class CanteenController {
     }
 
     // 1. Register Canteen
-    @PostMapping
+    @PostMapping("/{collegeId}/canteens")
     public ResponseEntity<Map<String, String>> registerCanteen(
             @RequestPart(value = "canteen", required = false) CanteenRequestDto canteenRequest,
             @RequestPart(value = "media_file", required = false) MultipartFile file
@@ -29,7 +31,11 @@ public class CanteenController {
         return canteenService.registerCanteen(canteenRequest, file);
     }
 
-    // 2. Get all canteen by college Id (TODO add later in this controller)
+    // 2. Get all canteen by college Id
+    @GetMapping("/{collegeId}/canteens")
+    public List<CanteenListDto> getAllCanteens(@PathVariable UUID collegeId) {
+        return canteenService.getAllCanteens(collegeId);
+    }
 
     // 3. Get a canteen by canteen id
     @GetMapping("/{canteenId}")

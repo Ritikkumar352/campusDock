@@ -1,7 +1,7 @@
 package com.campusDock.campusdock.service.ServiceImpl;
 
 import com.campusDock.campusdock.entity.College;
-import com.campusDock.campusdock.entity.DTO.CreateCollegeDto;
+import com.campusDock.campusdock.dto.CreateCollegeDto;
 import com.campusDock.campusdock.repository.CollegeRepo;
 import com.campusDock.campusdock.service.CollegeService;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.campusDock.campusdock.service;
 
-import com.campusDock.campusdock.entity.DTO.MenuItemRequestDto;
+import com.campusDock.campusdock.dto.MenuItemRequestDto;
 import com.campusDock.campusdock.entity.MenuItems;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;

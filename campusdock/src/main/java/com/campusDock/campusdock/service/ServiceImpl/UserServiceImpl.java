@@ -1,7 +1,7 @@
 package com.campusDock.campusdock.service.ServiceImpl;
 
 import com.campusDock.campusdock.entity.College;
-import com.campusDock.campusdock.entity.DTO.CreateUserDto;
+import com.campusDock.campusdock.dto.CreateUserDto;
 //import com.campusDock.campusdock.entity.DTO.UserResponseDto;
 import com.campusDock.campusdock.entity.User;
 import com.campusDock.campusdock.repository.CollegeRepo;
@@ -10,8 +10,6 @@ import com.campusDock.campusdock.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 
 @Service
