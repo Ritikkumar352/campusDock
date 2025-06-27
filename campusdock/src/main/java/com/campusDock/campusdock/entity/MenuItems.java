@@ -43,5 +43,5 @@ public class MenuItems {
     // 2. MenuItems - Media
     @OneToMany(mappedBy = "menuItems", cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonManagedReference
-    private List<MediaFile> MediaFile;
+    private List<MediaFile> MediaFile;   // use mediaFiles
 }

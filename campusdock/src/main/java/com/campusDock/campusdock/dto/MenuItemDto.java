@@ -13,8 +13,8 @@ import java.util.UUID;
 public class MenuItemDto {
     private UUID id;
     private String name;
-    private String price;
+    private double price;
     private boolean is_available;
-
+    // add media link
 
 }

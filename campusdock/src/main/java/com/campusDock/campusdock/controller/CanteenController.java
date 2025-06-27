@@ -22,7 +22,7 @@ public class CanteenController {
         this.canteenService = canteenService;
     }
 
-    // 1. Register Canteen
+    // 1. Register Canteen  -- Done
     @PostMapping("/{collegeId}/canteens")
     public ResponseEntity<Map<String, String>> registerCanteen(
             @RequestPart(value = "canteen", required = false) CanteenRequestDto canteenRequest,
@@ -31,17 +31,28 @@ public class CanteenController {
         return canteenService.registerCanteen(canteenRequest, file);
     }
 
-    // 2. Get all canteen by college Id
+    // 2. Get all canteen by college Id  -- Done
     @GetMapping("/{collegeId}/canteens")
     public List<CanteenListDto> getAllCanteens(@PathVariable UUID collegeId) {
         return canteenService.getAllCanteens(collegeId);
     }
 
-    // 3. Get a canteen by canteen id
-    @GetMapping("/{canteenId}")
+    // 3. Get a canteen by canteen id --- GET MENU PAGE -> direct
+    @GetMapping("/canteens/{canteenId}")
     public ResponseEntity<CanteenDto> getCanteenById(@PathVariable("canteenId") UUID canteenId) {
         return canteenService.getCanteenById(canteenId);
     }
+
+
+
+
+
+
+
+    // DO Later **********
+
+
+
 
     // 4. update open status
     @PatchMapping("/{canteenId}/toggle-open")

@@ -1,12 +1,15 @@
 package com.campusDock.campusdock.controller;
 
+import com.campusDock.campusdock.dto.MenuItemDto;
 import com.campusDock.campusdock.dto.MenuItemRequestDto;
 import com.campusDock.campusdock.entity.MenuItems;
 import com.campusDock.campusdock.service.ServiceImpl.MenuItemServiceImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -20,21 +23,28 @@ public class MenuItemsController {
     }
 
 
-    // 1. Add menu item
-    @PostMapping
+    // 1. Add menu item   -- DONE
+    @PostMapping("/canteens/{canteenId}")
     public ResponseEntity<Map<String,String>> addMenuItem(
-            @RequestPart(value = "menuItem", required = true) MenuItemRequestDto dto,
-            @RequestPart(value = "file",required = false) MultipartFile file
+            @PathVariable UUID canteenId,
+            @RequestPart("menuItem") MenuItemRequestDto dto,
+            @RequestPart(value = "file", required = false) MultipartFile file
     ) {
-         return  menuItemService.addMenuItem(dto,file);
+        return menuItemService.addMenuItem(canteenId, dto, file);
     }
 
-    // 2. Get Menu Item
+    // 2. Get Menu Item   -- DONE
     @GetMapping("/{id}")
     public ResponseEntity<MenuItems> getMenuItemById(@PathVariable("id") UUID id) {
         return menuItemService.getMenuItem(id);
     }
 
+    // 3. get a list of all Menu items of a canteen   -- DONE
+    @GetMapping("/canteens/{canteenId}")
+    public ResponseEntity<List<MenuItemDto>> getMenuItemsByCanteenId(@PathVariable UUID canteenId) {
+        List<MenuItemDto> result=menuItemService.getItemsByCanteenId(canteenId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
 
 }
