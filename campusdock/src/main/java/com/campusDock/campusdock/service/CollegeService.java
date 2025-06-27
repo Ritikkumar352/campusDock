@@ -1,7 +1,7 @@
 package com.campusDock.campusdock.service;
 
 import com.campusDock.campusdock.entity.College;
-import com.campusDock.campusdock.entity.DTO.CreateCollegeDto;
+import com.campusDock.campusdock.dto.CreateCollegeDto;
 
 import java.util.List;
 

@@ -1,8 +1,8 @@
 package com.campusDock.campusdock.controller;
 
 import com.campusDock.campusdock.entity.College;
-import com.campusDock.campusdock.entity.DTO.CollegeResponseDto;
-import com.campusDock.campusdock.entity.DTO.CreateCollegeDto;
+import com.campusDock.campusdock.dto.CollegeResponseDto;
+import com.campusDock.campusdock.dto.CreateCollegeDto;
 import com.campusDock.campusdock.service.CollegeService;
 import com.campusDock.campusdock.service.UserService;
 import org.springframework.web.bind.annotation.*;

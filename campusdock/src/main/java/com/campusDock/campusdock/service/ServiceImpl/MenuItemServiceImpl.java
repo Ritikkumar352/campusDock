@@ -1,7 +1,8 @@
 package com.campusDock.campusdock.service.ServiceImpl;
 
+import com.campusDock.campusdock.dto.MenuItemDto;
+import com.campusDock.campusdock.dto.MenuItemRequestDto;
 import com.campusDock.campusdock.entity.Canteen;
-import com.campusDock.campusdock.entity.DTO.MenuItemRequestDto;
 import com.campusDock.campusdock.entity.MediaFile;
 import com.campusDock.campusdock.entity.MenuItems;
 import com.campusDock.campusdock.repository.CanteenRepo;
@@ -12,9 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class MenuItemServiceImpl implements MenuItemsService {
@@ -23,19 +22,22 @@ public class MenuItemServiceImpl implements MenuItemsService {
     private final CanteenRepo canteenRepo;
     private final MediaFileServiceImpl mediaFileService;
 
-    public MenuItemServiceImpl(MenuItemsRepo menuItemsRepo, CanteenRepo canteenRepo,MediaFileServiceImpl mediaFileService) {
+    public MenuItemServiceImpl(MenuItemsRepo menuItemsRepo, CanteenRepo canteenRepo, MediaFileServiceImpl mediaFileService) {
         this.menuItemsRepo = menuItemsRepo;
         this.canteenRepo = canteenRepo;
         this.mediaFileService = mediaFileService;
     }
 
+
     // 1. Add menuItem
+    @Override
     public ResponseEntity<Map<String, String>> addMenuItem(
+            UUID canteenId,
             MenuItemRequestDto dto,
             MultipartFile file
     ) {
         Map<String, String> response = new HashMap<>();
-        Canteen canteen = canteenRepo.findById(dto.getCanteenId())
+        Canteen canteen = canteenRepo.findById(canteenId)
                 .orElseThrow(() -> new RuntimeException("Canteen not found"));
 
         MenuItems menuItems = MenuItems.builder()
@@ -44,37 +46,55 @@ public class MenuItemServiceImpl implements MenuItemsService {
                 .price(dto.getPrice())
                 .isAvailable(dto.isAvailable())
                 .timeToCook(dto.getTimeToCook())
-                .canteen(canteen)
+                .canteen(canteen)   // linking to the canteen id in the dto.... TODO use path variable ... change
                 .build();
         // save menu Item
         MenuItems savedMenuItem = menuItemsRepo.save(menuItems);
+        if (file != null) {
+            if (savedMenuItem.isAvailable()) {
+                response.put("menuItem_id", savedMenuItem.getId().toString());
+                response.put("status", "Menu item created successfully");
+                try {
+                    MediaFile media = mediaFileService.uploadMedia(file);
+                    media.setMenuItems(savedMenuItem);
+                    mediaFileService.save(media);
 
-        if(savedMenuItem.isAvailable()){
-            response.put("menuItem_id", savedMenuItem.getId().toString());
-            response.put("status", "Menu item created successfully");
-            try{
-                MediaFile media=mediaFileService.uploadMedia(file);
-                media.setMenuItems(savedMenuItem);
-                mediaFileService.save(media);
-
-                response.put("mediaId",media.getId().toString());
-                response.put("url",media.getUrl());
-                return new ResponseEntity<>(response,HttpStatus.CREATED);
-            }catch (Exception e){
-                response.put("error","Menu Item saved without media upload ");
-                return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+                    response.put("mediaId", media.getId().toString());
+                    response.put("url", media.getUrl());
+                    return new ResponseEntity<>(response, HttpStatus.CREATED);
+                } catch (Exception e) {
+                    response.put("error", "Menu Item saved without media upload ");
+                    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+                }
             }
         }
-
-
-
-
+        response.put("menu Item Id:",savedMenuItem.getId().toString());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+
     // 2. Get a Menu Item
     public ResponseEntity<MenuItems> getMenuItem(UUID id) {
-        MenuItems menuItem=menuItemsRepo.findById(id).orElseThrow(() -> new RuntimeException("Menu item not found"));
+        MenuItems menuItem = menuItemsRepo.findById(id).orElseThrow(() -> new RuntimeException("Menu item not found"));
         return ResponseEntity.ok(menuItem);
     }
+
+    public List<MenuItemDto> getItemsByCanteenId(UUID canteenId) {
+        List<MenuItems> menuItems = menuItemsRepo.findByCanteen_Id(canteenId);
+        List<MenuItemDto> items = new ArrayList<>();
+
+        for (MenuItems item : menuItems) {
+            MenuItemDto dto = MenuItemDto.builder()
+                    .id(item.getId())
+                    .name(item.getFoodName())
+                    .price(item.getPrice())
+//                    .description(item.getDescription())
+                    .is_available(item.isAvailable())
+                    .build();
+            items.add(dto);
+        }
+
+        return items;
+    }
+
 }

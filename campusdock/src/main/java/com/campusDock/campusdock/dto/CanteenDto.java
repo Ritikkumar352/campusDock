@@ -1,4 +1,4 @@
-package com.campusDock.campusdock.entity.DTO;
+package com.campusDock.campusdock.dto;
 
 import jdk.jshell.Snippet;
 import lombok.AllArgsConstructor;

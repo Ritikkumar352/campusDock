@@ -1,6 +1,6 @@
 package com.campusDock.campusdock.controller;
 
-import com.campusDock.campusdock.entity.DTO.CreateUserDto;
+import com.campusDock.campusdock.dto.CreateUserDto;
 import com.campusDock.campusdock.entity.User;
 import com.campusDock.campusdock.service.UserService;
 import org.springframework.http.HttpStatus;

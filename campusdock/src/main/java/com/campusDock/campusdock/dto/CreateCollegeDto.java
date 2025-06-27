@@ -1,4 +1,4 @@
-package com.campusDock.campusdock.entity.DTO;
+package com.campusDock.campusdock.dto;
 
 import lombok.Data;
 import lombok.Getter;
