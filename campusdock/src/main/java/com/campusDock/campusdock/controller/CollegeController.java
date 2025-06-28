@@ -22,7 +22,9 @@ public class CollegeController {
         this.collegeService = collegeService;
     }
 
-    @GetMapping("/checking")
+
+    // **** For test only ******
+    @GetMapping("/checking")  // -> EVERYTING -> college-> student -> canteen-> menu-> menuItem-> menu item detail-> media
     public List<College> getDetailedInfo()
     {
         return collegeService.getAll();

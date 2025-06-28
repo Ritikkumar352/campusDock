@@ -31,4 +31,8 @@ public class UserController {
         return new ResponseEntity<>(userService.createUser(createUserDto), HttpStatus.CREATED);
     }
 
+    // create all user of a collge -> get all user by college id
+    // get all faculty
+    // get all faculty by college id
+
 }

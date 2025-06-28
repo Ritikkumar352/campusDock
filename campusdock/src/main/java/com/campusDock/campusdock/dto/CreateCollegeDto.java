@@ -1,19 +1,15 @@
 package com.campusDock.campusdock.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateCollegeDto
 {
     private String name;
     private String domain;
 
-    public String getDomain() {
-        return domain;
-    }
-
-    public String getName() {
-        return name;
-    }
 }
