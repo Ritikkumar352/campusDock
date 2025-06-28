@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
+// Required and Done [Phase -1]
 @RestController
 @RequestMapping("/api/v1/colleges")
 public class CanteenController {

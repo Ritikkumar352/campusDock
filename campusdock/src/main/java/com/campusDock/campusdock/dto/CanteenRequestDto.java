@@ -10,7 +10,7 @@ import java.util.UUID;
 public class CanteenRequestDto {
     private String name;
     private String description;
-    private boolean isOpen=true;
+    private boolean isOpen;
     private UUID college;
     private String createdAt;
 }
