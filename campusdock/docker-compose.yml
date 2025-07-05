@@ -1,0 +1,9 @@
+services:
+  campusdock:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: campusdock-app
+    ports:
+      - "8082:8081"  # 81 inside container 82 exposed
+    restart: always
