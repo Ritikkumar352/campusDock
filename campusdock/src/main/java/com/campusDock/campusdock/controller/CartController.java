@@ -1,6 +1,7 @@
 package com.campusDock.campusdock.controller;
 
 import com.campusDock.campusdock.dto.AddToCartRequest;
+import com.campusDock.campusdock.dto.CartResponseDto;
 import com.campusDock.campusdock.entity.Cart;
 import com.campusDock.campusdock.service.CartService;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +19,9 @@ public class CartController {
     }
 
     // 1. Get cart of a user (add logged-in user )
-    @GetMapping("/{userId}")     //
-    public ResponseEntity<Cart> getUserCart(@PathVariable UUID userId) {
-        Cart cart = cartService.getOrCreateUserCart(userId);
-        return ResponseEntity.ok(cart);
+    @GetMapping("/{userId}")
+    public ResponseEntity<CartResponseDto> getUserCart(@PathVariable UUID userId) {
+        return ResponseEntity.ok(cartService.getUserCartDto(userId));
     }
 
     // 2. Add or upate cart of a user

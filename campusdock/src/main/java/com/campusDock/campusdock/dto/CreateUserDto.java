@@ -8,6 +8,7 @@ import java.util.UUID;
 @Data
 @Builder
 public class CreateUserDto {
+
     private String email;
     private String password;
 

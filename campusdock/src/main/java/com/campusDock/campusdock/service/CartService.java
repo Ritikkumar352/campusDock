@@ -1,5 +1,6 @@
 package com.campusDock.campusdock.service;
 
+import com.campusDock.campusdock.dto.CartResponseDto;
 import com.campusDock.campusdock.entity.Cart;
 
 import java.util.UUID;
@@ -14,5 +15,8 @@ public interface CartService {
 
     // 3. Delete an item from the cart
     void removeItemFromCart(UUID itemId);
+
+    // 4.
+    CartResponseDto getUserCartDto(UUID userId);
 
 }

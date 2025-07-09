@@ -19,7 +19,7 @@ import java.util.UUID;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private UUID id;  // cart id
 
     @OneToOne   // coze only one cart for a user
     @JoinColumn(name = "user_id", referencedColumnName = "id")

@@ -1,5 +1,7 @@
 package com.campusDock.campusdock.service.ServiceImpl;
 
+import com.campusDock.campusdock.dto.CartItemDto;
+import com.campusDock.campusdock.dto.CartResponseDto;
 import com.campusDock.campusdock.entity.Cart;
 import com.campusDock.campusdock.entity.CartItem;
 import com.campusDock.campusdock.entity.Enum.CartItemStatus;
@@ -13,6 +15,7 @@ import com.campusDock.campusdock.service.CartService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -93,5 +96,31 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(() -> new RuntimeException("Cart item not found with id: " + itemId));
         cartItemRepo.delete(item);
     }
+
+    // 4. Get User Cart as DTO (used in controller)
+    public CartResponseDto getUserCartDto(UUID userId) {
+        Cart cart = getOrCreateUserCart(userId);
+
+        List<CartItemDto> items = new ArrayList<>();
+
+        for (CartItem item : cart.getItems()) {
+            MenuItems menu = item.getMenuItems();
+            items.add(new CartItemDto(
+                    item.getId(),             // cartItem ID
+                    menu.getId(),             // menuItem ID (this was incorrect earlier)
+                    menu.getFoodName(),
+                    menu.getPrice(),
+                    item.getQuantity()
+            ));
+        }
+
+        return new CartResponseDto(
+                cart.getId(),
+                cart.getUser().getId(),
+                items
+        );
+    }
+
+
 
 }
