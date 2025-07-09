@@ -2,10 +2,7 @@ package com.campusDock.campusdock.service.ServiceImpl;
 
 import com.campusDock.campusdock.entity.MediaFile;
 import com.campusDock.campusdock.repository.MediaFileRepo;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
-import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,14 +10,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.UUID;
 
 @Service
-public class MediaFileService {
+public class MediaFileServiceImpl {
 
     private final Storage storage;
     private final MediaFileRepo mediaFileRepo;
     @Value("${gcp.bucket.name}")
     private String bucketName;
 
-    public MediaFileService(Storage storage, MediaFileRepo mediaFileRepo) {
+    public MediaFileServiceImpl(Storage storage, MediaFileRepo mediaFileRepo) {
         this.storage = storage;
         this.mediaFileRepo = mediaFileRepo;
     }

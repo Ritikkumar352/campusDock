@@ -1,6 +1,6 @@
 package com.campusDock.campusdock.controller;
 
-import com.campusDock.campusdock.entity.DTO.CreateUserDto;
+import com.campusDock.campusdock.dto.CreateUserDto;
 import com.campusDock.campusdock.entity.User;
 import com.campusDock.campusdock.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -30,5 +30,9 @@ public class UserController {
 
         return new ResponseEntity<>(userService.createUser(createUserDto), HttpStatus.CREATED);
     }
+
+    // create all user of a collge -> get all user by college id
+    // get all faculty
+    // get all faculty by college id
 
 }

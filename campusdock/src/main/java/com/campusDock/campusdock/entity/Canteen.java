@@ -40,9 +40,10 @@ public class Canteen {
 
     @OneToMany(mappedBy = "canteen", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<MenuItem> menuItems;
+    private List<MenuItems> menuItems;
 
-    @OneToMany(mappedBy = "canteen", cascade = CascadeType.ALL)
+    // 3. Canteen - Media Files
+    @OneToMany(mappedBy = "canteen", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<MediaFile> MediaFile;
 }

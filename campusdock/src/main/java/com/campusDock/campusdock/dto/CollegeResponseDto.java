@@ -1,4 +1,4 @@
-package com.campusDock.campusdock.entity.DTO;
+package com.campusDock.campusdock.dto;
 
 import com.campusDock.campusdock.entity.College;
 import com.campusDock.campusdock.entity.User;

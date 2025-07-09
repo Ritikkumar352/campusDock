@@ -1,4 +1,4 @@
-package com.campusDock.campusdock.entity.DTO;
+package com.campusDock.campusdock.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.util.UUID;
 public class CanteenRequestDto {
     private String name;
     private String description;
-    private boolean is_open;
-    private UUID college_id;
-    private String created_at;
+    private boolean isOpen;
+    private UUID college;
+    private String createdAt;
 }

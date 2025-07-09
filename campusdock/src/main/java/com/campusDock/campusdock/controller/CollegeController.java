@@ -1,8 +1,8 @@
 package com.campusDock.campusdock.controller;
 
 import com.campusDock.campusdock.entity.College;
-import com.campusDock.campusdock.entity.DTO.CollegeResponseDto;
-import com.campusDock.campusdock.entity.DTO.CreateCollegeDto;
+import com.campusDock.campusdock.dto.CollegeResponseDto;
+import com.campusDock.campusdock.dto.CreateCollegeDto;
 import com.campusDock.campusdock.service.CollegeService;
 import com.campusDock.campusdock.service.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,9 @@ public class CollegeController {
         this.collegeService = collegeService;
     }
 
-    @GetMapping("/checking")
+
+    // **** For test only ******
+    @GetMapping("/checking")  // -> EVERYTING -> college-> student -> canteen-> menu-> menuItem-> menu item detail-> media
     public List<College> getDetailedInfo()
     {
         return collegeService.getAll();

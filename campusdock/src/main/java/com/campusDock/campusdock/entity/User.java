@@ -93,6 +93,7 @@ package com.campusDock.campusdock.entity;
 
 import com.campusDock.campusdock.entity.Enum.UserRole;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -119,7 +120,7 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    private String password;
+    private String password;   // TODO -> make sure to hash password
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -130,60 +131,8 @@ public class User {
     @JsonBackReference
     private College college;
 
-    public User(College college, String email, UUID id, String name, String password, UserRole role) {
-        this.college = college;
-        this.email = email;
-        this.id = id;
-        this.name = name;
-        this.password = password;
-        this.role = role;
-    }
 
-    public College getCollege() {
-        return college;
-    }
-
-    public void setCollege(College college) {
-        this.college = college;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public UserRole getRole() {
-        return role;
-    }
-
-    public void setRole(UserRole role) {
-        this.role = role;
-    }
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private Cart cart;
 }
