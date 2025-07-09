@@ -28,4 +28,9 @@ public class Cart {
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items;
+
+    // FIX:- Canteen -> as a cart can be created for one canteen at a time -
+    @ManyToOne
+    @JoinColumn(name = "canteen_id")
+    private Canteen canteen;
 }

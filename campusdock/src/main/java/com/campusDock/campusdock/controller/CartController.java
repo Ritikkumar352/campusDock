@@ -30,17 +30,30 @@ public class CartController {
         String message = cartService.addOrUpdateCartItem(
                 request.getUserId(),
                 request.getMenuItemId(),
-                request.getQuantity()
+                request.getQuantity(),
+                request.isForceClear()
         );
+        if ("DIFFERENT_CANTEEN".equals(message)) {    // clear cart and addd that item or Cancle
+            return ResponseEntity.status(409).body("Cart contains items from a different canteen");
+        }
         return ResponseEntity.ok(message);
     }
 
     // 3. Delete an item from the cart
     @DeleteMapping("/remove/{itemId}")    // TODO -> if quantity is 2,3,4,.... it's removing all of that item at once FIX
+                                            // TODO -> need to add another method for this -> decrease quantity -> delete item is OK ig
     public ResponseEntity<String> removeItemFromCart(@PathVariable UUID itemId) {
         cartService.removeItemFromCart(itemId);
         return ResponseEntity.ok("Item removed from cart successfully");
     }
 
+    // 4. Clear Cart of a User
+    public ResponseEntity<String > clearCart(UUID userId){
+        if(cartService.clearCart(userId)){
+            return ResponseEntity.ok("Cart cleared successfully");
+        }else {
+            return ResponseEntity.badRequest().body("Cart cleared failed");
+        }
+    }
 
 }

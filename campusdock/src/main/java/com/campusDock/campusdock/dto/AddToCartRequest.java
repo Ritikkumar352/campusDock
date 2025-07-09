@@ -14,6 +14,8 @@ public class AddToCartRequest {
     private UUID userId;
     private UUID menuItemId;
     private int quantity;
+
+    private boolean forceClear = false;
 }
 
 
