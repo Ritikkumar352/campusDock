@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -16,10 +17,13 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)   // infinite hash code problem ->cart-> user->cart->user....
 public class Cart {
+
     @Id
+    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private UUID id;  // cart id
 
     @OneToOne   // coze only one cart for a user
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -28,4 +32,9 @@ public class Cart {
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items;
+
+    // FIX:- Canteen -> as a cart can be created for one canteen at a time -
+    @ManyToOne
+    @JoinColumn(name = "canteen_id")
+    private Canteen canteen;
 }

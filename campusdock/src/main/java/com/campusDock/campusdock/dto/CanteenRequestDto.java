@@ -12,5 +12,4 @@ public class CanteenRequestDto {
     private String description;
     private boolean isOpen;
     private UUID college;
-    private String createdAt;
 }

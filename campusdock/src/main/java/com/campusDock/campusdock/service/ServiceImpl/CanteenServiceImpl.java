@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -46,6 +47,7 @@ public class CanteenServiceImpl implements CanteenService {
                 .description(canteenRequestDto.getDescription())
                 .isOpen(canteenRequestDto.isOpen())
                 .college(college) // Set actual College entity and receiving
+                .createdAt(LocalDateTime.now().toString())
                 .build();
         // save canteen
         Canteen savedCanteen = canteenRepo.save(canteen);

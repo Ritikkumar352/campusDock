@@ -95,10 +95,7 @@ import com.campusDock.campusdock.entity.Enum.UserRole;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -108,8 +105,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
     @Id
+    @EqualsAndHashCode.Include   // uses only id in hash ... or whatever is markd to use
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 

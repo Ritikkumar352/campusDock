@@ -3,21 +3,14 @@ package com.campusDock.campusdock.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.UUID;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class AddToCartRequest {
+@NoArgsConstructor
+public class PlaceOrderRequest {
     private UUID userId;
-    private UUID menuItemId;
-    private int quantity;
-
-    private boolean forceClear = false;
+    private UUID cartId;
+    // No need to send menu items explicitly (we'll use cart content)
 }
-
-
-
-
