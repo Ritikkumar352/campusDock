@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -16,8 +17,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)   // infinite hash code problem ->cart-> user->cart->user....
 public class Cart {
+
     @Id
+    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;  // cart id
 
