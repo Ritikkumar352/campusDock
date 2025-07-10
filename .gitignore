@@ -1,0 +1,53 @@
+# Java build output
+**/target/
+**/out/
+
+# IDEs and editors
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment files
+.env
+*.env
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# Node modules (if frontend involved)
+node_modules/
+
+# Docker
+*.pid
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# IntelliJ
+*.class
+*.jar
+*.war
+*.ear
+
+# VS Code
+.vscode/
+
+# Dependency directories
+target/
+
+# Tests
+test-output/
+
+.env
+/campusdock/src/main/resources/*.json
