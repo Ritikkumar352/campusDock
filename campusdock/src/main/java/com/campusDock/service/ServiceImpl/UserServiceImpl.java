@@ -1,0 +1,57 @@
+package com.campusDock.service.ServiceImpl;
+
+
+import com.campusDock.dto.CreateUserDto;
+import com.campusDock.entity.College;
+import com.campusDock.entity.User;
+import com.campusDock.repository.CollegeRepo;
+import com.campusDock.repository.UserRepo;
+import com.campusDock.service.UserService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+
+@Service
+public class UserServiceImpl implements UserService {
+
+    private final UserRepo userRepo;
+    private final CollegeRepo collegeRepo;
+
+    public UserServiceImpl(UserRepo userRepo, CollegeRepo collegeRepo) {
+        this.userRepo = userRepo;
+        this.collegeRepo = collegeRepo;
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepo.findAll();
+    }
+
+    @Override
+    public User createUser(CreateUserDto createUserDto) {
+        // Extract domain (e.g. abes.ac.in) from email
+        String domain = createUserDto.getEmail().substring(createUserDto.getEmail().indexOf("@") + 1);
+
+
+
+        College college = collegeRepo.findByDomain(domain)
+                .orElseThrow(() -> new RuntimeException("College not registered for domain: " + domain));
+
+
+        String namee=createUserDto.getEmail().substring(0,createUserDto.getEmail().indexOf("."));
+
+        User user = new User();
+        user.setName(namee);
+        user.setPassword(createUserDto.getPassword());
+        user.setEmail(createUserDto.getEmail());
+        user.setCollege(college);
+
+        return userRepo.save(user);
+
+
+    }
+
+
+
+}
