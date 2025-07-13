@@ -42,10 +42,10 @@ public class UserServiceImpl implements UserService {
         String namee=createUserDto.getEmail().substring(0,createUserDto.getEmail().indexOf("."));
 
         User user = new User();
-        user.setName(namee);
-        user.setPassword(createUserDto.getPassword());
-        user.setEmail(createUserDto.getEmail());
-        user.setCollege(college);
+//        user.setName(namee);
+//        user.setPassword(createUserDto.getPassword());
+//        user.setEmail(createUserDto.getEmail());
+//        user.setCollege(college);
 
         return userRepo.save(user);
 
