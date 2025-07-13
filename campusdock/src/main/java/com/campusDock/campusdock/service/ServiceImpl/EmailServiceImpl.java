@@ -26,7 +26,22 @@ public class EmailServiceImpl implements EmailService {
 
     public void sendOtpEmail(String toEmail, String otp) {
 
-        String htmlContent = "<h3>Welcome :) Your CampusDock OTP is:</h3><h1>" + otp + "</h1>";
+            String htmlContent = """
+        <div style="font-family: Arial, sans-serif; padding: 16px;">
+            <h2 style="color: #2E86C1;">Welcome to CampusDock 🎉</h2>
+            <p>We're excited to have you onboard. Use the OTP below to verify your email:</p>
+            
+            <div style="margin: 20px 0; padding: 16px; background-color: #f4f4f4; border-left: 4px solid #2E86C1;">
+                <h1 style="margin: 0; font-size: 32px; color: #2E86C1; text-align: center;">%s</h1>
+            </div>
+            
+            <p style="color: #555;">This OTP is valid for the next 10 minutes. Please do not share it with anyone.</p>
+            
+            <br/>
+            <p style="font-size: 14px; color: #999;">- Team CampusDock</p>
+        </div>
+    """.formatted(otp);
+
 
         ResendEmailRequest requestBody = ResendEmailRequest.builder()
                 .from(senderEmail)
