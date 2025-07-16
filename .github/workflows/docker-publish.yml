@@ -22,7 +22,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/campusdock:latest .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/campusdock:latest ./campusdock
           docker tag ${{ secrets.DOCKER_USERNAME }}/campusdock:latest ${{ secrets.DOCKER_USERNAME }}/campusdock:${{ steps.vars.outputs.sha_short }}
 
       - name: Push Docker images
