@@ -24,3 +24,6 @@
 
 ## 3. Creating User Error 
 - Role is marked as Not null, due to this registration is getting failed
+
+
+- trigger rebuild
