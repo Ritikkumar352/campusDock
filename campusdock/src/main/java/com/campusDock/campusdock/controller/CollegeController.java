@@ -1,5 +1,6 @@
 package com.campusDock.campusdock.controller;
 
+import com.campusDock.campusdock.dto.CollegeNameAndDomainDto;
 import com.campusDock.campusdock.entity.College;
 import com.campusDock.campusdock.dto.CollegeResponseDto;
 import com.campusDock.campusdock.dto.CreateCollegeDto;
@@ -23,7 +24,7 @@ public class CollegeController {
     }
 
 
-    // **** For test only ******
+
     @GetMapping("/checking")  // -> EVERYTING -> college-> student -> canteen-> menu-> menuItem-> menu item detail-> media
     public List<College> getDetailedInfo()
     {
@@ -38,6 +39,12 @@ public class CollegeController {
                 .map(CollegeResponseDto::new)
                 .collect(Collectors.toList());
 
+    }
+
+    @GetMapping("/name")   //just name and domain
+    public List<CollegeNameAndDomainDto> getAllResgisteredCollegeName()
+    {
+        return collegeService.getAllCollegeName();
     }
 
     @PostMapping
