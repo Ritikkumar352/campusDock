@@ -26,21 +26,27 @@ public class EmailServiceImpl implements EmailService {
 
     public void sendOtpEmail(String toEmail, String otp) {
 
-            String htmlContent = """
-        <div style="font-family: Arial, sans-serif; padding: 16px;">
-            <h2 style="color: #2E86C1;">Welcome to CampusDock 🎉</h2>
-            <p>We're excited to have you onboard. Use the OTP below to verify your email:</p>
-            
-            <div style="margin: 20px 0; padding: 16px; background-color: #f4f4f4; border-left: 4px solid #2E86C1;">
-                <h1 style="margin: 0; font-size: 32px; color: #2E86C1; text-align: center;">%s</h1>
+        String userName = toEmail.substring(0, toEmail.indexOf("."));
+        userName = userName.substring(0, 1).toUpperCase() + userName.substring(1);
+        String htmlContent = """
+        <!DOCTYPE html>
+        <html>
+          <body style="font-family: Arial, sans-serif; padding: 16px; color: #333;">
+            <h2 style="color: #2E86C1;">Welcome to CampusDock, %s! 🎉</h2>
+            <p>Hi %s,</p>
+            <p>You're trying to sign in or sign up using your email address.</p>
+            <p>Please use the following OTP to verify your identity:</p>
+            <div style="background-color:#f4f4f4; border-left:4px solid #2E86C1; padding:16px; margin:16px 0;">
+              <h1 style="text-align:center; color:#2E86C1;">%s</h1>
             </div>
-            
-            <p style="color: #555;">This OTP is valid for the next 10 minutes. Please do not share it with anyone.</p>
-            
-            <br/>
-            <p style="font-size: 14px; color: #999;">- Team CampusDock</p>
-        </div>
-    """.formatted(otp);
+            <p>This code is valid for the next 10 minutes.</p>
+            <p>If you didn’t request this, you can safely ignore this email.</p>
+            <br>
+            <p style="font-size: 13px; color: #999;">Need help? Reach out at support@campusdock.live</p>
+            <p style="font-size: 13px; color: #999;">– Team CampusDock</p>
+          </body>
+        </html>
+        """.formatted(userName, userName, otp);
 
 
         ResendEmailRequest requestBody = ResendEmailRequest.builder()
@@ -55,6 +61,8 @@ public class EmailServiceImpl implements EmailService {
         headers.set("Authorization", "Bearer " + apiKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
+//        headers.add("X-Priority", "3"); // Normal priority
+//        headers.add("X-Mailer", "CampusDock Mailer");
         HttpEntity<ResendEmailRequest> entity = new HttpEntity<>(requestBody, headers);
 
         //Send POST request to Resend:
