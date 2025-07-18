@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchColleges, fetchCanteens, fetchUsers } from '../api/apiConfig';
 import { Building, Plus, Store, Users, User } from 'lucide-react';
+import { Switch } from '@headlessui/react';
 
 const SuperAdminDashboard = () => {
   const [colleges, setColleges] = useState([]);
@@ -14,6 +15,10 @@ const SuperAdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [toast, setToast] = useState({ message: '', type: '' });
+  const [canteenDetails, setCanteenDetails] = useState(null);
+  const [showCanteenModal, setShowCanteenModal] = useState(false);
+  const [isToggling, setIsToggling] = useState(false);
+  const [showConfirmToggle, setShowConfirmToggle] = useState(false);
 
   useEffect(() => {
     fetchColleges().then(setColleges).catch(console.error);
@@ -64,6 +69,41 @@ const SuperAdminDashboard = () => {
     : null;
   // College count badge
   const collegeCount = colleges.length;
+
+  // Fetch canteen details by ID
+  const fetchCanteenDetails = async (canteenId) => {
+    try {
+      const res = await fetch(`http://localhost:8081/api/v1/colleges/canteens/${canteenId}`);
+      if (!res.ok) throw new Error('Failed to fetch canteen details');
+      const data = await res.json();
+      setCanteenDetails(data);
+      setShowCanteenModal(true);
+    } catch (error) {
+      setToast({ message: 'Failed to load canteen details.', type: 'error' });
+      setTimeout(() => setToast({ message: '', type: '' }), 3000);
+    }
+  };
+
+  // Toggle open/close status
+  const handleToggleOpen = async () => {
+    if (!canteenDetails) return;
+    setIsToggling(true);
+    try {
+      const res = await fetch(`http://localhost:8081/api/v1/colleges/canteens/${canteenDetails.id}/toggle-open`, {
+        method: 'PATCH',
+      });
+      if (!res.ok) throw new Error('Failed to toggle open status');
+      const updated = await res.json();
+      setCanteenDetails(updated);
+      // Optionally update the canteens list
+      setCanteens((prev) => prev.map(c => c.id === updated.id ? { ...c, open: updated.open } : c));
+      setToast({ message: `Canteen is now ${updated.open ? 'Open' : 'Closed'}.`, type: 'success' });
+    } catch (error) {
+      setToast({ message: 'Failed to toggle open status.', type: 'error' });
+    }
+    setIsToggling(false);
+    setTimeout(() => setToast({ message: '', type: '' }), 3000);
+  };
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
@@ -294,7 +334,7 @@ const SuperAdminDashboard = () => {
               )}
               <div className="space-y-3">
                 {canteens.map((canteen) => (
-                  <div key={canteen.id} className="p-4 border border-gray-200 rounded-lg flex justify-between items-center">
+                  <div key={canteen.id} className="p-4 border border-gray-200 rounded-lg flex justify-between items-center cursor-pointer" onClick={() => fetchCanteenDetails(canteen.id)}>
                     <div>
                       <h3 className="font-medium">{canteen.name}</h3>
                       <p className="text-sm text-gray-600">ID: {canteen.id}</p>
@@ -365,6 +405,69 @@ const SuperAdminDashboard = () => {
           )}
         </div>
       </div>
+      {/* Canteen Details Modal */}
+      {showCanteenModal && canteenDetails && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-2xl shadow-2xl p-10 max-w-2xl w-full relative flex flex-col items-center">
+            <button className="absolute top-4 right-4 text-3xl text-gray-400 hover:text-gray-700" onClick={() => setShowCanteenModal(false)}>&times;</button>
+            <div className="w-full flex flex-col md:flex-row gap-8 items-center">
+              <div className="flex-shrink-0 w-64 h-64 bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center border border-gray-200">
+                {canteenDetails.mediaUrl ? (
+                  <img src={canteenDetails.mediaUrl} alt="Canteen" className="object-cover w-full h-full" />
+                ) : (
+                  <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" alt="Canteen Placeholder" className="object-contain w-32 h-32 opacity-60" />
+                )}
+              </div>
+              <div className="flex-1">
+                <h2 className="text-3xl font-bold mb-2">{canteenDetails.name}</h2>
+                <p className="mb-2 text-gray-700 text-lg">{canteenDetails.description}</p>
+                <p className="mb-2 text-gray-500 text-sm">ID: {canteenDetails.id}</p>
+                <p className="mb-2 text-gray-500 text-sm">College ID: {canteenDetails.collegeId}</p>
+                <div className="flex items-center space-x-4 mt-4">
+                  <span className={`px-4 py-2 rounded-full text-base font-semibold ${canteenDetails.open ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{canteenDetails.open ? 'Currently Open' : 'Currently Closed'}</span>
+                  <Switch
+                    checked={canteenDetails.open}
+                    onChange={() => setShowConfirmToggle(true)}
+                    className={`${canteenDetails.open ? 'bg-green-500' : 'bg-red-500'} relative inline-flex h-8 w-16 items-center rounded-full transition-colors focus:outline-none`}
+                  >
+                    <span className="sr-only">Toggle open/close</span>
+                    <span
+                      className={`inline-block h-6 w-6 transform rounded-full bg-white shadow transition-transform ${canteenDetails.open ? 'translate-x-8' : 'translate-x-2'}`}
+                    />
+                  </Switch>
+                </div>
+                {canteenDetails.createdAt && (
+                  <p className="mt-4 text-xs text-gray-400">Created: {new Date(canteenDetails.createdAt).toLocaleString()}</p>
+                )}
+              </div>
+            </div>
+            {/* Confirmation Popup */}
+            {showConfirmToggle && (
+              <div className="fixed inset-0 z-60 flex items-center justify-center bg-black bg-opacity-30">
+                <div className="bg-white rounded-lg shadow-lg p-6 max-w-xs w-full flex flex-col items-center">
+                  <p className="text-lg font-semibold mb-4 text-center">
+                    Are you sure you want to {canteenDetails.open ? 'mark this canteen as Closed?' : 'mark this canteen as Open?'}
+                  </p>
+                  <div className="flex space-x-4">
+                    <button
+                      onClick={() => { setShowConfirmToggle(false); handleToggleOpen(); }}
+                      className={`px-4 py-2 rounded ${canteenDetails.open ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'} text-white font-semibold`}
+                    >
+                      Yes, {canteenDetails.open ? 'Close' : 'Open'}
+                    </button>
+                    <button
+                      onClick={() => setShowConfirmToggle(false)}
+                      className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
