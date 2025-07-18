@@ -1,6 +1,7 @@
 # Issues
 
-## 0. Review those 2 added DTOs and 4th method in cartServiceImpl
+## 0. test using .env 
+## 01. use dto to return list of all studetns, faculty and canteen lowing down whole student entity
 
 ## 1. Cannot Add menu Item from different Canteen
 
