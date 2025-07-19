@@ -1,7 +1,7 @@
 [build]
   base = "campusDock-frontend"
   publish = "dist"
-  command = "npm install -g pnpm@8 && pnpm install && pnpm run build"
+  command = "npm install -g pnpm && pnpm install && pnpm run build"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "20"
