@@ -26,3 +26,6 @@ dist-ssr
 
 # Bolt template files
 .bolt/
+
+.vite
+.vite/
