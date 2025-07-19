@@ -17,3 +17,13 @@
 
 ## 3. Creating User Error
 - Role is marked as Not null, due to this registration is getting failed
+
+
+# Add new API's
+
+- 1. PATCH /api/v1/menuItems/{menuItemId}/toggle-availability -- to a update menu item availability
+2. POST /api/v1/menuItems/canteens/{canteenId} (add menu item)
+  3. DELETE /api/v1/menuItems/{menuItemId} (delete menu item)
+   4. PATCH /api/v1/menuItems/{menuItemId}/toggle-availability (toggle availability)
+   5. GET /api/v1/menuItems/canteens/{canteenId} (fetch all menu items for a canteen)
+   6. GET /api/v1/menuItems/{menuItemId} (fetch menu item details)
