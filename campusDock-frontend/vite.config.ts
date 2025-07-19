@@ -4,7 +4,10 @@ import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  optimizeDeps: {
-    // Removed 'lucide-react' from exclude to fix module loading errors
+  server: {
+    proxy: {
+      '/api': 'http://localhost:8081',
+      '/api/v1': 'http://localhost:8081',
+    },
   },
 });
