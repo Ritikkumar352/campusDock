@@ -9,13 +9,15 @@ import com.campusDock.campusdock.repository.UserRepo;
 import com.campusDock.campusdock.service.AdminService;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 public class AdminServiceImpl implements AdminService {
-    private final UserRepo userRepo;
     private final CanteenRepo canteenRepo;
     public AdminServiceImpl(UserRepo userRepo,CanteenRepo canteenRepo) {
-
-        this.userRepo = userRepo;
         this.canteenRepo = canteenRepo;
     }
 
@@ -37,6 +39,31 @@ public class AdminServiceImpl implements AdminService {
         Canteen savedCanteen = canteenRepo.save(canteen);
 
         return savedCanteen.getOwner().getId().toString();
+    }
+
+
+    // 2. Get Canteen Owner
+    @Override
+    public Map<String, String> getCanteenOwner(UUID canteenId) {
+        try {
+            Canteen canteen = canteenRepo.findById(canteenId)
+                    .orElse(null);
+
+            if (canteen == null || canteen.getOwner() == null) {
+                return null;
+            }
+
+            User owner = canteen.getOwner();
+            Map<String, String> ownerDetails = new HashMap<>();
+            ownerDetails.put("name", owner.getName());
+            ownerDetails.put("email", owner.getEmail());
+
+            return ownerDetails;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 

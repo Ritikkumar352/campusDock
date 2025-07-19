@@ -4,13 +4,11 @@ import com.campusDock.campusdock.dto.CanteenOwnerRegisterDto;
 import com.campusDock.campusdock.service.AdminService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/admins")
@@ -44,6 +42,12 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/getCanteenOwners/{canteenId}")
+    public ResponseEntity<?> getCanteenOwners(@PathVariable UUID canteenId) {
+        Map<String, String> ownerInfo = adminService.getCanteenOwner(canteenId);
+
+        return ResponseEntity.ok(ownerInfo); // could be null
+    }
 
 
 }
