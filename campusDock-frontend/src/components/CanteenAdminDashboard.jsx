@@ -20,58 +20,37 @@ const CanteenAdminDashboard = () => {
   // Example:
   // const { collegeId } = props;
   const collegeId = 'YOUR_DEFAULT_COLLEGE_ID'; // Replace with actual or mock value
-  // TODO: Replace with actual canteenId from logged-in owner session
-  const fallbackCanteenId = 'cc1c29ab-b955-4b3f-b23f-9a58035ed8c0';
-  const canteenId = window.canteenIdFromSession || fallbackCanteenId;
+  const canteenId = 'YOUR_DEFAULT_CANTEEN_ID'; // Replace with actual or mock value
 
   useEffect(() => {
-    // Fetch canteen info (if needed)
     fetchCanteens(collegeId).then((canteens) => {
       // Simulate: canteen admin manages only their own canteen
       const myCanteen = canteens && canteens.length > 0 ? canteens[0] : null;
       setCanteen(myCanteen);
       setMenuItems(myCanteen?.menuItems || []);
     }).catch(console.error);
-    // Fetch menu items for the canteen
-    const fetchMenuItems = async () => {
-      try {
-        const res = await fetch(`/api/v1/menuItems/canteens/${canteenId}`);
-        if (!res.ok) throw new Error('Failed to fetch menu items');
-        const data = await res.json();
-        setMenuItems(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error('Failed to fetch menu items:', error);
-        setMenuItems([]);
-      }
-    };
-    fetchMenuItems();
-  }, [collegeId, canteenId]);
+  }, [collegeId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const formData = new FormData();
-      const menuItemPayload = {
-        foodName: itemForm.name,
-        price: parseFloat(itemForm.price),
-        description: itemForm.description,
-        isAvailable: itemForm.available,
-        timeToCook: '15 min', // TODO: Add field to form if needed
-        canteenId: canteenId,
-      };
-      formData.append('menuItem', new Blob([JSON.stringify(menuItemPayload)], { type: 'application/json' }));
-      // If you want to support file upload, add a file input and append here:
-      // formData.append('file', selectedFile);
-      // For now, skip file if not present
-      const response = await fetch(`/api/v1/menuItems/canteens/${canteenId}`, {
-        method: 'POST',
-        body: formData,
-      });
-      if (!response.ok) throw new Error('Failed to add menu item');
-      // Optionally handle response
-      // const data = await response.json();
-      // Optionally show toast or update menuItems
-      setMenuItems([...menuItems, { ...itemForm, id: Date.now(), price: parseFloat(itemForm.price) }]);
+      if (editingItem) {
+        // Update item
+        setMenuItems(menuItems.map(item => 
+          item.id === editingItem.id 
+            ? { ...item, ...itemForm, price: parseFloat(itemForm.price) }
+            : item
+        ));
+      } else {
+        // Add new item
+        const newItem = { 
+          id: Date.now(), 
+          ...itemForm, 
+          price: parseFloat(itemForm.price) 
+        };
+        setMenuItems([...menuItems, newItem]);
+      }
+      
       resetForm();
     } catch (error) {
       console.error('Failed to save menu item:', error);
@@ -96,20 +75,10 @@ const CanteenAdminDashboard = () => {
     }
   };
 
-  const toggleAvailability = async (itemId) => {
-    try {
-      const response = await fetch(`/api/v1/menuItems/${itemId}/toggle-availability`, {
-        method: 'PATCH',
-      });
-      if (!response.ok) throw new Error('Failed to toggle availability');
-      // Optionally, you can get the updated item from the response
-      // const updatedItem = await response.json();
-      setMenuItems(menuItems.map(item =>
-        item.id === itemId ? { ...item, available: !item.available } : item
-      ));
-    } catch (error) {
-      console.error('Failed to toggle availability:', error);
-    }
+  const toggleAvailability = (itemId) => {
+    setMenuItems(menuItems.map(item => 
+      item.id === itemId ? { ...item, available: !item.available } : item
+    ));
   };
 
   const resetForm = () => {
@@ -130,11 +99,11 @@ const CanteenAdminDashboard = () => {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8 text-gray-800">Canteen Admin Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-gray-100">Canteen Admin Dashboard</h1>
       
-      <div className="bg-white rounded-lg shadow-lg p-6">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold flex items-center">
+          <h2 className="text-xl font-semibold flex items-center text-gray-900 dark:text-gray-100">
             <UtensilsCrossed className="mr-2 text-orange-600" />
             Menu Items
           </h2>
@@ -148,8 +117,8 @@ const CanteenAdminDashboard = () => {
         </div>
 
         {showForm && (
-          <form onSubmit={handleSubmit} className="mb-6 p-6 bg-gray-50 rounded-lg">
-            <h3 className="text-lg font-medium mb-4">
+          <form onSubmit={handleSubmit} className="mb-6 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-gray-100">
               {editingItem ? 'Edit Menu Item' : 'Add New Menu Item'}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -158,7 +127,7 @@ const CanteenAdminDashboard = () => {
                 placeholder="Item Name"
                 value={itemForm.name}
                 onChange={(e) => setItemForm({...itemForm, name: e.target.value})}
-                className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-700"
                 required
               />
               <input
@@ -167,9 +136,19 @@ const CanteenAdminDashboard = () => {
                 placeholder="Price"
                 value={itemForm.price}
                 onChange={(e) => setItemForm({...itemForm, price: e.target.value})}
-                className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-700"
                 required
               />
+              <select
+                value={itemForm.category}
+                onChange={(e) => setItemForm({...itemForm, category: e.target.value})}
+                className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-700"
+              >
+                <option value="main">Main Course</option>
+                <option value="salad">Salad</option>
+                <option value="beverage">Beverage</option>
+                <option value="dessert">Dessert</option>
+              </select>
               <div className="flex items-center">
                 <input
                   type="checkbox"
@@ -178,14 +157,14 @@ const CanteenAdminDashboard = () => {
                   onChange={(e) => setItemForm({...itemForm, available: e.target.checked})}
                   className="mr-2"
                 />
-                <label htmlFor="available">Available</label>
+                <label htmlFor="available" className="text-gray-900 dark:text-gray-100">Available</label>
               </div>
             </div>
             <textarea
               placeholder="Description"
               value={itemForm.description}
               onChange={(e) => setItemForm({...itemForm, description: e.target.value})}
-              className="w-full mt-4 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full mt-4 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-700"
               rows="3"
             />
             <div className="flex space-x-2 mt-4">
@@ -205,9 +184,9 @@ const CanteenAdminDashboard = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {menuItems.map((item) => (
-            <div key={item.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+            <div key={item.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow bg-white dark:bg-gray-900">
               <div className="flex justify-between items-start mb-2">
-                <h3 className="font-medium text-lg">{item.name}</h3>
+                <h3 className="font-medium text-lg text-gray-900 dark:text-gray-100">{item.name}</h3>
                 <div className="flex space-x-1">
                   <button
                     onClick={() => handleEdit(item)}
@@ -223,23 +202,21 @@ const CanteenAdminDashboard = () => {
                   </button>
                 </div>
               </div>
-              
-              <p className="text-gray-600 text-sm mb-3">{item.description}</p>
-              
+              <p className="text-gray-600 text-sm mb-3 dark:text-gray-300">{item.description}</p>
               <div className="flex justify-between items-center mb-2">
-                <span className="text-lg font-semibold text-green-600">₹{item.price}</span>
+                <span className="text-lg font-semibold text-green-600 dark:text-green-300">${item.price}</span>
+                <span className={`px-2 py-1 text-xs rounded-full ${getCategoryColor(item.category)} dark:bg-opacity-80`}>{item.category}</span>
               </div>
-              
               <div className="flex justify-between items-center">
-                <span className={`text-sm ${item.available ? 'text-green-600' : 'text-red-600'}`}>
+                <span className={`text-sm ${item.available ? 'text-green-600 dark:text-green-300' : 'text-red-600 dark:text-red-300'}`}>
                   {item.available ? 'Available' : 'Unavailable'}
                 </span>
                 <button
                   onClick={() => toggleAvailability(item.id)}
                   className={`px-3 py-1 text-xs rounded-full ${
                     item.available 
-                      ? 'bg-red-100 text-red-800 hover:bg-red-200' 
-                      : 'bg-green-100 text-green-800 hover:bg-green-200'
+                      ? 'bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900 dark:text-red-200 dark:hover:bg-red-800' 
+                      : 'bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-200 dark:hover:bg-green-800'
                   }`}
                 >
                   {item.available ? 'Mark Unavailable' : 'Mark Available'}
