@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html, body {
+  @apply bg-gray-50 text-gray-900 transition-colors duration-300;
+}
+
+dark html, dark body, .dark html, .dark body {
+  @apply bg-gray-900 text-gray-100;
+}
+
+/* Optional: slightly lighter than pitch black for dark mode */
+.dark {
+  background-color: #18181b;
+}

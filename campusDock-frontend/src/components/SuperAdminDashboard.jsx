@@ -166,7 +166,7 @@ const SuperAdminDashboard = () => {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8 text-gray-800">Super Admin Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-white">Super Admin Dashboard</h1>
       {/* Move view buttons to the top for best UX */}
       <div className="flex justify-center space-x-4 mb-8">
         <button
@@ -205,9 +205,9 @@ const SuperAdminDashboard = () => {
       )}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Colleges Section */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6 border border-gray-200 dark:border-gray-700">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold flex items-center">
+            <h2 className="text-xl font-semibold flex items-center text-gray-900 dark:text-gray-100">
               <Building className="mr-2 text-blue-600" />
               Colleges
               <span className="ml-2 inline-flex items-center justify-center w-7 h-7 rounded-full bg-blue-600 text-white text-sm font-bold">{collegeCount}</span>
@@ -228,14 +228,14 @@ const SuperAdminDashboard = () => {
                 onClick={() => selectCollege(college)}
                 className={`p-4 border rounded-lg cursor-pointer transition-colors ${
                   selectedCollege?.id === college.id
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-blue-500 bg-blue-50 dark:bg-gray-800 dark:border-blue-400'
+                    : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-500 bg-white dark:bg-gray-900'
                 }`}
               >
-                <h3 className="font-medium">{college.name}</h3>
-                <p className="text-sm text-gray-600">{college.domain}</p>
+                <h3 className="font-medium text-gray-900 dark:text-gray-100">{college.name}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">{college.domain}</p>
                 {college.studentNames && (
-                  <p className="text-xs text-gray-400">Students: {college.studentNames.length}</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-400">Students: {college.studentNames.length}</p>
                 )}
               </div>
             ))}
@@ -277,7 +277,7 @@ const SuperAdminDashboard = () => {
           )}
         </div>
         {/* Right Side Section: Dynamic based on view */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6 border border-gray-200 dark:border-gray-700">
           {view === 'canteens' && selectedCollege && (
             <>
               <div className="flex items-center mb-6 justify-between">
@@ -467,10 +467,10 @@ const SuperAdminDashboard = () => {
       {/* Canteen Details Modal */}
       {showCanteenModal && canteenDetails && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-2xl shadow-2xl p-10 max-w-2xl w-full relative flex flex-col items-center">
-            <button className="absolute top-4 right-4 text-3xl text-gray-400 hover:text-gray-700" onClick={() => setShowCanteenModal(false)}>&times;</button>
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-10 max-w-2xl w-full relative flex flex-col items-center border border-gray-200 dark:border-gray-700">
+            <button className="absolute top-4 right-4 text-3xl text-gray-400 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white" onClick={() => setShowCanteenModal(false)}>&times;</button>
             <div className="w-full flex flex-col md:flex-row gap-8 items-center">
-              <div className="flex-shrink-0 w-64 h-64 bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center border border-gray-200">
+              <div className="flex-shrink-0 w-64 h-64 bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-gray-700">
                 {canteenDetails.mediaUrl ? (
                   <img src={canteenDetails.mediaUrl} alt="Canteen" className="object-cover w-full h-full" />
                 ) : (
@@ -478,10 +478,10 @@ const SuperAdminDashboard = () => {
                 )}
               </div>
               <div className="flex-1">
-                <h2 className="text-3xl font-bold mb-2">{canteenDetails.name}</h2>
-                <p className="mb-2 text-gray-700 text-lg">{canteenDetails.description}</p>
-                <p className="mb-2 text-gray-500 text-sm">ID: {canteenDetails.id}</p>
-                <p className="mb-2 text-gray-500 text-sm">College ID: {canteenDetails.collegeId}</p>
+                <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-gray-100">{canteenDetails.name}</h2>
+                <p className="mb-2 text-gray-700 text-lg dark:text-gray-200">{canteenDetails.description}</p>
+                <p className="mb-2 text-gray-500 text-sm dark:text-gray-400">ID: {canteenDetails.id}</p>
+                <p className="mb-2 text-gray-500 text-sm dark:text-gray-400">College ID: {canteenDetails.collegeId}</p>
                 {/* Owner info or register button BELOW canteen details */}
                 {ownerInfo ? (
                   <div className="mb-4 p-4 rounded-xl bg-white border-2 border-green-400 flex items-center gap-4 shadow-sm">
@@ -510,14 +510,14 @@ const SuperAdminDashboard = () => {
                 )}
                 {/* Owner Registration Form */}
                 {showOwnerForm && (
-                  <form onSubmit={handleRegisterOwner} className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <form onSubmit={handleRegisterOwner} className="mb-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                     <div className="mb-2">
                       <input
                         type="text"
                         placeholder="Owner Name"
                         value={ownerForm.name}
                         onChange={e => setOwnerForm({ ...ownerForm, name: e.target.value })}
-                        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-2"
+                        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-2 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-700"
                         required
                       />
                       <input
@@ -525,7 +525,7 @@ const SuperAdminDashboard = () => {
                         placeholder="Owner Email"
                         value={ownerForm.email}
                         onChange={e => setOwnerForm({ ...ownerForm, email: e.target.value })}
-                        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-2"
+                        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-2 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-700"
                         required
                       />
                       <input
@@ -533,7 +533,7 @@ const SuperAdminDashboard = () => {
                         placeholder="Password"
                         value={ownerForm.password}
                         onChange={e => setOwnerForm({ ...ownerForm, password: e.target.value })}
-                        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-700"
                         required
                       />
                     </div>
@@ -553,7 +553,7 @@ const SuperAdminDashboard = () => {
                   </div>
                 )}
                 <div className="flex items-center space-x-4 mt-4">
-                  <span className={`px-4 py-2 rounded-full text-base font-semibold ${canteenDetails.open ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{canteenDetails.open ? 'Currently Open' : 'Currently Closed'}</span>
+                  <span className={`px-4 py-2 rounded-full text-base font-semibold ${canteenDetails.open ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>{canteenDetails.open ? 'Currently Open' : 'Currently Closed'}</span>
                   <Switch
                     checked={canteenDetails.open}
                     onChange={() => setShowConfirmToggle(true)}
@@ -566,15 +566,15 @@ const SuperAdminDashboard = () => {
                   </Switch>
                 </div>
                 {canteenDetails.createdAt && (
-                  <p className="mt-4 text-xs text-gray-400">Created: {new Date(canteenDetails.createdAt).toLocaleString()}</p>
+                  <p className="mt-4 text-xs text-gray-400 dark:text-gray-500">Created: {new Date(canteenDetails.createdAt).toLocaleString()}</p>
                 )}
               </div>
             </div>
             {/* Confirmation Popup */}
             {showConfirmToggle && (
               <div className="fixed inset-0 z-60 flex items-center justify-center bg-black bg-opacity-30">
-                <div className="bg-white rounded-lg shadow-lg p-6 max-w-xs w-full flex flex-col items-center">
-                  <p className="text-lg font-semibold mb-4 text-center">
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6 max-w-xs w-full flex flex-col items-center border border-gray-200 dark:border-gray-700">
+                  <p className="text-lg font-semibold mb-4 text-center text-gray-900 dark:text-gray-100">
                     Are you sure you want to {canteenDetails.open ? 'mark this canteen as Closed?' : 'mark this canteen as Open?'}
                   </p>
                   <div className="flex space-x-4">
@@ -586,7 +586,7 @@ const SuperAdminDashboard = () => {
                     </button>
                     <button
                       onClick={() => setShowConfirmToggle(false)}
-                      className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold"
+                      className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-gray-800 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600 font-semibold"
                     >
                       Cancel
                     </button>
@@ -595,6 +595,13 @@ const SuperAdminDashboard = () => {
               </div>
             )}
           </div>
+        </div>
+      )}
+      {/* Owner Registration Toast Popup */}
+      {ownerMessage && (
+        <div className={`fixed top-8 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded shadow-lg text-white font-semibold transition-all duration-300 ${ownerMessage.type === 'success' ? 'bg-green-600' : 'bg-red-600'} dark:bg-opacity-90`}
+        >
+          {ownerMessage.text}
         </div>
       )}
     </div>
