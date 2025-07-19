@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchCanteens } from '../api/apiConfig';
 import { UtensilsCrossed, Plus, Edit, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const CanteenAdminDashboard = () => {
   const [menuItems, setMenuItems] = useState([]);
@@ -28,6 +29,8 @@ const CanteenAdminDashboard = () => {
   // Use canteenId from session if available, otherwise fallback to default
   const fallbackCanteenId = 'cc1c29ab-b955-4b3f-b23f-9a58035ed8c0';
   const canteenId = window.canteenIdFromSession || fallbackCanteenId;
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Only fetch menu items for the canteen
@@ -247,18 +250,18 @@ const CanteenAdminDashboard = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {menuItems.map((item) => (
-            <div key={item.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow bg-white dark:bg-gray-900 cursor-pointer" onClick={() => fetchMenuItemDetails(item.id)}>
+            <div key={item.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow bg-white dark:bg-gray-900">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-medium text-lg text-gray-900 dark:text-gray-100">{item.name || item.foodName}</h3>
                 <div className="flex space-x-1">
                   <button
-                    onClick={e => { e.stopPropagation(); handleEdit(item); }}
+                    onClick={() => handleEdit(item)}
                     className="text-blue-600 hover:text-blue-800"
                   >
                     <Edit className="w-4 h-4" />
                   </button>
                   <button
-                    onClick={e => { e.stopPropagation(); handleDelete(item.id); }}
+                    onClick={() => handleDelete(item.id)}
                     className="text-red-600 hover:text-red-800"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -270,43 +273,37 @@ const CanteenAdminDashboard = () => {
                 <span className="text-lg font-semibold text-green-600 dark:text-green-300">₹{item.price}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className={`text-sm ${item.available ? 'text-green-600 dark:text-green-300' : 'text-red-600 dark:text-red-300'}`}>
-                  {item.available ? 'Available' : 'Unavailable'}
+                <span className={`text-sm ${item._available !== undefined ? (item._available ? 'text-green-600 dark:text-green-300' : 'text-red-600 dark:text-red-300') : (item.available ? 'text-green-600 dark:text-green-300' : 'text-red-600 dark:text-red-300')}`}>
+                  {item._available !== undefined ? (item._available ? 'Available' : 'Unavailable') : (item.available ? 'Available' : 'Unavailable')}
                 </span>
                 <button
-                  onClick={e => { e.stopPropagation(); toggleAvailability(item.id); }}
+                  onClick={() => toggleAvailability(item.id)}
                   className={`px-3 py-1 text-xs rounded-full ${
-                    item.available 
-                      ? 'bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900 dark:text-red-200 dark:hover:bg-red-800' 
-                      : 'bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-200 dark:hover:bg-green-800'
+                    item._available !== undefined
+                      ? (item._available
+                          ? 'bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900 dark:text-red-200 dark:hover:bg-red-800'
+                          : 'bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-200 dark:hover:bg-green-800')
+                      : (item.available
+                          ? 'bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900 dark:text-red-200 dark:hover:bg-red-800'
+                          : 'bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-200 dark:hover:bg-green-800')
                   }`}
                 >
-                  {item.available ? 'Mark Unavailable' : 'Mark Available'}
+                  {item._available !== undefined
+                    ? (item._available ? 'Mark Unavailable' : 'Mark Available')
+                    : (item.available ? 'Mark Unavailable' : 'Mark Available')}
                 </button>
               </div>
+              <button
+                className="mt-4 w-fit px-3 py-1.5 flex items-center gap-1 border border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-300 rounded-md font-semibold hover:bg-blue-50 dark:hover:bg-blue-900 transition text-sm shadow"
+                onClick={() => navigate(`/menu-items/${item.id}`)}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                View in Detail
+              </button>
             </div>
           ))}
         </div>
       </div>
-
-      {/* Menu Item Details Modal */}
-      {showMenuItemModal && menuItemDetails && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-8 max-w-md w-full relative border border-gray-200 dark:border-gray-700">
-            <button className="absolute top-4 right-4 text-3xl text-gray-400 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white" onClick={() => setShowMenuItemModal(false)}>&times;</button>
-            <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-gray-100">{menuItemDetails.foodName || menuItemDetails.name}</h2>
-            <p className="mb-2 text-gray-700 text-lg dark:text-gray-200">{menuItemDetails.description}</p>
-            <p className="mb-2 text-gray-500 text-sm dark:text-gray-400">ID: {menuItemDetails.id}</p>
-            <p className="mb-2 text-gray-500 text-sm dark:text-gray-400">Canteen ID: {menuItemDetails.canteenId}</p>
-            <p className="mb-2 text-gray-500 text-sm dark:text-gray-400">Price: ₹{menuItemDetails.price}</p>
-            <p className="mb-2 text-gray-500 text-sm dark:text-gray-400">Available: {menuItemDetails.isAvailable ? 'Yes' : 'No'}</p>
-            {menuItemDetails.timeToCook && (
-              <p className="mb-2 text-gray-500 text-sm dark:text-gray-400">Time to Cook: {menuItemDetails.timeToCook}</p>
-            )}
-            {/* Add more fields as needed */}
-          </div>
-        </div>
-      )}
 
       {/* Toast Popup */}
       {toast.message && (
