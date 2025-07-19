@@ -408,17 +408,17 @@ const SuperAdminDashboard = () => {
             <>
               <div className="flex items-center mb-6">
                 <Users className="mr-2 text-green-600" />
-                <h2 className="text-xl font-semibold">Students {selectedCollege && <span className="text-sm text-gray-500 ml-2">({selectedCollege.name})</span>}</h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Students {selectedCollege && <span className="text-sm text-gray-500 dark:text-gray-300 ml-2">({selectedCollege.name})</span>}</h2>
               </div>
               <div className="space-y-3">
                 {users.filter(u => u.role === 'STUDENT' && u.email && u.email.endsWith(`@${selectedCollege.domain}`)).map((student) => (
-                  <div key={student.id} className="p-4 border border-gray-200 rounded-lg cursor-pointer" onClick={() => setSelectedUser(student)}>
+                  <div key={student.id} className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer bg-white dark:bg-gray-900" onClick={() => setSelectedUser(student)}>
                     <div className="flex justify-between items-center">
                       <div>
-                        <h3 className="font-medium">{student.name}</h3>
-                        <p className="text-sm text-gray-600">{student.email}</p>
+                        <h3 className="font-medium text-gray-900 dark:text-gray-100">{student.name}</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">{student.email}</p>
                       </div>
-                      <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">{student.role}</span>
+                      <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">{student.role}</span>
                     </div>
                   </div>
                 ))}
@@ -429,17 +429,17 @@ const SuperAdminDashboard = () => {
             <>
               <div className="flex items-center mb-6">
                 <User className="mr-2 text-purple-600" />
-                <h2 className="text-xl font-semibold">Faculty {selectedCollege && <span className="text-sm text-gray-500 ml-2">({selectedCollege.name})</span>}</h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Faculty {selectedCollege && <span className="text-sm text-gray-500 dark:text-gray-300 ml-2">({selectedCollege.name})</span>}</h2>
               </div>
               <div className="space-y-3">
                 {users.filter(u => u.role === 'FACULTY' && u.email && u.email.endsWith(`@${selectedCollege.domain}`)).map((faculty) => (
-                  <div key={faculty.id} className="p-4 border border-gray-200 rounded-lg cursor-pointer" onClick={() => setSelectedUser(faculty)}>
+                  <div key={faculty.id} className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer bg-white dark:bg-gray-900" onClick={() => setSelectedUser(faculty)}>
                     <div className="flex justify-between items-center">
                       <div>
-                        <h3 className="font-medium">{faculty.name}</h3>
-                        <p className="text-sm text-gray-600">{faculty.email}</p>
+                        <h3 className="font-medium text-gray-900 dark:text-gray-100">{faculty.name}</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">{faculty.email}</p>
                       </div>
-                      <span className="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-800">{faculty.role}</span>
+                      <span className="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">{faculty.role}</span>
                     </div>
                   </div>
                 ))}
@@ -448,15 +448,15 @@ const SuperAdminDashboard = () => {
           )}
           {selectedUser && (
             <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-              <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
-                <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-700" onClick={() => setSelectedUser(null)}>&times;</button>
-                <h2 className="text-xl font-bold mb-2">{selectedUser.name}'s Profile</h2>
-                <p><b>Email:</b> {selectedUser.email}</p>
-                <p><b>Role:</b> {selectedUser.role}</p>
+              <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg max-w-md w-full relative border border-gray-200 dark:border-gray-700">
+                <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white" onClick={() => setSelectedUser(null)}>&times;</button>
+                <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-gray-100">{selectedUser.name}'s Profile</h2>
+                <p className="text-gray-900 dark:text-gray-100"><b>Email:</b> <span className="text-gray-700 dark:text-gray-300">{selectedUser.email}</span></p>
+                <p className="text-gray-900 dark:text-gray-100"><b>Role:</b> <span className="text-gray-700 dark:text-gray-300">{selectedUser.role}</span></p>
                 {/* Show all other details dynamically */}
                 {Object.entries(selectedUser).map(([key, value]) => (
                   !['id', 'name', 'email', 'role'].includes(key) && (
-                    <p key={key}><b>{key}:</b> {typeof value === 'object' ? JSON.stringify(value) : String(value)}</p>
+                    <p key={key} className="text-gray-700 dark:text-gray-300"><b>{key}:</b> {typeof value === 'object' ? JSON.stringify(value) : String(value)}</p>
                   )
                 ))}
               </div>
