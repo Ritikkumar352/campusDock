@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { fetchColleges, fetchCanteens, fetchUsers } from '../api/apiConfig';
-import { Building, Plus, Store, Users, User } from 'lucide-react';
+import { fetchColleges, fetchCanteens, fetchUsers, BASE_URL } from '../api/apiConfig';
+import { Building, Plus, Store, Users, User, UserCog } from 'lucide-react';
+import { Switch } from '@headlessui/react';
 
 const SuperAdminDashboard = () => {
   const [colleges, setColleges] = useState([]);
@@ -14,6 +15,15 @@ const SuperAdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [toast, setToast] = useState({ message: '', type: '' });
+  const [canteenDetails, setCanteenDetails] = useState(null);
+  const [showCanteenModal, setShowCanteenModal] = useState(false);
+  const [isToggling, setIsToggling] = useState(false);
+  const [showConfirmToggle, setShowConfirmToggle] = useState(false);
+  const [showOwnerForm, setShowOwnerForm] = useState(false);
+  const [ownerForm, setOwnerForm] = useState({ name: '', email: '', password: '' });
+  const [ownerLoading, setOwnerLoading] = useState(false);
+  const [ownerMessage, setOwnerMessage] = useState(null);
+  const [ownerInfo, setOwnerInfo] = useState(null);
 
   useEffect(() => {
     fetchColleges().then(setColleges).catch(console.error);
@@ -25,10 +35,20 @@ const SuperAdminDashboard = () => {
     }
   }, [view, selectedCollege]);
 
+  // When canteen details modal is closed or a new canteen is opened, reset the owner form state
+  useEffect(() => {
+    if (!showCanteenModal) {
+      setShowOwnerForm(false);
+      setOwnerForm({ name: '', email: '', password: '' });
+      setOwnerMessage(null);
+      setOwnerInfo(null);
+    }
+  }, [showCanteenModal, canteenDetails?.id]);
+
   const handleAddCollege = async (e) => {
     e.preventDefault();
     try {
-      await fetch('http://localhost:8081/api/v1/colleges', {
+      await fetch(`${BASE_URL}/colleges`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(collegeForm),
@@ -64,6 +84,85 @@ const SuperAdminDashboard = () => {
     : null;
   // College count badge
   const collegeCount = colleges.length;
+
+  // Fetch canteen details by ID
+  const fetchCanteenDetails = async (canteenId) => {
+    try {
+      const res = await fetch(`${BASE_URL}/colleges/canteens/${canteenId}`);
+      if (!res.ok) throw new Error('Failed to fetch canteen details');
+      const data = await res.json();
+      setCanteenDetails(data);
+      // Fetch owner info
+      try {
+        const ownerRes = await fetch(`${BASE_URL}/admins/getCanteenOwners/${canteenId}`);
+        if (ownerRes.ok) {
+          const owner = await ownerRes.json();
+          if (owner && owner.name && owner.email) {
+            setOwnerInfo(owner);
+          } else {
+            setOwnerInfo(null);
+          }
+        } else {
+          setOwnerInfo(null);
+        }
+      } catch {
+        setOwnerInfo(null);
+      }
+      setShowCanteenModal(true);
+    } catch (error) {
+      setToast({ message: 'Failed to load canteen details.', type: 'error' });
+      setTimeout(() => setToast({ message: '', type: '' }), 3000);
+    }
+  };
+
+  // Toggle open/close status
+  const handleToggleOpen = async () => {
+    if (!canteenDetails) return;
+    setIsToggling(true);
+    try {
+      const res = await fetch(`${BASE_URL}/colleges/canteens/${canteenDetails.id}/toggle-open`, {
+        method: 'PATCH',
+      });
+      if (!res.ok) throw new Error('Failed to toggle open status');
+      const updated = await res.json();
+      setCanteenDetails(updated);
+      // Optionally update the canteens list
+      setCanteens((prev) => prev.map(c => c.id === updated.id ? { ...c, open: updated.open } : c));
+      setToast({ message: `Canteen is now ${updated.open ? 'Open' : 'Closed'}.`, type: 'success' });
+    } catch (error) {
+      setToast({ message: 'Failed to toggle open status.', type: 'error' });
+    }
+    setIsToggling(false);
+    setTimeout(() => setToast({ message: '', type: '' }), 3000);
+  };
+
+  const handleRegisterOwner = async (e) => {
+    e.preventDefault();
+    setOwnerLoading(true);
+    setOwnerMessage(null);
+    try {
+      const res = await fetch(`${BASE_URL}/admins/owners`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...ownerForm,
+          canteenId: canteenDetails.id,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setOwnerMessage({ type: 'success', text: data.message || 'Owner registered successfully!' });
+        setOwnerForm({ name: '', email: '', password: '' });
+        setShowOwnerForm(false);
+      } else {
+        setOwnerMessage({ type: 'error', text: data.message || 'Failed to register owner.' });
+      }
+    } catch (error) {
+      setOwnerMessage({ type: 'error', text: 'Failed to register owner.' });
+    }
+    setOwnerLoading(false);
+    setTimeout(() => setOwnerMessage(null), 4000);
+  };
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
@@ -213,7 +312,7 @@ const SuperAdminDashboard = () => {
                           new Blob([JSON.stringify(canteenPayload)], { type: 'application/json' })
                         );
                         formData.append('media_file', canteenForm.mediaFile);
-                        response = await fetch(`http://localhost:8081/api/v1/colleges/${selectedCollege.id}/canteens`, {
+                        response = await fetch(`${BASE_URL}/colleges/${selectedCollege.id}/canteens`, {
                           method: 'POST',
                           body: formData
                         });
@@ -223,7 +322,7 @@ const SuperAdminDashboard = () => {
                           'canteen',
                           new Blob([JSON.stringify(canteenPayload)], { type: 'application/json' })
                         );
-                        response = await fetch(`http://localhost:8081/api/v1/colleges/${selectedCollege.id}/canteens`, {
+                        response = await fetch(`${BASE_URL}/colleges/${selectedCollege.id}/canteens`, {
                           method: 'POST',
                           body: formData
                         });
@@ -294,7 +393,7 @@ const SuperAdminDashboard = () => {
               )}
               <div className="space-y-3">
                 {canteens.map((canteen) => (
-                  <div key={canteen.id} className="p-4 border border-gray-200 rounded-lg flex justify-between items-center">
+                  <div key={canteen.id} className="p-4 border border-gray-200 rounded-lg flex justify-between items-center cursor-pointer" onClick={() => fetchCanteenDetails(canteen.id)}>
                     <div>
                       <h3 className="font-medium">{canteen.name}</h3>
                       <p className="text-sm text-gray-600">ID: {canteen.id}</p>
@@ -365,6 +464,139 @@ const SuperAdminDashboard = () => {
           )}
         </div>
       </div>
+      {/* Canteen Details Modal */}
+      {showCanteenModal && canteenDetails && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-2xl shadow-2xl p-10 max-w-2xl w-full relative flex flex-col items-center">
+            <button className="absolute top-4 right-4 text-3xl text-gray-400 hover:text-gray-700" onClick={() => setShowCanteenModal(false)}>&times;</button>
+            <div className="w-full flex flex-col md:flex-row gap-8 items-center">
+              <div className="flex-shrink-0 w-64 h-64 bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center border border-gray-200">
+                {canteenDetails.mediaUrl ? (
+                  <img src={canteenDetails.mediaUrl} alt="Canteen" className="object-cover w-full h-full" />
+                ) : (
+                  <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" alt="Canteen Placeholder" className="object-contain w-32 h-32 opacity-60" />
+                )}
+              </div>
+              <div className="flex-1">
+                <h2 className="text-3xl font-bold mb-2">{canteenDetails.name}</h2>
+                <p className="mb-2 text-gray-700 text-lg">{canteenDetails.description}</p>
+                <p className="mb-2 text-gray-500 text-sm">ID: {canteenDetails.id}</p>
+                <p className="mb-2 text-gray-500 text-sm">College ID: {canteenDetails.collegeId}</p>
+                {/* Owner info or register button BELOW canteen details */}
+                {ownerInfo ? (
+                  <div className="mb-4 p-4 rounded-xl bg-white border-2 border-green-400 flex items-center gap-4 shadow-sm">
+                    <div className="flex-shrink-0">
+                      <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center text-2xl font-bold text-green-700 border-2 border-green-300">
+                        {ownerInfo.name ? ownerInfo.name[0].toUpperCase() : <UserCog className="w-8 h-8" />}
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1 flex-nowrap min-w-0">
+                        <span className="font-semibold text-green-800 text-lg whitespace-nowrap">Canteen Owner</span>
+                        <span className="ml-2 px-2 py-0.5 rounded bg-green-100 text-green-700 text-xs font-medium whitespace-nowrap">Verified</span>
+                      </div>
+                      <div className="truncate text-gray-900 font-medium text-base">{ownerInfo.name}</div>
+                      <div className="truncate text-gray-600 text-sm">{ownerInfo.email}</div>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    className="mb-4 px-3 py-1.5 rounded bg-red-600 text-white font-bold shadow flex items-center justify-center gap-2 border border-red-700 hover:bg-red-700 transition text-base"
+                    onClick={() => setShowOwnerForm((v) => !v)}
+                  >
+                    <UserCog className="w-4 h-4 mr-1" />
+                    {showOwnerForm ? 'Cancel Owner Registration' : 'Register Canteen Owner'}
+                  </button>
+                )}
+                {/* Owner Registration Form */}
+                {showOwnerForm && (
+                  <form onSubmit={handleRegisterOwner} className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="mb-2">
+                      <input
+                        type="text"
+                        placeholder="Owner Name"
+                        value={ownerForm.name}
+                        onChange={e => setOwnerForm({ ...ownerForm, name: e.target.value })}
+                        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-2"
+                        required
+                      />
+                      <input
+                        type="email"
+                        placeholder="Owner Email"
+                        value={ownerForm.email}
+                        onChange={e => setOwnerForm({ ...ownerForm, email: e.target.value })}
+                        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-2"
+                        required
+                      />
+                      <input
+                        type="password"
+                        placeholder="Password"
+                        value={ownerForm.password}
+                        onChange={e => setOwnerForm({ ...ownerForm, password: e.target.value })}
+                        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        required
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="w-full bg-indigo-600 text-white py-2 rounded font-semibold hover:bg-indigo-700 transition"
+                      disabled={ownerLoading}
+                    >
+                      {ownerLoading ? 'Registering...' : 'Register Owner'}
+                    </button>
+                  </form>
+                )}
+                {/* Owner Registration Message */}
+                {ownerMessage && (
+                  <div className={`mb-2 px-4 py-2 rounded text-center font-semibold ${ownerMessage.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                    {ownerMessage.text}
+                  </div>
+                )}
+                <div className="flex items-center space-x-4 mt-4">
+                  <span className={`px-4 py-2 rounded-full text-base font-semibold ${canteenDetails.open ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{canteenDetails.open ? 'Currently Open' : 'Currently Closed'}</span>
+                  <Switch
+                    checked={canteenDetails.open}
+                    onChange={() => setShowConfirmToggle(true)}
+                    className={`${canteenDetails.open ? 'bg-green-500' : 'bg-red-500'} relative inline-flex h-8 w-16 items-center rounded-full transition-colors focus:outline-none ml-4`}
+                  >
+                    <span className="sr-only">Toggle open/close</span>
+                    <span
+                      className={`inline-block h-6 w-6 transform rounded-full bg-white shadow transition-transform ${canteenDetails.open ? 'translate-x-8' : 'translate-x-2'}`}
+                    />
+                  </Switch>
+                </div>
+                {canteenDetails.createdAt && (
+                  <p className="mt-4 text-xs text-gray-400">Created: {new Date(canteenDetails.createdAt).toLocaleString()}</p>
+                )}
+              </div>
+            </div>
+            {/* Confirmation Popup */}
+            {showConfirmToggle && (
+              <div className="fixed inset-0 z-60 flex items-center justify-center bg-black bg-opacity-30">
+                <div className="bg-white rounded-lg shadow-lg p-6 max-w-xs w-full flex flex-col items-center">
+                  <p className="text-lg font-semibold mb-4 text-center">
+                    Are you sure you want to {canteenDetails.open ? 'mark this canteen as Closed?' : 'mark this canteen as Open?'}
+                  </p>
+                  <div className="flex space-x-4">
+                    <button
+                      onClick={() => { setShowConfirmToggle(false); handleToggleOpen(); }}
+                      className={`px-4 py-2 rounded ${canteenDetails.open ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'} text-white font-semibold`}
+                    >
+                      Yes, {canteenDetails.open ? 'Close' : 'Open'}
+                    </button>
+                    <button
+                      onClick={() => setShowConfirmToggle(false)}
+                      className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

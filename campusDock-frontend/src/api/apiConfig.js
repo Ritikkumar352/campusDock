@@ -1,29 +1,60 @@
 // apiConfig.js
-export const BASE_URL = "http://localhost:8081";
+export const BASE_URL = "/api/v1";
 
 export const endpoints = {
-  colleges: `${BASE_URL}/api/v1/colleges`,
-  canteens: (collegeId) => `${BASE_URL}/api/v1/colleges/${collegeId}/canteens`,
-  canteenById: (canteenId) => `${BASE_URL}/api/v1/colleges/canteens/${canteenId}`,
-  menuItems: (canteenId) => `${BASE_URL}/api/v1/menuItems/canteens/${canteenId}`,
-  menuItemById: (id) => `${BASE_URL}/api/v1/menuItems/${id}`,
+  colleges: `${BASE_URL}/colleges`,
+  canteens: (collegeId) => `${BASE_URL}/colleges/${collegeId}/canteens`,
+  canteenById: (canteenId) => `${BASE_URL}/colleges/canteens/${canteenId}`,
+  menuItems: (canteenId) => `${BASE_URL}/menuItems/canteens/${canteenId}`,
+  menuItemById: (id) => `${BASE_URL}/menuItems/${id}`,
 };
 
-const API_BASE = 'http://localhost:8081/api/v1'; // Adjust if needed
+async function safeJson(res) {
+  const contentType = res.headers.get('content-type');
+  if (contentType && contentType.includes('application/json')) {
+    return await res.json();
+  } else {
+    return null;
+  }
+}
 
 export async function fetchColleges() {
-  const res = await fetch(`${API_BASE}/colleges`);
-  return res.json();
+  const res = await fetch(`${BASE_URL}/colleges`);
+  if (!res.ok) {
+    let msg = 'Unknown error';
+    try {
+      const err = await safeJson(res);
+      msg = err?.message || JSON.stringify(err);
+    } catch {}
+    throw new Error(msg);
+  }
+  return await safeJson(res);
 }
 
 export async function fetchCanteens(collegeId) {
-  const res = await fetch(`${API_BASE}/colleges/${collegeId}/canteens`);
-  return res.json();
+  const res = await fetch(`${BASE_URL}/colleges/${collegeId}/canteens`);
+  if (!res.ok) {
+    let msg = 'Unknown error';
+    try {
+      const err = await safeJson(res);
+      msg = err?.message || JSON.stringify(err);
+    } catch {}
+    throw new Error(msg);
+  }
+  return await safeJson(res);
 }
 
 export async function fetchUsers() {
-  const res = await fetch(`${API_BASE}/users`);
-  return res.json();
+  const res = await fetch(`${BASE_URL}/users`);
+  if (!res.ok) {
+    let msg = 'Unknown error';
+    try {
+      const err = await safeJson(res);
+      msg = err?.message || JSON.stringify(err);
+    } catch {}
+    throw new Error(msg);
+  }
+  return await safeJson(res);
 }
 
 // Simple fetch wrapper
@@ -36,12 +67,15 @@ export const apiCall = async (url, options = {}) => {
       },
       ...options,
     });
-    
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      let msg = 'Unknown error';
+      try {
+        const err = await safeJson(response);
+        msg = err?.message || JSON.stringify(err);
+      } catch {}
+      throw new Error(msg);
     }
-    
-    return await response.json();
+    return await safeJson(response);
   } catch (error) {
     console.error('API call failed:', error);
     throw error;
