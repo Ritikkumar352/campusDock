@@ -20,37 +20,58 @@ const CanteenAdminDashboard = () => {
   // Example:
   // const { collegeId } = props;
   const collegeId = 'YOUR_DEFAULT_COLLEGE_ID'; // Replace with actual or mock value
-  const canteenId = 'YOUR_DEFAULT_CANTEEN_ID'; // Replace with actual or mock value
+  // TODO: Replace with actual canteenId from logged-in owner session
+  const fallbackCanteenId = 'cc1c29ab-b955-4b3f-b23f-9a58035ed8c0';
+  const canteenId = window.canteenIdFromSession || fallbackCanteenId;
 
   useEffect(() => {
+    // Fetch canteen info (if needed)
     fetchCanteens(collegeId).then((canteens) => {
       // Simulate: canteen admin manages only their own canteen
       const myCanteen = canteens && canteens.length > 0 ? canteens[0] : null;
       setCanteen(myCanteen);
       setMenuItems(myCanteen?.menuItems || []);
     }).catch(console.error);
-  }, [collegeId]);
+    // Fetch menu items for the canteen
+    const fetchMenuItems = async () => {
+      try {
+        const res = await fetch(`/api/v1/menuItems/canteens/${canteenId}`);
+        if (!res.ok) throw new Error('Failed to fetch menu items');
+        const data = await res.json();
+        setMenuItems(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error('Failed to fetch menu items:', error);
+        setMenuItems([]);
+      }
+    };
+    fetchMenuItems();
+  }, [collegeId, canteenId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (editingItem) {
-        // Update item
-        setMenuItems(menuItems.map(item => 
-          item.id === editingItem.id 
-            ? { ...item, ...itemForm, price: parseFloat(itemForm.price) }
-            : item
-        ));
-      } else {
-        // Add new item
-        const newItem = { 
-          id: Date.now(), 
-          ...itemForm, 
-          price: parseFloat(itemForm.price) 
-        };
-        setMenuItems([...menuItems, newItem]);
-      }
-      
+      const formData = new FormData();
+      const menuItemPayload = {
+        foodName: itemForm.name,
+        price: parseFloat(itemForm.price),
+        description: itemForm.description,
+        isAvailable: itemForm.available,
+        timeToCook: '15 min', // TODO: Add field to form if needed
+        canteenId: canteenId,
+      };
+      formData.append('menuItem', new Blob([JSON.stringify(menuItemPayload)], { type: 'application/json' }));
+      // If you want to support file upload, add a file input and append here:
+      // formData.append('file', selectedFile);
+      // For now, skip file if not present
+      const response = await fetch(`/api/v1/menuItems/canteens/${canteenId}`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (!response.ok) throw new Error('Failed to add menu item');
+      // Optionally handle response
+      // const data = await response.json();
+      // Optionally show toast or update menuItems
+      setMenuItems([...menuItems, { ...itemForm, id: Date.now(), price: parseFloat(itemForm.price) }]);
       resetForm();
     } catch (error) {
       console.error('Failed to save menu item:', error);
@@ -75,10 +96,20 @@ const CanteenAdminDashboard = () => {
     }
   };
 
-  const toggleAvailability = (itemId) => {
-    setMenuItems(menuItems.map(item => 
-      item.id === itemId ? { ...item, available: !item.available } : item
-    ));
+  const toggleAvailability = async (itemId) => {
+    try {
+      const response = await fetch(`/api/v1/menuItems/${itemId}/toggle-availability`, {
+        method: 'PATCH',
+      });
+      if (!response.ok) throw new Error('Failed to toggle availability');
+      // Optionally, you can get the updated item from the response
+      // const updatedItem = await response.json();
+      setMenuItems(menuItems.map(item =>
+        item.id === itemId ? { ...item, available: !item.available } : item
+      ));
+    } catch (error) {
+      console.error('Failed to toggle availability:', error);
+    }
   };
 
   const resetForm = () => {
@@ -139,16 +170,6 @@ const CanteenAdminDashboard = () => {
                 className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                 required
               />
-              <select
-                value={itemForm.category}
-                onChange={(e) => setItemForm({...itemForm, category: e.target.value})}
-                className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-              >
-                <option value="main">Main Course</option>
-                <option value="salad">Salad</option>
-                <option value="beverage">Beverage</option>
-                <option value="dessert">Dessert</option>
-              </select>
               <div className="flex items-center">
                 <input
                   type="checkbox"
@@ -206,10 +227,7 @@ const CanteenAdminDashboard = () => {
               <p className="text-gray-600 text-sm mb-3">{item.description}</p>
               
               <div className="flex justify-between items-center mb-2">
-                <span className="text-lg font-semibold text-green-600">${item.price}</span>
-                <span className={`px-2 py-1 text-xs rounded-full ${getCategoryColor(item.category)}`}>
-                  {item.category}
-                </span>
+                <span className="text-lg font-semibold text-green-600">₹{item.price}</span>
               </div>
               
               <div className="flex justify-between items-center">
