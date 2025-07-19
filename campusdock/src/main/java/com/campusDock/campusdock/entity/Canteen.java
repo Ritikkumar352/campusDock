@@ -34,11 +34,13 @@ public class Canteen {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    // 1. Canteen - College
     @ManyToOne
     @JoinColumn(name = "college_id", referencedColumnName = "id")
     @JsonBackReference
     private College college;
 
+    // 2. Canteen - Menu Items
     @OneToMany(mappedBy = "canteen", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<MenuItems> menuItems;
@@ -47,6 +49,13 @@ public class Canteen {
     @OneToMany(mappedBy = "canteen", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<MediaFile> MediaFile;
+
+    // 4. Canteen - Owner
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    @JsonBackReference
+    private User owner;
+
 
     public College getCollege() {
         return college;
