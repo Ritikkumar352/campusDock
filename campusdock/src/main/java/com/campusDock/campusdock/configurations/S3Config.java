@@ -1,6 +1,7 @@
 package com.campusDock.campusdock.configurations;
 
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,9 +10,9 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
-
 @Configuration
 public class S3Config {
+
     @Value("${aws.s3.access-key}")
     private String accessKey;
 
@@ -20,6 +21,14 @@ public class S3Config {
 
     @Value("${aws.s3.region}")
     private String region;
+
+//    @PostConstruct
+//    public void printS3Values() {
+//        System.out.println("Injected into S3Config:");
+//        System.out.println("accessKey = " + accessKey);
+//        System.out.println("secretKey = " + secretKey);
+//        System.out.println("region    = " + region);
+//    }
 
     @Bean
     public S3Client s3Client() {

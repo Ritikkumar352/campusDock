@@ -14,7 +14,7 @@ public class HealthController
     {
         return "Campus Dock first prototype " +
                 "\n Everything's working " +
-                "\n Go To v0/devs";
+                "\n Go To v0/devs-->new app";
     }
 
     @GetMapping("v0/devs")
