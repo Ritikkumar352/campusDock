@@ -34,9 +34,8 @@ public class MenuItemServiceImpl implements MenuItemsService {
     public ResponseEntity<Map<String, String>> addMenuItem(
             UUID canteenId,
             MenuItemRequestDto dto,
-            MultipartFile file
+            List<MultipartFile> files
     ) {
-
         System.out.println("saving menu item--start");
         Map<String, String> response = new HashMap<>();
         Canteen canteen = canteenRepo.findById(canteenId)
@@ -48,37 +47,31 @@ public class MenuItemServiceImpl implements MenuItemsService {
                 .price(dto.getPrice())
                 .isAvailable(dto.isAvailable())
                 .timeToCook(dto.getTimeToCook())
-                .canteen(canteen)   // linking to the canteen id in the dto.... TODO use path variable ... change
+                .canteen(canteen)
                 .build();
-        System.out.println("saving menu item");
-        // save menu Item
-        if(file==null){
-            System.out.println("file is null");
-        }
+
         MenuItems savedMenuItem = menuItemsRepo.save(menuItems);
 
-        if (file != null) {
-//            if (savedMenuItem.isAvailable()) {
-                response.put("menuItem_id", savedMenuItem.getId().toString());
-                response.put("status", "Menu item created successfully");
-                try {
-                    MediaFile media = mediaFileService.uploadMedia(file);
-                    media.setMenuItems(savedMenuItem);
-                    System.out.println("trying to upload <<--------");
-                    mediaFileService.save(media);
+        if (files != null ) {
+            for (MultipartFile file : files) {
+                if (file != null && !file.isEmpty()) {
+                    try {
+                        MediaFile media = mediaFileService.uploadMedia(file);
+                        media.setMenuItems(savedMenuItem);
+                        mediaFileService.save(media);
 
-                    response.put("mediaId", media.getId().toString());
-                    response.put("url", media.getUrl());
-
-                    System.out.println("response built ... upload 99% <<--------");
-                    return new ResponseEntity<>(response, HttpStatus.CREATED);
-                } catch (Exception e) {
-                    response.put("error", "Menu Item saved without media upload ");
-                    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+                        response.put("mediaId", media.getId().toString());  // only first media id return
+                        response.put("url", media.getUrl());
+                    } catch (Exception e) {
+                        response.put("error", "Menu Item saved, media upload failed for one or more files");
+                        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+                    }
                 }
             }
-//        }
-        response.put("menu Item Id:",savedMenuItem.getId().toString());
+        }
+
+        response.put("menuItem_id", savedMenuItem.getId().toString());
+        response.put("status", "Menu item created successfully  without media upload");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
