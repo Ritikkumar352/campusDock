@@ -15,13 +15,15 @@
 - 2. Item not found Error
 
 
-## 3. Creating User Error
-- Role is marked as Not null, due to this registration is getting failed
+## 3. Faculty and Student list 
+- long delay 5-7 sec
 
+## fix get menu Item detail delay ->
+- In return type use only url and img name (for link other than details) 
 
 # Add new API's
 
-- 1. PATCH /api/v1/menuItems/{menuItemId}/toggle-availability -- to a update menu item availability
+1. PATCH /api/v1/menuItems/{menuItemId}/toggle-availability -- to a update menu item availability
 2. POST /api/v1/menuItems/canteens/{canteenId} (add menu item)
   3. DELETE /api/v1/menuItems/{menuItemId} (delete menu item)
    4. PATCH /api/v1/menuItems/{menuItemId}/toggle-availability (toggle availability)

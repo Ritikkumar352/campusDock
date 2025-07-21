@@ -14,3 +14,16 @@ dark html, dark body, .dark html, .dark body {
 .dark {
   background-color: #18181b;
 }
+
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+.animate-shimmer {
+  animation: shimmer 1.5s infinite linear;
+  background-size: 800px 100%;
+}

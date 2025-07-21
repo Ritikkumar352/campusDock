@@ -20,6 +20,9 @@ const MenuItemDetailPage = () => {
   // Integrate toggle into the status pill with animation and confirmation
   const [showConfirmToggle, setShowConfirmToggle] = useState(false);
   const [pendingToggle, setPendingToggle] = useState(false);
+  const [imageLoadedArr, setImageLoadedArr] = useState([]);
+  const [imageErrorArr, setImageErrorArr] = useState([]);
+  const [carouselIdx, setCarouselIdx] = useState(0);
 
   useEffect(() => {
     fetchMenuItem();
@@ -36,6 +39,12 @@ const MenuItemDetailPage = () => {
       });
     }
   }, [menuItem]);
+
+  useEffect(() => {
+    setImageLoadedArr(Array(mediaFiles.length).fill(false));
+    setImageErrorArr(Array(mediaFiles.length).fill(false));
+    setCarouselIdx(0);
+  }, [menuItemId, menuItem]);
 
   const fetchMenuItem = async () => {
     setLoading(true);
@@ -60,6 +69,18 @@ const MenuItemDetailPage = () => {
   };
 
   const mediaFiles = getMediaFiles(menuItem);
+  const allImagesFailed = mediaFiles.length > 0 && imageErrorArr.length === mediaFiles.length && imageErrorArr.every(Boolean);
+
+  // Helper to get the next/prev valid image index
+  const getNextValidIdx = (startIdx, dir) => {
+    if (!mediaFiles.length) return 0;
+    let idx = startIdx;
+    for (let i = 0; i < mediaFiles.length; i++) {
+      idx = (idx + dir + mediaFiles.length) % mediaFiles.length;
+      if (!imageErrorArr[idx]) return idx;
+    }
+    return startIdx; // fallback to current if all fail
+  };
 
   // Management actions
   const handleToggleAvailability = async () => {
@@ -136,6 +157,21 @@ const MenuItemDetailPage = () => {
     });
   };
 
+  const handleImgLoad = (idx) => {
+    setImageLoadedArr((prev) => {
+      const arr = [...prev];
+      arr[idx] = true;
+      return arr;
+    });
+  };
+  const handleImgError = (idx) => {
+    setImageErrorArr((prev) => {
+      const arr = [...prev];
+      arr[idx] = true;
+      return arr;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 flex flex-col">
       {/* Toast Popup */}
@@ -179,22 +215,53 @@ const MenuItemDetailPage = () => {
         {/* Media Section */}
         <div className="flex-1 flex flex-col items-center">
           <div className="w-full max-w-lg">
-            <div className="overflow-x-auto flex space-x-4 pb-2">
-              {mediaFiles.length > 0 ? (
-                mediaFiles.map((url, idx) => (
-                  <img
-                    key={idx}
-                    src={url}
-                    alt={`Menu item media ${idx + 1}`}
-                    className="rounded-xl object-cover h-72 w-72 min-w-[18rem] border border-gray-200 dark:border-gray-700 shadow-lg"
-                  />
-                ))
+            <div className="overflow-x-auto flex space-x-4 pb-2 justify-center">
+              {mediaFiles.length > 0 && !allImagesFailed ? (
+                <div className="relative rounded-xl h-72 w-72 min-w-[18rem] border border-gray-200 dark:border-gray-700 shadow-lg overflow-hidden flex items-center justify-center">
+                  {/* Left arrow */}
+                  {mediaFiles.length > 1 && (
+                    <button
+                      className="absolute left-3 top-1/2 -translate-y-1/2 z-20 bg-white/80 dark:bg-gray-900/80 rounded-full p-2 shadow-lg hover:bg-blue-100 dark:hover:bg-blue-900 border border-blue-200 dark:border-blue-700 transition"
+                      onClick={() => setCarouselIdx(getNextValidIdx(carouselIdx, -1))}
+                      aria-label="Previous image"
+                    >
+                      <svg className="w-6 h-6 text-blue-600 dark:text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+                  )}
+                  {/* Image or fallback */}
+                  {!imageErrorArr[carouselIdx] ? (
+                    <img
+                      src={mediaFiles[carouselIdx].url}
+                      alt={`Menu item media ${carouselIdx + 1}`}
+                      className="rounded-xl object-cover h-72 w-72 min-w-[18rem] transition-opacity duration-500 opacity-100"
+                      loading="lazy"
+                      onLoad={() => handleImgLoad(carouselIdx)}
+                      onError={() => handleImgError(carouselIdx)}
+                    />
+                  ) : null}
+                  {/* Right arrow */}
+                  {mediaFiles.length > 1 && (
+                    <button
+                      className="absolute right-3 top-1/2 -translate-y-1/2 z-20 bg-white/80 dark:bg-gray-900/80 rounded-full p-2 shadow-lg hover:bg-blue-100 dark:hover:bg-blue-900 border border-blue-200 dark:border-blue-700 transition"
+                      onClick={() => setCarouselIdx(getNextValidIdx(carouselIdx, 1))}
+                      aria-label="Next image"
+                    >
+                      <svg className="w-6 h-6 text-blue-600 dark:text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                  )}
+                </div>
               ) : (
-                <img
-                  src={DEFAULT_IMG}
-                  alt="Default menu item"
-                  className="rounded-xl object-contain h-72 w-72 min-w-[18rem] border border-gray-200 dark:border-gray-700 shadow-lg opacity-70"
-                />
+                <div className="relative rounded-xl h-72 w-72 min-w-[18rem] border border-gray-200 dark:border-gray-700 shadow-lg overflow-hidden flex items-center justify-center">
+                  {/* Only show fallback after response, not during loading */}
+                  {menuItem && (
+                    <img
+                      src={DEFAULT_IMG}
+                      alt="Default menu item"
+                      className="rounded-xl object-contain h-72 w-72 min-w-[18rem] transition-opacity duration-500 opacity-70"
+                      loading="lazy"
+                    />
+                  )}
+                </div>
               )}
             </div>
           </div>
