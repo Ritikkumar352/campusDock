@@ -20,6 +20,8 @@ const MenuItemDetailPage = () => {
   // Integrate toggle into the status pill with animation and confirmation
   const [showConfirmToggle, setShowConfirmToggle] = useState(false);
   const [pendingToggle, setPendingToggle] = useState(false);
+  const [imageLoadedArr, setImageLoadedArr] = useState([]);
+  const [imageErrorArr, setImageErrorArr] = useState([]);
 
   useEffect(() => {
     fetchMenuItem();
@@ -36,6 +38,11 @@ const MenuItemDetailPage = () => {
       });
     }
   }, [menuItem]);
+
+  useEffect(() => {
+    setImageLoadedArr(Array(mediaFiles.length).fill(false));
+    setImageErrorArr(Array(mediaFiles.length).fill(false));
+  }, [menuItemId, menuItem]);
 
   const fetchMenuItem = async () => {
     setLoading(true);
@@ -60,6 +67,7 @@ const MenuItemDetailPage = () => {
   };
 
   const mediaFiles = getMediaFiles(menuItem);
+  const allImagesFailed = mediaFiles.length > 0 && imageErrorArr.length === mediaFiles.length && imageErrorArr.every(Boolean);
 
   // Management actions
   const handleToggleAvailability = async () => {
@@ -136,6 +144,21 @@ const MenuItemDetailPage = () => {
     });
   };
 
+  const handleImgLoad = (idx) => {
+    setImageLoadedArr((prev) => {
+      const arr = [...prev];
+      arr[idx] = true;
+      return arr;
+    });
+  };
+  const handleImgError = (idx) => {
+    setImageErrorArr((prev) => {
+      const arr = [...prev];
+      arr[idx] = true;
+      return arr;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 flex flex-col">
       {/* Toast Popup */}
@@ -180,21 +203,36 @@ const MenuItemDetailPage = () => {
         <div className="flex-1 flex flex-col items-center">
           <div className="w-full max-w-lg">
             <div className="overflow-x-auto flex space-x-4 pb-2">
-              {mediaFiles.length > 0 ? (
-                mediaFiles.map((url, idx) => (
-                  <img
-                    key={idx}
-                    src={url}
-                    alt={`Menu item media ${idx + 1}`}
-                    className="rounded-xl object-cover h-72 w-72 min-w-[18rem] border border-gray-200 dark:border-gray-700 shadow-lg"
-                  />
+              {mediaFiles.length > 0 && !allImagesFailed ? (
+                mediaFiles.map((file, idx) => (
+                  <div key={idx} className="relative rounded-xl h-72 w-72 min-w-[18rem] border border-gray-200 dark:border-gray-700 shadow-lg overflow-hidden">
+                    {!imageLoadedArr[idx] && !imageErrorArr[idx] && (
+                      <div className="absolute inset-0 bg-gray-200 dark:bg-gray-800 animate-pulse transition-opacity duration-300 z-10" />
+                    )}
+                    {!imageErrorArr[idx] ? (
+                      <img
+                        src={file.url}
+                        alt={`Menu item media ${idx + 1}`}
+                        className={`rounded-xl object-cover h-72 w-72 min-w-[18rem] transition-opacity duration-500 ${imageLoadedArr[idx] ? 'opacity-100' : 'opacity-0'}`}
+                        loading="lazy"
+                        onLoad={() => handleImgLoad(idx)}
+                        onError={() => handleImgError(idx)}
+                      />
+                    ) : null}
+                  </div>
                 ))
               ) : (
-                <img
-                  src={DEFAULT_IMG}
-                  alt="Default menu item"
-                  className="rounded-xl object-contain h-72 w-72 min-w-[18rem] border border-gray-200 dark:border-gray-700 shadow-lg opacity-70"
-                />
+                <div className="relative rounded-xl h-72 w-72 min-w-[18rem] border border-gray-200 dark:border-gray-700 shadow-lg overflow-hidden flex items-center justify-center">
+                  {/* Only show fallback after response, not during loading */}
+                  {menuItem && (
+                    <img
+                      src={DEFAULT_IMG}
+                      alt="Default menu item"
+                      className="rounded-xl object-contain h-72 w-72 min-w-[18rem] transition-opacity duration-500 opacity-70"
+                      loading="lazy"
+                    />
+                  )}
+                </div>
               )}
             </div>
           </div>

@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -27,6 +28,8 @@ public class MediaFile {
     private String type;
 
     private long size;
+
+    private LocalDateTime uploadedAt;
 
     // 1. Media - Canteen
     @ManyToOne
@@ -94,5 +97,13 @@ public class MediaFile {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public LocalDateTime getUploadedAt() {
+        return uploadedAt;
+    }
+
+    public void setUploadedAt(LocalDateTime uploadedAt) {
+        this.uploadedAt = uploadedAt;
     }
 }

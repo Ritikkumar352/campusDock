@@ -36,6 +36,8 @@ public class MenuItemServiceImpl implements MenuItemsService {
             MenuItemRequestDto dto,
             MultipartFile file
     ) {
+
+        System.out.println("saving menu item--start");
         Map<String, String> response = new HashMap<>();
         Canteen canteen = canteenRepo.findById(canteenId)
                 .orElseThrow(() -> new RuntimeException("Canteen not found"));
@@ -48,26 +50,34 @@ public class MenuItemServiceImpl implements MenuItemsService {
                 .timeToCook(dto.getTimeToCook())
                 .canteen(canteen)   // linking to the canteen id in the dto.... TODO use path variable ... change
                 .build();
+        System.out.println("saving menu item");
         // save menu Item
+        if(file==null){
+            System.out.println("file is null");
+        }
         MenuItems savedMenuItem = menuItemsRepo.save(menuItems);
+
         if (file != null) {
-            if (savedMenuItem.isAvailable()) {
+//            if (savedMenuItem.isAvailable()) {
                 response.put("menuItem_id", savedMenuItem.getId().toString());
                 response.put("status", "Menu item created successfully");
                 try {
                     MediaFile media = mediaFileService.uploadMedia(file);
                     media.setMenuItems(savedMenuItem);
+                    System.out.println("trying to upload <<--------");
                     mediaFileService.save(media);
 
                     response.put("mediaId", media.getId().toString());
                     response.put("url", media.getUrl());
+
+                    System.out.println("response built ... upload 99% <<--------");
                     return new ResponseEntity<>(response, HttpStatus.CREATED);
                 } catch (Exception e) {
                     response.put("error", "Menu Item saved without media upload ");
                     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
                 }
             }
-        }
+//        }
         response.put("menu Item Id:",savedMenuItem.getId().toString());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
