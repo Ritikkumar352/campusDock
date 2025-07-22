@@ -1,0 +1,10 @@
+[build]
+base = "campusDock-frontend"
+publish = "campusDock-frontend/dist"
+command = "npm run build"
+
+[build.environment]
+NODE_VERSION = "20"
+
+[functions]
+directory = "campusDock-frontend/functions"
