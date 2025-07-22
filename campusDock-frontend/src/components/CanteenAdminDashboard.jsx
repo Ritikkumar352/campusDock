@@ -159,6 +159,8 @@ const CanteenAdminDashboard = () => {
     }
   };
 
+  const DEFAULT_IMG = 'https://cdn-icons-png.flaticon.com/512/3075/3075977.png';
+
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-gray-100">Canteen Admin Dashboard</h1>
@@ -250,56 +252,76 @@ const CanteenAdminDashboard = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {menuItems.map((item) => (
-            <div key={item.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow bg-white dark:bg-gray-900">
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="font-medium text-lg text-gray-900 dark:text-gray-100">{item.name || item.foodName}</h3>
-                <div className="flex space-x-1">
+            <div key={item.id} className="border border-gray-200 dark:border-gray-700 rounded-xl p-0 hover:shadow-lg transition-shadow bg-white dark:bg-gray-900 flex flex-col overflow-hidden w-full max-w-xs mx-auto">
+              <div className="h-40 w-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden">
+                {item.url ? (
+                  <img
+                    src={item.url}
+                    alt={item.name}
+                    className="object-contain h-full w-full p-2 transition-opacity duration-500"
+                    loading="lazy"
+                    onError={e => { e.currentTarget.onerror = null; e.currentTarget.src = DEFAULT_IMG; e.currentTarget.className = 'object-contain h-full w-full p-6'; }}
+                  />
+                ) : (
+                  <img
+                    src={DEFAULT_IMG}
+                    alt="Default menu item"
+                    className="object-contain h-full w-full p-6 opacity-80"
+                    loading="lazy"
+                  />
+                )}
+              </div>
+              <div className="flex-1 flex flex-col p-4">
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-medium text-lg text-gray-900 dark:text-gray-100 truncate max-w-[70%]">{item.name || item.foodName}</h3>
+                  <div className="flex space-x-1">
+                    <button
+                      onClick={() => handleEdit(item)}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+                <p className="text-gray-600 text-sm mb-3 dark:text-gray-300 line-clamp-2">{item.description}</p>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-lg font-semibold text-green-600 dark:text-green-300">₹{item.price}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className={`text-sm ${item._available !== undefined ? (item._available ? 'text-green-600 dark:text-green-300' : 'text-red-600 dark:text-red-300') : (item.available ? 'text-green-600 dark:text-green-300' : 'text-red-600 dark:text-red-300')}`}>
+                    {item._available !== undefined ? (item._available ? 'Available' : 'Unavailable') : (item.available ? 'Available' : 'Unavailable')}
+                  </span>
                   <button
-                    onClick={() => handleEdit(item)}
-                    className="text-blue-600 hover:text-blue-800"
+                    onClick={() => toggleAvailability(item.id)}
+                    className={`px-3 py-1 text-xs rounded-full ${
+                      item._available !== undefined
+                        ? (item._available
+                            ? 'bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900 dark:text-red-200 dark:hover:bg-red-800'
+                            : 'bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-200 dark:hover:bg-green-800')
+                        : (item.available
+                            ? 'bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900 dark:text-red-200 dark:hover:bg-red-800'
+                            : 'bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-200 dark:hover:bg-green-800')
+                    }`}
                   >
-                    <Edit className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="text-red-600 hover:text-red-800"
-                  >
-                    <Trash2 className="w-4 h-4" />
+                    {item._available !== undefined
+                      ? (item._available ? 'Mark Unavailable' : 'Mark Available')
+                      : (item.available ? 'Mark Unavailable' : 'Mark Available')}
                   </button>
                 </div>
-              </div>
-              <p className="text-gray-600 text-sm mb-3 dark:text-gray-300">{item.description}</p>
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-lg font-semibold text-green-600 dark:text-green-300">₹{item.price}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className={`text-sm ${item._available !== undefined ? (item._available ? 'text-green-600 dark:text-green-300' : 'text-red-600 dark:text-red-300') : (item.available ? 'text-green-600 dark:text-green-300' : 'text-red-600 dark:text-red-300')}`}>
-                  {item._available !== undefined ? (item._available ? 'Available' : 'Unavailable') : (item.available ? 'Available' : 'Unavailable')}
-                </span>
                 <button
-                  onClick={() => toggleAvailability(item.id)}
-                  className={`px-3 py-1 text-xs rounded-full ${
-                    item._available !== undefined
-                      ? (item._available
-                          ? 'bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900 dark:text-red-200 dark:hover:bg-red-800'
-                          : 'bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-200 dark:hover:bg-green-800')
-                      : (item.available
-                          ? 'bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900 dark:text-red-200 dark:hover:bg-red-800'
-                          : 'bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-200 dark:hover:bg-green-800')
-                  }`}
+                  className="mt-4 w-fit px-3 py-1.5 flex items-center gap-1 border border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-300 rounded-md font-semibold hover:bg-blue-50 dark:hover:bg-blue-900 transition text-sm shadow"
+                  onClick={() => navigate(`/menu-items/${item.id}`)}
                 >
-                  {item._available !== undefined
-                    ? (item._available ? 'Mark Unavailable' : 'Mark Available')
-                    : (item.available ? 'Mark Unavailable' : 'Mark Available')}
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  View in Detail
                 </button>
               </div>
-              <button
-                className="mt-4 w-fit px-3 py-1.5 flex items-center gap-1 border border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-300 rounded-md font-semibold hover:bg-blue-50 dark:hover:bg-blue-900 transition text-sm shadow"
-                onClick={() => navigate(`/menu-items/${item.id}`)}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                View in Detail
-              </button>
             </div>
           ))}
         </div>
