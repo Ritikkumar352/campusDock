@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'http://localhost:8081',
-      '/api/v1': 'http://localhost:8081',
+      '/api': 'http://api.campusdock.live:8082',
+      '/api/v1': 'http://api.campusdock.live:8082',
     },
   },
 });
