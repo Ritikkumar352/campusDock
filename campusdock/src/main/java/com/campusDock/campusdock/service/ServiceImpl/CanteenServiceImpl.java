@@ -111,4 +111,31 @@ public class CanteenServiceImpl implements CanteenService {
 
         return ResponseEntity.ok(canteenDto);
     }
+
+//    public ResponseEntity<CanteenDto> getAll() {
+//        List<Canteen> canteens = canteenRepo.findAll();
+//
+//        List<CanteenDto> response = new ArrayList<>();
+//        for (Canteen canteen : canteens) {
+//            CanteenDto dto = CanteenDto.builder()
+//                    .id(canteen.getId())
+//                    .name(canteen.getName())
+//                    .description((canteen.getDescription()))
+//                    .isOpen(canteen.isOpen())
+//                    .createdAt(canteen.getCreatedAt())
+//                    .collegeId(getCollegeId(canteen.getCollege()))
+//                    .mediaUrl(getMediaUrl(canteen.getMediaFile()))
+//                    .build();
+//            response.add(dto);
+//        }
+//        return response;
+//    }
+//
+//    private String getMediaUrl(List<MediaFile> mediaFile) {
+//    }
+//
+//    private UUID getCollegeId(College college) {
+//        return null;
+//
+//    }
 }

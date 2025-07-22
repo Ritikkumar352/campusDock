@@ -40,7 +40,7 @@ public class CollegeServiceImpl implements CollegeService {
 
         return collegeRepo.findAll()
                 .stream()
-                .map(c -> new CollegeNameAndDomainDto(c.getName(), c.getDomain()))
+                .map(c -> new CollegeNameAndDomainDto(c.getId(), c.getName(), c.getDomain()))
                 .collect(Collectors.toList());
 
     }
