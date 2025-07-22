@@ -32,6 +32,9 @@ public class CanteenController {
     }
 
     // 2. Get all canteen by college Id  -- Done
+    /*
+      Get list of all canteens in a college with media url (single link)
+    */
     @GetMapping("/{collegeId}/canteens")
     public List<CanteenListDto> getAllCanteens(@PathVariable UUID collegeId) {
         return canteenService.getAllCanteens(collegeId);

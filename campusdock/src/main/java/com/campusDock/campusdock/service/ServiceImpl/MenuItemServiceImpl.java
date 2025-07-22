@@ -87,12 +87,19 @@ public class MenuItemServiceImpl implements MenuItemsService {
         List<MenuItemDto> items = new ArrayList<>();
 
         for (MenuItems item : menuItems) {
+            String url = null;
+            List<MediaFile> mediaFiles = item.getMediaFile();
+            if (mediaFiles != null && !mediaFiles.isEmpty()) {
+                url = mediaFiles.get(0).getUrl();
+            }
+
             MenuItemDto dto = MenuItemDto.builder()
                     .id(item.getId())
                     .name(item.getFoodName())
                     .price(item.getPrice())
 //                    .description(item.getDescription())
                     .is_available(item.isAvailable())
+                    .url(url)
                     .build();
             items.add(dto);
         }

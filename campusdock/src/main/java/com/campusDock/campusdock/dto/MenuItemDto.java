@@ -16,5 +16,6 @@ public class MenuItemDto {
     private double price;
     private boolean is_available;
     // add media link
+    private String url;
 
 }

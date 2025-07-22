@@ -76,10 +76,16 @@ public class CanteenServiceImpl implements CanteenService {
 
         List<CanteenListDto> response = new ArrayList<>();
         for (Canteen canteen : canteens) {
+            String url = null;
+            List<MediaFile> mediaFiles = canteen.getMediaFile();
+            if (mediaFiles != null && !mediaFiles.isEmpty()) {
+                url = mediaFiles.get(0).getUrl();
+            }
             CanteenListDto dto = CanteenListDto.builder()
                     .id(canteen.getId())
                     .name(canteen.getName())
                     .isOpen(canteen.isOpen())
+                    .url(url)   // only eturning 0th index url fro list of canteens ... use whole list for deatiled canteen -> but need to change for multiplr media upload in canteen register
                     .build();
             response.add(dto);
         }

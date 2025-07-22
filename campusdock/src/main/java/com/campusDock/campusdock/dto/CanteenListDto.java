@@ -19,5 +19,7 @@ public class CanteenListDto {
 
     private boolean isOpen;
 
+    private String url;
+
     // later add 1 photo of canteen
 }
