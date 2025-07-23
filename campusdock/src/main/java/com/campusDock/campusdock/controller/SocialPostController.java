@@ -22,7 +22,7 @@ public class SocialPostController {
         this.socialPostService = socialPostService;
     }
 
-    // 0. Set up anon Profile
+    // 0. TODO Set up anon Profile  'AnonUser'
 
 
 
@@ -38,6 +38,7 @@ public class SocialPostController {
     }
 
     // 2. Anon Feed
+    // use pagination here .. 10-20 at a time
     @GetMapping
     public ResponseEntity<?> getAllSocialPosts() {
         try {
