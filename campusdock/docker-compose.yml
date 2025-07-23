@@ -1,12 +1,43 @@
 services:
   campusdock:
     image: ritikkumar352/campusdock:latest
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
     container_name: campusdock-app
-    ports:
-      - "8082:8081"  # 81 inside container 82 exposed
+    expose:
+      - "8080"
     restart: always
     env_file:
       - .env
+    networks:
+      - campusdock-net
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    depends_on:
+      - campusdock
+    networks:
+      - campusdock-net
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    entrypoint: >
+      sh -c "certbot certonly --webroot
+      --webroot-path=/var/www/certbot
+      --email ritik352alc@gmail.com --agree-tos --no-eff-email
+      -d api.campusdock.live"
+    networks:
+      - campusdock-net
+
+networks:
+  campusdock-net:
