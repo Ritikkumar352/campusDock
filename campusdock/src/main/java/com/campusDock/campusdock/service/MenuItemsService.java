@@ -1,5 +1,6 @@
 package com.campusDock.campusdock.service;
 
+import com.campusDock.campusdock.dto.DetailedMenuItemDto;
 import com.campusDock.campusdock.dto.MenuItemRequestDto;
 import com.campusDock.campusdock.entity.MenuItems;
 import org.springframework.http.ResponseEntity;
@@ -18,5 +19,5 @@ public interface MenuItemsService {
     ) ;
 
     // 2.
-    ResponseEntity<MenuItems> getMenuItem(UUID id);
+    DetailedMenuItemDto getMenuItem(UUID id);
 }

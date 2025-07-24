@@ -1,5 +1,6 @@
 package com.campusDock.campusdock.controller;
 
+import com.campusDock.campusdock.dto.DetailedMenuItemDto;
 import com.campusDock.campusdock.dto.MenuItemDto;
 import com.campusDock.campusdock.dto.MenuItemRequestDto;
 import com.campusDock.campusdock.entity.MenuItems;
@@ -42,8 +43,9 @@ public class MenuItemsController {
 
     // 3. Get Menu Item   -- DONE
     @GetMapping("/{id}")
-    public ResponseEntity<MenuItems> getMenuItemById(@PathVariable("id") UUID id) {
-        return menuItemService.getMenuItem(id);
+    public ResponseEntity<DetailedMenuItemDto> getMenuItemById(@PathVariable UUID id) {
+        DetailedMenuItemDto dto = menuItemService.getMenuItem(id);
+        return ResponseEntity.ok(dto);
     }
 
 
