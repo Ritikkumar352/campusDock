@@ -1,5 +1,6 @@
 package com.campusDock.campusdock.service.ServiceImpl;
 
+import com.campusDock.campusdock.dto.DetailedMenuItemDto;
 import com.campusDock.campusdock.dto.MenuItemDto;
 import com.campusDock.campusdock.dto.MenuItemRequestDto;
 import com.campusDock.campusdock.entity.Canteen;
@@ -76,12 +77,8 @@ public class MenuItemServiceImpl implements MenuItemsService {
     }
 
 
-    // 2. Get a Menu Item
-    public ResponseEntity<MenuItems> getMenuItem(UUID id) {
-        MenuItems menuItem = menuItemsRepo.findById(id).orElseThrow(() -> new RuntimeException("Menu item not found"));
-        return ResponseEntity.ok(menuItem);
-    }
 
+    // 2. Get List of all Menu Item in a canteen
     public List<MenuItemDto> getItemsByCanteenId(UUID canteenId) {
         List<MenuItems> menuItems = menuItemsRepo.findByCanteen_Id(canteenId);
         List<MenuItemDto> items = new ArrayList<>();
@@ -106,5 +103,25 @@ public class MenuItemServiceImpl implements MenuItemsService {
 
         return items;
     }
+
+    // 3. Get Detail of a Menu Item
+    public DetailedMenuItemDto getMenuItem(UUID id) {
+        MenuItems menuItem = menuItemsRepo.findById(id).orElseThrow(() -> new RuntimeException("Menu item not found"));
+        List<MediaFile> mediaFiles = menuItem.getMediaFile();
+        List<String> urls = new ArrayList<>();
+        for(MediaFile mediaFile : mediaFiles) {
+            urls.add(mediaFile.getUrl());
+        }
+
+        return DetailedMenuItemDto.builder()
+                .id(menuItem.getId())
+                .foodName(menuItem.getFoodName())
+                .description(menuItem.getDescription())
+                .isAvailable(menuItem.isAvailable())
+                .timeToCook(menuItem.getTimeToCook())
+                .urls(urls)
+                .build();
+    }
+
 
 }
