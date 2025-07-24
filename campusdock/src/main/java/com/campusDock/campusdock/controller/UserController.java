@@ -1,6 +1,7 @@
 package com.campusDock.campusdock.controller;
 
 import com.campusDock.campusdock.dto.CreateUserDto;
+import com.campusDock.campusdock.dto.UserListDto;
 import com.campusDock.campusdock.entity.User;
 import com.campusDock.campusdock.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -19,9 +20,16 @@ public class UserController {
         this.userService = userService;
     }
 
+//    @GetMapping  //--> fix this use DTO currently it's returning whole User Entity
+//    public ResponseEntity<List<User>> getAllUsers() {
+//        List<User> users = userService.getAllUsers();
+//        return new ResponseEntity<>(users, HttpStatus.OK);
+//    }
+
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+    // Get list of all user in a colllege
+    public ResponseEntity<List<UserListDto>> getUserList() {
+        List<UserListDto> users = userService.getUserList();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 

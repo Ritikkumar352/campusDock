@@ -33,19 +33,20 @@ public class MenuItemsController {
         return menuItemService.addMenuItem(canteenId, dto, files);
     }
 
-
-    // 2. Get Menu Item   -- DONE
-    @GetMapping("/{id}")
-    public ResponseEntity<MenuItems> getMenuItemById(@PathVariable("id") UUID id) {
-        return menuItemService.getMenuItem(id);
-    }
-
-    // 3. get a list of all Menu items of a canteen   -- DONE
+    // 2. get a list of all Menu items of a canteen   -- DONE
     @GetMapping("/canteens/{canteenId}")
     public ResponseEntity<List<MenuItemDto>> getMenuItemsByCanteenId(@PathVariable UUID canteenId) {
         List<MenuItemDto> result=menuItemService.getItemsByCanteenId(canteenId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    // 3. Get Menu Item   -- DONE
+    @GetMapping("/{id}")
+    public ResponseEntity<MenuItems> getMenuItemById(@PathVariable("id") UUID id) {
+        return menuItemService.getMenuItem(id);
+    }
+
+
 
 
 }

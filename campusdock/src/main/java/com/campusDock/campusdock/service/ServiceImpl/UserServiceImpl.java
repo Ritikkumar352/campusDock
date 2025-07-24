@@ -1,5 +1,6 @@
 package com.campusDock.campusdock.service.ServiceImpl;
 
+import com.campusDock.campusdock.dto.UserListDto;
 import com.campusDock.campusdock.entity.College;
 import com.campusDock.campusdock.dto.CreateUserDto;
 //import com.campusDock.campusdock.entity.DTO.UserResponseDto;
@@ -9,7 +10,9 @@ import com.campusDock.campusdock.repository.UserRepo;
 import com.campusDock.campusdock.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -23,10 +26,32 @@ public class UserServiceImpl implements UserService {
         this.collegeRepo = collegeRepo;
     }
 
-    @Override
-    public List<User> getAllUsers() {
-        return userRepo.findAll();
+//    @Override
+//    public List<User> getAllUsers() {
+//        return userRepo.findAll();
+//    }
+
+    public List<UserListDto> getUserList() {
+        List<User> users = userRepo.findAll();
+        List<UserListDto> userListDtos = new ArrayList<>();
+
+        for (User user : users) {
+            try {
+                if (user != null && user.getEmail() != null) { // simple validation
+                    UserListDto dto = new UserListDto(user.getId(), user.getName(), user.getEmail(),user.getRole());
+                    userListDtos.add(dto);
+                }
+            } catch (Exception e) {
+                System.err.println("Failed to convert user: " + user.getId());
+            }
+        }
+
+        return userListDtos;
     }
+
+
+
+
 
     @Override
     public User createUser(CreateUserDto createUserDto) {
