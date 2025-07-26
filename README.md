@@ -85,7 +85,7 @@ Campus Dock is designed to digitize real-life college experiences. It centralize
   * Cart, Order, Payment
   * SocialPost (confession, meme, etc.)
 
-> For profile showcase, you **can** include a simplified ER diagram using draw\.io or dbdiagram.io. Just avoid including any seed/mock data that reveals real emails, payment keys, or user details.
+<!-- > For profile showcase, you **can** include a simplified ER diagram using draw\.io or dbdiagram.io. Just avoid including any seed/mock data that reveals real emails, payment keys, or user details. -->
 
 ## 🧪 Testing
 
@@ -97,7 +97,7 @@ Campus Dock is designed to digitize real-life college experiences. It centralize
 ## 🧰 Future Improvements
 
 * 
-* Add Razorpay support alongside PhonePe
+* Add Razorpay support (pending - testing )
 * Integrate push notifications for tagged confessions
 * Improve UI feed performance with lazy loading and pagination
 * Admin analytics dashboard (orders, top users, etc.)
@@ -112,14 +112,15 @@ Campus Dock is designed to digitize real-life college experiences. It centralize
 
 
 ## 📸 Screenshots / GIFs
+- Will upload this...
 
-> (Add demo GIFs or screenshots for canteen orders, confessions, dashboards, etc.)
+<!-- > (Add demo GIFs or screenshots for canteen orders, confessions, dashboards, etc.) -->
 
-## 📌 License & Author
+<!-- ## 📌 License & Author
 
 * Built with ❤️ by [Ritik Kumar](https://github.com/Ritikkumar352)
-* MIT License or private license depending on usage
+* MIT License or private license depending on usage -->
 
 ---
 
-**Note**: This project is being actively developed as part of a final year engineering project and aims to evolve into a full-scale college utility platform.
+<!-- **Note**: This project is being actively developed as part of a final year engineering project and aims to evolve into a full-scale college utility platform. -->
