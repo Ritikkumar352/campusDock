@@ -32,7 +32,7 @@ public class MenuItemServiceImpl implements MenuItemsService {
 
     // 1. Add menuItem
     @Override
-    public ResponseEntity<Map<String, Object>> gitaddMenuItem(
+    public ResponseEntity<Map<String, Object>> addMenuItem(
             UUID canteenId,
             MenuItemRequestDto dto,
             List<MultipartFile> files
@@ -81,7 +81,6 @@ public class MenuItemServiceImpl implements MenuItemsService {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
 
 
 
