@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @Component
@@ -26,7 +28,8 @@ public class JwtService
                 .claim("collegeId",user.getCollege().getId().toString())
                 .claim("role",user.getRole().name())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis()+1000 * 60 * 60 * 24*10))    //This is 10 day time
+                .setExpiration(Date.from(Instant.now().plus(10, ChronoUnit.DAYS)))
+//                .setExpiration(new Date(System.currentTimeMillis()+1000 * 60 * 60 * 24*10))    //This is 10 day time
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
