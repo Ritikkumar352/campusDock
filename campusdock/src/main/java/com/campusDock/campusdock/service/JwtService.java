@@ -64,5 +64,21 @@ public class JwtService
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    public String extractUserId(String token) {
+        return getClaims(token).get("userId", String.class);
+    }
+
+    public String extractCollegeId(String token) {
+        return getClaims(token).get("collegeId", String.class);
+    }
+
+    public String extractRole(String token) {
+        return getClaims(token).get("role", String.class);
+    }
+
+//    String collegeId = jwtService.extractCollegeId(token);
+//    String userId = jwtService.extractUserId(token);
+//    String role = jwtService.extractRole(token);
+
 
 }
