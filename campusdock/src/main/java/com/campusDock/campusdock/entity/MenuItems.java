@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,9 +42,9 @@ public class MenuItems {
     private Canteen canteen;
 
     // 2. MenuItems - Media
-    @OneToMany(mappedBy = "menuItems", cascade = CascadeType.ALL,orphanRemoval = true)
-    @JsonManagedReference
-    private List<MediaFile> MediaFile;   // use mediaFiles
+    @OneToMany(mappedBy = "menuItems", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference // Prevent recursive serialization from CartItem
+    private List<MediaFile> mediaFiles = new ArrayList<>();
 
 
 }

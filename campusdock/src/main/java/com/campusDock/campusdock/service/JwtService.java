@@ -63,7 +63,6 @@ public class JwtService
         byte[] keyBytes=jwtSecret.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
-
     public String extractUserId(String token) {
         return getClaims(token).get("userId", String.class);
     }

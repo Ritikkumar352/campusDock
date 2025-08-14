@@ -91,14 +91,14 @@ public class MenuItemServiceImpl implements MenuItemsService {
 
         for (MenuItems item : menuItems) {
             String url = null;
-            List<MediaFile> mediaFiles = item.getMediaFile();
+            List<MediaFile> mediaFiles = item.getMediaFiles();
             if (mediaFiles != null && !mediaFiles.isEmpty()) {
                 url = mediaFiles.get(0).getUrl();
             }
 
             MenuItemDto dto = MenuItemDto.builder()
                     .id(item.getId())
-                    .name(item.getFoodName())
+                    .foodName(item.getFoodName())
                     .price(item.getPrice())
 //                    .description(item.getDescription())
                     .is_available(item.isAvailable())
@@ -113,7 +113,7 @@ public class MenuItemServiceImpl implements MenuItemsService {
     // 3. Get Detail of a Menu Item
     public DetailedMenuItemDto getMenuItem(UUID id) {
         MenuItems menuItem = menuItemsRepo.findById(id).orElseThrow(() -> new RuntimeException("Menu item not found"));
-        List<MediaFile> mediaFiles = menuItem.getMediaFile();
+        List<MediaFile> mediaFiles = menuItem.getMediaFiles();
         List<String> urls = new ArrayList<>();
         for(MediaFile mediaFile : mediaFiles) {
             urls.add(mediaFile.getUrl());
