@@ -19,6 +19,7 @@ public class DetailedMenuItemDto {
     private String description;
     private boolean isAvailable;
     private String timeToCook;
+    private double price;
     private List<String> urls;
 
 }
