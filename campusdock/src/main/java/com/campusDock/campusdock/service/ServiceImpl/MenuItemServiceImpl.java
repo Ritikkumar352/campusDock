@@ -117,6 +117,7 @@ public class MenuItemServiceImpl implements MenuItemsService {
                 .id(menuItem.getId())
                 .foodName(menuItem.getFoodName())
                 .description(menuItem.getDescription())
+                .price(menuItem.getPrice())
                 .isAvailable(menuItem.isAvailable())
                 .timeToCook(menuItem.getTimeToCook())
                 .urls(urls)
