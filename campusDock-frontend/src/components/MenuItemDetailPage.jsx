@@ -63,6 +63,11 @@ const MenuItemDetailPage = () => {
   // Helper to get all media file URLs
   const getMediaFiles = (item) => {
     if (!item) return [];
+    // Handle new response format with 'urls' array
+    if (Array.isArray(item.urls) && item.urls.length > 0) {
+      return item.urls.map((url, index) => ({ url, id: `url-${index}` }));
+    }
+    // Handle old response format with mediaFile arrays
     if (Array.isArray(item.mediaFile) && item.mediaFile.length > 0) return item.mediaFile;
     if (Array.isArray(item.MediaFile) && item.MediaFile.length > 0) return item.MediaFile;
     return [];
@@ -70,6 +75,22 @@ const MenuItemDetailPage = () => {
 
   const mediaFiles = getMediaFiles(menuItem);
   const allImagesFailed = mediaFiles.length > 0 && imageErrorArr.length === mediaFiles.length && imageErrorArr.every(Boolean);
+
+  const handleImgLoad = (idx) => {
+    setImageLoadedArr((prev) => {
+      const arr = [...prev];
+      arr[idx] = true;
+      return arr;
+    });
+  };
+  
+  const handleImgError = (idx) => {
+    setImageErrorArr((prev) => {
+      const arr = [...prev];
+      arr[idx] = true;
+      return arr;
+    });
+  };
 
   // Helper to get the next/prev valid image index
   const getNextValidIdx = (startIdx, dir) => {
@@ -157,20 +178,7 @@ const MenuItemDetailPage = () => {
     });
   };
 
-  const handleImgLoad = (idx) => {
-    setImageLoadedArr((prev) => {
-      const arr = [...prev];
-      arr[idx] = true;
-      return arr;
-    });
-  };
-  const handleImgError = (idx) => {
-    setImageErrorArr((prev) => {
-      const arr = [...prev];
-      arr[idx] = true;
-      return arr;
-    });
-  };
+
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 flex flex-col">

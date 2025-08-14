@@ -27,7 +27,7 @@ const CanteenAdminDashboard = () => {
   // const { collegeId } = props;
   // const collegeId = 'YOUR_DEFAULT_COLLEGE_ID'; // Replace with actual or mock value
   // Use canteenId from session if available, otherwise fallback to default
-  const fallbackCanteenId = 'cc1c29ab-b955-4b3f-b23f-9a58035ed8c0';
+  const fallbackCanteenId = 'a410d36b-08f0-4dec-8c3c-aec47aa202cd';
   const canteenId = window.canteenIdFromSession || fallbackCanteenId;
 
   const navigate = useNavigate();
@@ -60,22 +60,48 @@ const CanteenAdminDashboard = () => {
         timeToCook: itemForm.timeToCook,
         canteenId: canteenId,
       };
+      
+      console.log('Submitting menu item:', menuItemPayload);
+      console.log('File selected:', itemForm.file);
+      
       formData.append('menuItem', new Blob([JSON.stringify(menuItemPayload)], { type: 'application/json' }));
       if (itemForm.file) {
-        formData.append('file', itemForm.file);
+        formData.append('files', itemForm.file);
+        console.log('File appended to FormData as "files"');
       }
+      
       const response = await fetch(`/api/v1/menuItems/canteens/${canteenId}`, {
         method: 'POST',
         body: formData,
       });
-      if (!response.ok) throw new Error('Failed to add menu item');
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Response not ok:', response.status, errorText);
+        throw new Error(`Failed to add menu item: ${response.status} ${errorText}`);
+      }
+      
       const data = await response.json();
+      console.log('Success response:', data);
       setToast({ message: 'Menu item added successfully!', type: 'success' });
-      setMenuItems([...menuItems, { ...itemForm, id: data['menu Item Id:'] || Date.now(), price: parseFloat(itemForm.price) }]);
+      
+      // Refresh the menu items list instead of adding to state
+      // This ensures we get the correct data from the backend
+      const fetchMenuItems = async () => {
+        try {
+          const res = await fetch(`/api/v1/menuItems/canteens/${canteenId}`);
+          if (!res.ok) throw new Error('Failed to fetch menu items');
+          const menuData = await res.json();
+          setMenuItems(Array.isArray(menuData) ? menuData : []);
+        } catch (error) {
+          console.error('Failed to fetch menu items:', error);
+        }
+      };
+      await fetchMenuItems();
       resetForm();
     } catch (error) {
-      setToast({ message: 'Failed to add menu item.', type: 'error' });
       console.error('Failed to save menu item:', error);
+      setToast({ message: `Failed to add menu item: ${error.message}`, type: 'error' });
     }
     setTimeout(() => setToast({ message: '', type: '' }), 4000);
   };
@@ -130,7 +156,7 @@ const CanteenAdminDashboard = () => {
   };
 
   const resetForm = () => {
-    setItemForm({ name: '', description: '', price: '', category: 'main', available: true });
+    setItemForm({ name: '', description: '', price: '', timeToCook: '15 min', available: true, file: null });
     setShowForm(false);
     setEditingItem(null);
   };
@@ -221,12 +247,30 @@ const CanteenAdminDashboard = () => {
                 />
                 <label htmlFor="available" className="text-gray-900 dark:text-gray-100">Available</label>
               </div>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={e => setItemForm({ ...itemForm, file: e.target.files[0] })}
-                className="col-span-1 md:col-span-2"
-              />
+roke              <div className="col-span-1 md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Upload Image (Optional)
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={e => {
+                    const file = e.target.files[0];
+                    console.log('File selected:', file);
+                    setItemForm({ ...itemForm, file: file });
+                  }}
+                  className="block w-full text-sm text-gray-500 dark:text-gray-400
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-full file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-orange-50 file:text-orange-700
+                    dark:file:bg-orange-900 dark:file:text-orange-300
+                    hover:file:bg-orange-100 dark:hover:file:bg-orange-800
+                    file:cursor-pointer
+                    border border-gray-300 dark:border-gray-700 rounded-md
+                    bg-white dark:bg-gray-900"
+                />
+              </div>
             </div>
             <textarea
               placeholder="Description"
