@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public interface MenuItemsService {
     // 1.
-    ResponseEntity<Map<String, String>> addMenuItem(
+    ResponseEntity<Map<String, Object>> addMenuItem(
             UUID canteenId,
             MenuItemRequestDto dto,
             List<MultipartFile> files

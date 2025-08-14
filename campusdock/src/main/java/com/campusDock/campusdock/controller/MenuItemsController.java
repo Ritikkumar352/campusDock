@@ -26,7 +26,7 @@ public class MenuItemsController {
 
     // 1. Add menu item   -- DONE
     @PostMapping("/canteens/{canteenId}")
-    public ResponseEntity<Map<String, String>> addMenuItem(
+    public ResponseEntity<Map<String, Object>>  addMenuItem(
             @PathVariable UUID canteenId,
             @RequestPart("menuItem") MenuItemRequestDto dto,
             @RequestPart(value = "files", required = false) List<MultipartFile> files

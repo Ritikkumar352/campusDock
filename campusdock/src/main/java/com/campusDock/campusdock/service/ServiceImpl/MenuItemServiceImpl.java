@@ -32,13 +32,15 @@ public class MenuItemServiceImpl implements MenuItemsService {
 
     // 1. Add menuItem
     @Override
-    public ResponseEntity<Map<String, String>> addMenuItem(
+    public ResponseEntity<Map<String, Object>> addMenuItem(
             UUID canteenId,
             MenuItemRequestDto dto,
             List<MultipartFile> files
     ) {
         System.out.println("saving menu item--start");
-        Map<String, String> response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
+        List<Map<String, String>> uploadedMediaList = new ArrayList<>();
+
         Canteen canteen = canteenRepo.findById(canteenId)
                 .orElseThrow(() -> new RuntimeException("Canteen not found"));
 
@@ -53,7 +55,7 @@ public class MenuItemServiceImpl implements MenuItemsService {
 
         MenuItems savedMenuItem = menuItemsRepo.save(menuItems);
 
-        if (files != null ) {
+        if (files != null && !files.isEmpty()) {
             for (MultipartFile file : files) {
                 if (file != null && !file.isEmpty()) {
                     try {
@@ -61,18 +63,22 @@ public class MenuItemServiceImpl implements MenuItemsService {
                         media.setMenuItems(savedMenuItem);
                         mediaFileService.save(media);
 
-                        response.put("mediaId", media.getId().toString());  // only first media id return
-                        response.put("url", media.getUrl());
+                        Map<String, String> mediaDetails = new HashMap<>();
+                        mediaDetails.put("mediaId", media.getId().toString());
+                        mediaDetails.put("url", media.getUrl());
+                        uploadedMediaList.add(mediaDetails);
+
                     } catch (Exception e) {
-                        response.put("error", "Menu Item saved, media upload failed for one or more files");
-                        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+                        System.err.println("Media upload failed: " + e.getMessage());
                     }
                 }
             }
         }
 
-        response.put("menuItem_id", savedMenuItem.getId().toString());
-        response.put("status", "Menu item created successfully  without media upload");
+        response.put("menuItemId", savedMenuItem.getId().toString());
+        response.put("status", "Menu item created successfully");
+        response.put("mediaFiles", uploadedMediaList);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

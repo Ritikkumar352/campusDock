@@ -10,11 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.Path;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
-
 
 @RestController
 @RequestMapping("/api/v1/marketplace")
@@ -78,7 +76,6 @@ public class ProductController {
     }
 
 
-
     // 4. Update Product
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable UUID id, @RequestBody ProductCreateDto productDto) {
@@ -111,7 +108,6 @@ public class ProductController {
                     .body(Map.of("error", "Could not delete product"));
         }
     }
-
 
 
 ////    / POST /api/v1/products
