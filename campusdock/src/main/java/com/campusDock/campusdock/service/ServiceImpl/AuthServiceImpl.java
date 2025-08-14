@@ -55,30 +55,7 @@ public class AuthServiceImpl implements AuthService
     }
 
 
-    //  For random email testing
-//    @Override
-//    public ResponseEntity<OtpResponseStatus> verify(String email, String otp) {
-//        String storedOtp = otpStorage.get(email);
-//
-//        if (storedOtp != null && storedOtp.equals(otp)) {
-//            otpStorage.remove(email); // discard OTP
-//
-//            return ResponseEntity.ok(
-//                    OtpResponseStatus.builder()
-//                            .success(true)
-//                            .message("OTP verified successfully")
-//                            .build()
-//            );
-//        } else {
-//            return ResponseEntity
-//                    .status(HttpStatus.UNAUTHORIZED)
-//                    .body(OtpResponseStatus.builder()
-//                            .success(false)
-//                            .message("Invalid or expired OTP")
-//                            .build()
-//                    );
-//        }
-//    }
+
 
     @Override
     public ResponseEntity<OtpResponseStatus> verify(String email, String otp) {
@@ -153,4 +130,31 @@ public class AuthServiceImpl implements AuthService
         int otp = new Random().nextInt(9000) + 1000; // 4-digit
         return String.valueOf(otp);
     }
+
+
+
+    //  For random email testing
+//    @Override
+//    public ResponseEntity<OtpResponseStatus> verify(String email, String otp) {
+//        String storedOtp = otpStorage.get(email);
+//
+//        if (storedOtp != null && storedOtp.equals(otp)) {
+//            otpStorage.remove(email); // discard OTP
+//
+//            return ResponseEntity.ok(
+//                    OtpResponseStatus.builder()
+//                            .success(true)
+//                            .message("OTP verified successfully")
+//                            .build()
+//            );
+//        } else {
+//            return ResponseEntity
+//                    .status(HttpStatus.UNAUTHORIZED)
+//                    .body(OtpResponseStatus.builder()
+//                            .success(false)
+//                            .message("Invalid or expired OTP")
+//                            .build()
+//                    );
+//        }
+//    }
 }

@@ -91,6 +91,8 @@
 
 package com.campusDock.campusdock.entity;
 
+import com.campusDock.campusdock.Socials.Entity.Post;
+import com.campusDock.campusdock.Socials.Entity.XPLog;
 import com.campusDock.campusdock.entity.Enum.UserRole;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -144,8 +146,19 @@ public class User {
     @JsonManagedReference
     private Canteen canteenOwner;
 
+
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Post> posts;       //To access different post by single user
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<XPLog> xpLogs;    //For profile points
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Set<Product> products = new HashSet<>();
+
 
 }
