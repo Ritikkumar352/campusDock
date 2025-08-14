@@ -1,4 +1,4 @@
-# campusDock initialized
+# campusDock initialized 
 # 🏫 Campus Dock
 
 Campus Dock is a modern college-centric platform that digitizes the entire campus experience, offering modules like canteen ordering, cart and payment system, admin dashboards, and anonymous social features like confessions — all role-based and fully containerized, deployed on AWS.
@@ -124,3 +124,5 @@ Campus Dock is designed to digitize real-life college experiences. It centralize
 ---
 
 <!-- **Note**: This project is being actively developed as part of a final year engineering project and aims to evolve into a full-scale college utility platform. -->
+
+## Incomplete Doc - updating this doc in progress
