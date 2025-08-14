@@ -10,9 +10,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartItemDto {
-    private UUID itemId;        // cartItem ID
+    private UUID id;
+    //private UUID itemId;        // cartItem ID
     private UUID menuItemId;    // menuItem ID (used to fetch menu later)
     private String foodName;
     private double price;
     private int quantity;
+    private String status;
+    private String url;
 }

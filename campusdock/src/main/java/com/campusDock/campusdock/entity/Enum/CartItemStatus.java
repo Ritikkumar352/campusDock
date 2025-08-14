@@ -4,6 +4,7 @@ public enum CartItemStatus {
     ADDED,
     REMOVED,
     UPDATED,
+    ORDERED,
     ACTIVE
 
 }

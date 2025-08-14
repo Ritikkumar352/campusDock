@@ -12,7 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class MenuItemDto {
     private UUID id;
-    private String name;
+    private String foodName;
     private double price;
     private boolean is_available;
     // add media link
