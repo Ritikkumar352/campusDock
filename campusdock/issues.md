@@ -1,7 +1,10 @@
 # Issues
 
-## 0. test using .env 
-## 01. use dto to return list of all studetns, faculty and canteen lowing down whole student entity
+## 0. ~~test using .env~~
+## 01.~~use dto to return list of all studetns, faculty and canteen lowing down whole student entity~~
+## 02 Use Fetch = fetchType.Lazy in all mappings
+## 03. Use a Set instead of a List for @OneToMany relationships
+
 
 ## 1. Cannot Add menu Item from different Canteen
 

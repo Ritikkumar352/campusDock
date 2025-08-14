@@ -99,7 +99,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -128,6 +130,7 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
+    // use fetch lazy ???
     @ManyToOne
     @JoinColumn(name = "college_id", referencedColumnName = "id")
     @JsonBackReference
@@ -144,6 +147,7 @@ public class User {
     private Canteen canteenOwner;
 
 
+
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Post> posts;       //To access different post by single user
@@ -151,5 +155,10 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<XPLog> xpLogs;    //For profile points
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private Set<Product> products = new HashSet<>();
+
 
 }

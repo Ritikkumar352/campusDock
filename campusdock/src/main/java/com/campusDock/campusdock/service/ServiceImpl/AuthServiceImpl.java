@@ -10,6 +10,7 @@ import com.campusDock.campusdock.repository.CollegeRepo;
 import com.campusDock.campusdock.repository.UserRepo;
 import com.campusDock.campusdock.service.AuthService;
 import com.campusDock.campusdock.service.EmailService;
+import com.campusDock.campusdock.service.JwtService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,11 +27,13 @@ public class AuthServiceImpl implements AuthService
     private final EmailService emailService;
     private final CollegeRepo collegeRepo;
     private final UserRepo userRepo;
+    private final JwtService jwtService;
 
-    public AuthServiceImpl(EmailService emailService, CollegeRepo collegeRepo, UserRepo userRepo) {
+    public AuthServiceImpl(EmailService emailService, CollegeRepo collegeRepo, UserRepo userRepo, JwtService jwtService) {
         this.emailService = emailService;
         this.collegeRepo = collegeRepo;
         this.userRepo = userRepo;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -63,46 +66,51 @@ public class AuthServiceImpl implements AuthService
 
             // ✅ Check if user already exists
             Optional<User> existingUser = userRepo.findByEmail(email);
-            if (existingUser.isPresent()) {
-                return ResponseEntity.ok(
-                        OtpResponseStatus.builder()
-                                .success(true)
-                                .message("User already exists. OTP verified successfully")
-                                .build()
-                );
+            User user;
+
+            if (existingUser.isPresent())
+            {
+                user = existingUser.get();
             }
+            else
+            {
+                // ➕ Proceed to create a new user
+                String domain = email.substring(email.indexOf("@") + 1);
+                College college = collegeRepo.findByDomain(domain)
+                        .orElseThrow(() -> new RuntimeException("College not registered for domain: " + domain));
 
-            // ➕ Proceed to create a new user
-            String domain = email.substring(email.indexOf("@") + 1);
-            College college = collegeRepo.findByDomain(domain)
-                    .orElseThrow(() -> new RuntimeException("College not registered for domain: " + domain));
+                String user_name = email.substring(0, email.indexOf("."));
 
-            String user_name = email.substring(0, email.indexOf("."));
+                user = new User();
+                user.setName(user_name);
+                user.setPassword("otp-login"); // TODO: Handle securely later
+                user.setEmail(email);
+                user.setCollege(college);
 
-            User user = new User();
-            user.setName(user_name);
-            user.setPassword("otp-login"); // TODO: Handle securely later
-            user.setEmail(email);
-            user.setCollege(college);
-
-            // Determine role based on second part of email
-            try {
-                String afterFirstDot = email.substring(email.indexOf('.') + 1, email.indexOf('@'));
-                if (afterFirstDot.matches(".*\\d.*")) {
-                    user.setRole(UserRole.STUDENT);
-                } else {
-                    user.setRole(UserRole.FACULTY);
+                // Determine role based on second part of email
+                try {
+                    String afterFirstDot = email.substring(email.indexOf('.') + 1, email.indexOf('@'));
+                    if (afterFirstDot.matches(".*\\d.*")) {
+                        user.setRole(UserRole.STUDENT);
+                    } else {
+                        user.setRole(UserRole.FACULTY);
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException("Invalid email format: " + email);
                 }
-            } catch (Exception e) {
-                throw new RuntimeException("Invalid email format: " + email);
+
+                userRepo.save(user);
             }
 
-            userRepo.save(user);
+            // ✅ Generate JWT
+            String token = jwtService.generateToken(user);
+
 
             return ResponseEntity.ok(
                     OtpResponseStatus.builder()
                             .success(true)
-                            .message("OTP verified and user registered successfully.")
+                            .message("OTP verified successfully.")
+                            .token(token)
                             .build()
             );
         }

@@ -8,4 +8,5 @@ import lombok.Data;
 public class OtpResponseStatus {
     private boolean success;
     private String message;
+    private String token;
 }
