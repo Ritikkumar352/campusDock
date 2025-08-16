@@ -29,6 +29,7 @@ public class AuthServiceImpl implements AuthService
     private final UserRepo userRepo;
     private final JwtService jwtService;
 
+
     public AuthServiceImpl(EmailService emailService, CollegeRepo collegeRepo, UserRepo userRepo, JwtService jwtService) {
         this.emailService = emailService;
         this.collegeRepo = collegeRepo;

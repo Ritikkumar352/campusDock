@@ -14,5 +14,5 @@ public interface UserService {
     List<UserListDto> getUserList();
 
 
-    User createUser(CreateUserDto createUserDto);
+    UserListDto createUser(CreateUserDto createUserDto);
 }
