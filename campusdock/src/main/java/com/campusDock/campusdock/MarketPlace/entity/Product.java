@@ -1,5 +1,10 @@
-package com.campusDock.campusdock.entity;
+package com.campusDock.campusdock.MarketPlace.entity;
 
+import com.campusDock.campusdock.entity.College;
+import com.campusDock.campusdock.entity.MediaFile;
+import com.campusDock.campusdock.entity.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +13,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -44,5 +51,10 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "college_id", nullable = false) // college_id is the foreign key column
     private College college;
+
+    // photos of the product to ssell or service
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<MediaFile> mediaFiles = new ArrayList<>();
 
 }

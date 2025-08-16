@@ -1,5 +1,7 @@
 # Issues
 
+
+## 00. Use Multithreading (learn) to upload all files (multiple files) at once
 ## 0. ~~test using .env~~
 ## 01.~~use dto to return list of all studetns, faculty and canteen lowing down whole student entity~~
 ## 02 Use Fetch = fetchType.Lazy in all mappings

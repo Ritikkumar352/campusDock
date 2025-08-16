@@ -1,15 +1,18 @@
-package com.campusDock.campusdock.controller;
+package com.campusDock.campusdock.MarketPlace.controller;
 
-import com.campusDock.campusdock.dto.ProductCreateDto;
-import com.campusDock.campusdock.dto.ProductDetailDto;
+import com.campusDock.campusdock.MarketPlace.dto.ProductCreateDto;
+import com.campusDock.campusdock.MarketPlace.dto.ProductDetailDto;
+import com.campusDock.campusdock.MarketPlace.entity.Product;
+import com.campusDock.campusdock.MarketPlace.service.ProductService;
+import com.campusDock.campusdock.dto.MenuItemRequestDto;
 import com.campusDock.campusdock.dto.ProductDto;
-import com.campusDock.campusdock.entity.Product;
-import com.campusDock.campusdock.service.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -26,9 +29,12 @@ public class ProductController {
 
     // 1. Post item
     @PostMapping
-    public ResponseEntity<?> createProduct(@RequestBody ProductCreateDto productDto) {
+    public ResponseEntity<?> createProduct(
+            @RequestPart("product") ProductCreateDto productDto,
+            @RequestPart(value = "files", required = false) List<MultipartFile> productFiles   // require at leas one img ??
+            ) {
         try {
-            ProductDetailDto response = productService.createProduct(productDto);
+            ProductDetailDto response = productService.createProduct(productDto,productFiles);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
