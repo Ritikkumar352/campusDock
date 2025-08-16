@@ -34,13 +34,10 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody CreateUserDto createUserDto) {
+    public ResponseEntity<UserListDto> createUser(@RequestBody CreateUserDto createUserDto) {
 
         return new ResponseEntity<>(userService.createUser(createUserDto), HttpStatus.CREATED);
     }
 
-    // create all user of a collge -> get all user by college id
-    // get all faculty
-    // get all faculty by college id
 
 }

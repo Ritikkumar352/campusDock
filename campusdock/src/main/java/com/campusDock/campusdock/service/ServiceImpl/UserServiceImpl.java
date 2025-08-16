@@ -4,6 +4,7 @@ import com.campusDock.campusdock.dto.UserListDto;
 import com.campusDock.campusdock.entity.College;
 import com.campusDock.campusdock.dto.CreateUserDto;
 //import com.campusDock.campusdock.entity.DTO.UserResponseDto;
+import com.campusDock.campusdock.entity.Enum.UserRole;
 import com.campusDock.campusdock.entity.User;
 import com.campusDock.campusdock.repository.CollegeRepo;
 import com.campusDock.campusdock.repository.UserRepo;
@@ -54,26 +55,42 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User createUser(CreateUserDto createUserDto) {
-        // Extract domain (e.g. abes.ac.in) from email
-        String domain = createUserDto.getEmail().substring(createUserDto.getEmail().indexOf("@") + 1);
+    public UserListDto createUser(CreateUserDto createUserDto) {
 
-
-
+        String email= createUserDto.getEmail();
+        String domain = email.substring(email.indexOf("@") + 1);
         College college = collegeRepo.findByDomain(domain)
                 .orElseThrow(() -> new RuntimeException("College not registered for domain: " + domain));
 
-
-        String namee=createUserDto.getEmail().substring(0,createUserDto.getEmail().indexOf("."));
-
+        String user_name = email.substring(0, email.indexOf("."));
 
         User user = new User();
-//        user.setName(namee);
-//        user.setPassword(createUserDto.getPassword());
-//        user.setEmail(createUserDto.getEmail());
-//        user.setCollege(college);
+        user.setName(user_name);
+        user.setPassword("otp-login"); // TODO: Handle securely later
+        user.setEmail(email);
+        user.setCollege(college);
 
-        return userRepo.save(user);
+        // Determine role based on second part of email
+        try {
+            String afterFirstDot = email.substring(email.indexOf('.') + 1, email.indexOf('@'));
+            if (afterFirstDot.matches(".*\\d.*")) {
+                user.setRole(UserRole.STUDENT);
+            } else {
+                user.setRole(UserRole.FACULTY);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid email format: " + email);
+        }
+
+        userRepo.save(user);
+
+        return UserListDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .build();
+
 
 
     }
