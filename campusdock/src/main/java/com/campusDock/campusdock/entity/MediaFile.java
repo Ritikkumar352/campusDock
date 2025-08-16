@@ -1,5 +1,6 @@
 package com.campusDock.campusdock.entity;
 
+import com.campusDock.campusdock.MarketPlace.entity.Product;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,6 +43,12 @@ public class MediaFile {
     @JoinColumn(name = "menu_id", referencedColumnName = "id")
     @JsonBackReference
     private MenuItems menuItems;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    @JsonBackReference
+    private Product product;
+
 
     public Canteen getCanteen() {
         return canteen;
@@ -101,6 +108,14 @@ public class MediaFile {
 
     public LocalDateTime getUploadedAt() {
         return uploadedAt;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public void setUploadedAt(LocalDateTime uploadedAt) {

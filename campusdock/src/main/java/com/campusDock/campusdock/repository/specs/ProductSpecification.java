@@ -1,6 +1,6 @@
 package com.campusDock.campusdock.repository.specs;
 
-import com.campusDock.campusdock.entity.Product;
+import com.campusDock.campusdock.MarketPlace.entity.Product;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 

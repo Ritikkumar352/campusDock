@@ -1,4 +1,4 @@
-package com.campusDock.campusdock.dto;
+package com.campusDock.campusdock.MarketPlace.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -18,10 +19,8 @@ public class ProductDetailDto {
     private String name;
     private String description;
     private BigDecimal price;
-
-
     private LocalDateTime listedOn;
-
     private boolean isServie;
     private String userName;
+    private List<MediaDetailsDto> mediaFiles;
 }

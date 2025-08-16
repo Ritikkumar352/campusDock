@@ -91,6 +91,7 @@
 
 package com.campusDock.campusdock.entity;
 
+import com.campusDock.campusdock.MarketPlace.entity.Product;
 import com.campusDock.campusdock.Socials.Entity.Post;
 import com.campusDock.campusdock.Socials.Entity.XPLog;
 import com.campusDock.campusdock.entity.Enum.UserRole;
