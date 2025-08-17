@@ -5,7 +5,7 @@ import com.campusDock.campusdock.MarketPlace.dto.ProductCreateDto;
 import com.campusDock.campusdock.MarketPlace.dto.ProductDetailDto;
 import com.campusDock.campusdock.MarketPlace.entity.Product;
 import com.campusDock.campusdock.MarketPlace.service.ProductService;
-import com.campusDock.campusdock.dto.ProductDto;
+import com.campusDock.campusdock.MarketPlace.dto.ProductDto;
 import com.campusDock.campusdock.entity.College;
 import com.campusDock.campusdock.entity.MediaFile;
 import com.campusDock.campusdock.entity.User;
@@ -185,13 +185,25 @@ public class ProductServiceImpl implements ProductService {
 
     // Other
     public ProductDto convertToDto(Product product) {
+
+        List<String> urls = new ArrayList<>();
+
+       //Loop through the media files and add each URL to the list
+        if (product.getMediaFiles() != null) {
+            for (MediaFile mediaFile : product.getMediaFiles()) {
+                urls.add(mediaFile.getUrl());
+            }
+        }
+
+
         return new ProductDto(
                 product.getName(),
                 product.getDescription(),
                 product.getPrice(),
                 product.getListedOn(),
                 product.getUser().getName(),
-                product.getUser().getId()
+                product.getUser().getId(),
+                urls // ⚠️
         );
     }
 
