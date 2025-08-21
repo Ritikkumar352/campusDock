@@ -3,8 +3,7 @@ package com.campusDock.campusdock.MarketPlace.service;
 import com.campusDock.campusdock.MarketPlace.entity.Product;
 import com.campusDock.campusdock.MarketPlace.dto.ProductCreateDto;
 import com.campusDock.campusdock.MarketPlace.dto.ProductDetailDto;
-import com.campusDock.campusdock.dto.ProductDto;
-import com.campusDock.campusdock.entity.MediaFile;
+import com.campusDock.campusdock.MarketPlace.dto.ProductDto;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 

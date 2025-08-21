@@ -1,4 +1,5 @@
 package com.campusDock.campusdock.configurations;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -14,23 +15,20 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Set your allowed origins
-        config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3000")); // Vite, React, etc.
 
-        // Allow credentials (cookies, auth headers, etc.)
+        config.setAllowedOriginPatterns(List.of(
+                "http://localhost:5173",
+                "http://localhost:3000",
+                "https://*.campusdock.live"   // all subdomains
+        ));
+
         config.setAllowCredentials(true);
-
-        // Allow common headers
         config.addAllowedHeader("*");
-
-        // Allow HTTP methods
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-        // Expose headers (optional)
         config.addExposedHeader("Authorization");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // Apply to all routes
+        source.registerCorsConfiguration("/**", config);
 
         return new CorsFilter(source);
     }
