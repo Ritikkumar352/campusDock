@@ -126,8 +126,21 @@ public class CartServiceImpl implements CartService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
-        Cart cart = cartRepo.findByUser(user)
-                .orElseThrow(() -> new RuntimeException("Cart not found for user: " + userId));
+        // 2. Find the cart, OR create a new one if it doesn't exist and there are items to sync.
+        Cart cart = cartRepo.findByUser(user).orElseGet(() -> {
+            // Only create a new cart if the sync request actually contains items.
+            if (items.isEmpty()) {
+                // If the local cart is empty and no server cart exists, there's nothing to do.
+                return null;
+            }
+            // Create a new cart associated with the canteen of the FIRST item in the sync list.
+            return createCartForUser(userId, UUID.fromString(items.get(0).getMenuItemId()));
+        });
+
+        // If no cart existed and the sync was empty, cart will be null. We can exit.
+        if (cart == null) {
+            return;
+        }
 
         // 2. Clear the existing items from the server-side cart.
         // The 'orphanRemoval=true' in your Cart entity will delete them from the database.
@@ -136,7 +149,10 @@ public class CartServiceImpl implements CartService {
         // 3. Rebuild the cart from the items sent by the mobile app
         for (CartSyncItemDto syncItemDto : items) {
             // Find the corresponding menu item from the database
-            MenuItems menuItem = menuItemsRepo.findById(syncItemDto.getMenuItemId())
+
+            if (syncItemDto.getQuantity() <= 0) continue; // validation
+
+            MenuItems menuItem = menuItemsRepo.findById(UUID.fromString(syncItemDto.getMenuItemId()))
                     .orElseThrow(() -> new RuntimeException("Menu item not found: " + syncItemDto.getMenuItemId()));
 
             // Create a new CartItem entity
