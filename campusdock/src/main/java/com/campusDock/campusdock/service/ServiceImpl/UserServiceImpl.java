@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -43,7 +45,8 @@ public class UserServiceImpl implements UserService {
         for (User user : users) {
             try {
                 if (user != null && user.getEmail() != null) { // simple validation
-                    UserListDto dto = new UserListDto(user.getId(), user.getName(), user.getEmail(), user.getRole());
+                    //UserListDto dto = new UserListDto(user.getId(), user.getName(), user.getEmail(),user.getRole());
+                    UserListDto dto=new UserListDto(user.getAnonymousName(),user.getEmail(),user.getId(),user.getName(),user.getRole());
                     userListDtos.add(dto);
                 }
             } catch (Exception e) {
@@ -70,6 +73,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword("otp-login"); // TODO: Handle securely later
         user.setEmail(email);
         user.setCollege(college);
+        user.setAnonymousName(generateAnonymousName());
 
         // Determine role based on second part of email
         try {
@@ -95,9 +99,47 @@ public class UserServiceImpl implements UserService {
                 .name(user.getName())
                 .email(user.getEmail())
                 .role(user.getRole())
+                .anonymousName(user.getAnonymousName())
                 .build();
 
+
+
     }
+    private String generateAnonymousName() {
+        String[] adjectives = {"AuraFarming", "BudgetBaba", "Desi", "PhalFruits", "PeecheKa",
+                "Bollywood", "Chillam", "SwagWala", "TotallyPakka", "Mast",
+                "AndazApna", "Thalaivar", "KahaniMein", "Jugaadu", "Sanskari",
+                "Skibidi", "Delulu", "Brainrot", "Chill", "Dank",
+                "Sigma", "NPC", "Based", "Goated", "Epic","Jugaadu", "SwagWala", "Mast", "Sanskari", "Bindaas", "Dhaasu",
+                "Fadu", "Khatarnak", "Awaara", "Tirchi", "Ghumantu", "Baadshah",
+                "Desi", "Chill", "Delulu", "Based", "Goated", "Epic",
+                "Turbo", "Quantum", "Cosmic", "Shadow", "Mythic", "Divine",
+                "Celestial", "Spicy", "Wobbly", "Zesty", "Whistling", "Blazing",
+                "Digital", "Astra", "Vedic",
+                "Phantom", "Eternal", "Silent", "Infernal", "Sacred"};
+
+
+        String[] nouns = {
+                "Shaktimaan", "Naagraj",
+                 "Arjuna", "Karna", "Yodha",
+                "Asura", "Rakshasa", "Garuda", "Trishul", "Chakra",
+                "DramaKing", "BollywoodHero", "Mogambo", "Thakur", "Basanti","NPC", "System32", "404Error", "Memelord",
+                "SigmaMale","Jalebi", "VadaPav", "Biskut", "Chai", "Coffee",
+                "Robot", "Glitch", "Pixel", "ChillGuy", "Brainrotter", "DeluluKing", "AuraFarmer",
+                "Goat", "NPCBot", "MemeRaja", "CryptoSadhu", "Techie",
+                "BabaOP", "RickRoll", "BollywoodHero", "DramaKing", "Thalaivar",
+                "SinghIsKing",  "NimbooWarrior", "Techie",
+                "CoderYodha", "CryptoSadhu", "BollywoodDon", "MemeRaja",
+                "DesiLegend", "404NotFound"};
+        Random random = new Random();
+
+        String adjective = adjectives[random.nextInt(adjectives.length)];
+        String noun = nouns[random.nextInt(nouns.length)];
+        int randomNumber = 100 + random.nextInt(900); // Generates a number between 100 and 999
+
+        return adjective + noun + randomNumber;
+    }
+
 
 
 }

@@ -121,6 +121,8 @@ public class User {
     @Column(nullable = false)
     private String name;
 
+    private String anonymousName;
+
     @Column(nullable = false, unique = true)
     private String email;
 

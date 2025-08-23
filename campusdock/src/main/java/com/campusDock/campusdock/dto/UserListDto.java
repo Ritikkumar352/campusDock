@@ -16,5 +16,14 @@ public class UserListDto {
     private UUID id;
     private String name;
     private String email;
+    private String anonymousName;
     private UserRole role;
+
+    public UserListDto(String anonymousName, String email, UUID id, String name, UserRole role) {
+        this.anonymousName = anonymousName;
+        this.email = email;
+        this.id = id;
+        this.name = name;
+        this.role = role;
+    }
 }

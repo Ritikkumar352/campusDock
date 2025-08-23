@@ -81,7 +81,7 @@
 
 package com.campusDock.campusdock.entity;
 
-import com.campusDock.campusdock.Socials.Entity.Channel;
+import com.campusDock.campusdock.Socials.Entity.Topic;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.campusDock.campusdock.Socials.Entity.Post;
 import jakarta.persistence.*;
@@ -125,7 +125,7 @@ public class College {
 
     @OneToMany(mappedBy = "college", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<Channel> channels;       //One College would have many channels associated with it
+    private List<Topic> topics;       //One College would have many topics associated with it
 
 
 }
