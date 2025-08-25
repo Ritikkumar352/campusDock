@@ -10,7 +10,7 @@ import com.campusDock.campusdock.entity.College;
 import com.campusDock.campusdock.entity.MediaFile;
 import com.campusDock.campusdock.entity.User;
 import com.campusDock.campusdock.repository.CollegeRepo;
-import com.campusDock.campusdock.repository.ProductRepo;
+import com.campusDock.campusdock.MarketPlace.repository.ProductRepo;
 import com.campusDock.campusdock.repository.UserRepo;
 import com.campusDock.campusdock.repository.specs.ProductSpecification;
 import com.campusDock.campusdock.service.ServiceImpl.MediaFileServiceImpl;
