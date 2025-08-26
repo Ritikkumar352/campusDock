@@ -27,7 +27,7 @@ const CanteenAdminDashboard = () => {
   // const { collegeId } = props;
   // const collegeId = 'YOUR_DEFAULT_COLLEGE_ID'; // Replace with actual or mock value
   // Use canteenId from session if available, otherwise fallback to default
-  const fallbackCanteenId = 'a410d36b-08f0-4dec-8c3c-aec47aa202cd';
+  const fallbackCanteenId = '118f0000-f919-4ad8-bef8-d65ea75f85b3';
   const canteenId = window.canteenIdFromSession || fallbackCanteenId;
 
   const navigate = useNavigate();

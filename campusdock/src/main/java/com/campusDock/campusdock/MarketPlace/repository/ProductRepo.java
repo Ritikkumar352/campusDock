@@ -1,4 +1,4 @@
-package com.campusDock.campusdock.repository;
+package com.campusDock.campusdock.MarketPlace.repository;
 
 import com.campusDock.campusdock.MarketPlace.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
