@@ -12,9 +12,10 @@ public class HealthController
     @GetMapping
     public String HealthCheck()
     {
-        return "Campus Dock first prototype " +
-                "\n Everything's working " +
-                "\n Go To v0/devs-->new app";
+//        return "Campus Dock first prototype " +
+//                "\n Everything's working " +
+//                "\n Go To v0/devs-->new app";
+        return "Always Pull check ec2";
     }
 
     @GetMapping("v0/devs")
