@@ -1,13 +1,18 @@
 package com.campusDock.campusdock.service;
 
+import com.campusDock.campusdock.entity.Enum.UserRole;
 import com.campusDock.campusdock.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import javax.management.relation.Role;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Instant;
@@ -80,5 +85,30 @@ public class JwtService
 //    String userId = jwtService.extractUserId(token);
 //    String role = jwtService.extractRole(token);
 
+    // TODO :- check above all methods are valid or not
+
+
+
+
 
 }
+
+
+
+////        String role = (String) request.getAttribute("userRole");
+//// Get Authorization header
+//String authHeader = request.getHeader("Authorization");
+//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+//        return new ResponseEntity<>("Missing or invalid Authorization header", HttpStatus.UNAUTHORIZED);
+//        }
+//
+//// Extract JWT
+//String token = authHeader.substring(7);
+//
+//// Extract role from JWT
+//String role = jwtService.extractRole(token);
+//        System.out.println("YOUR ROLE IS :" + role);
+//        if (role == null || (!role.equals("ADMIN") && !role.equals("SUPER_ADMIN") && !role.equals("CANTEEN_OWNER"))) {
+//        System.out.println("YOUR ROLE IS :" + role);
+//            return new ResponseEntity<>("Access Denied: Insufficient role.", HttpStatus.FORBIDDEN);
+//        }
