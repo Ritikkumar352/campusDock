@@ -1,6 +1,5 @@
 package com.campusDock.campusdock.controller;
 
-import com.campusDock.campusdock.dto.PaymentResponseDto;
 import com.campusDock.campusdock.service.PaymentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,8 +71,6 @@ public class PaymentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
         }
     }
-
-
 
 
 }

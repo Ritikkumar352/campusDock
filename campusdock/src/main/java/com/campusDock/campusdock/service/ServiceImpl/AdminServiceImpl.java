@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class AdminServiceImpl implements AdminService {
     private final CanteenRepo canteenRepo;
-    public AdminServiceImpl(UserRepo userRepo,CanteenRepo canteenRepo) {
+
+    public AdminServiceImpl(UserRepo userRepo, CanteenRepo canteenRepo) {
         this.canteenRepo = canteenRepo;
     }
 
@@ -65,8 +65,6 @@ public class AdminServiceImpl implements AdminService {
             return null;
         }
     }
-
-
 
 
 }

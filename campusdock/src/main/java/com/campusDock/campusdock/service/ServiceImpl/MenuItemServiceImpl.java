@@ -83,7 +83,6 @@ public class MenuItemServiceImpl implements MenuItemsService {
     }
 
 
-
     // 2. Get List of all Menu Item in a canteen
     public List<MenuItemDto> getItemsByCanteenId(UUID canteenId) {
         List<MenuItems> menuItems = menuItemsRepo.findByCanteen_Id(canteenId);
@@ -115,7 +114,7 @@ public class MenuItemServiceImpl implements MenuItemsService {
         MenuItems menuItem = menuItemsRepo.findById(id).orElseThrow(() -> new RuntimeException("Menu item not found"));
         List<MediaFile> mediaFiles = menuItem.getMediaFiles();
         List<String> urls = new ArrayList<>();
-        for(MediaFile mediaFile : mediaFiles) {
+        for (MediaFile mediaFile : mediaFiles) {
             urls.add(mediaFile.getUrl());
         }
 

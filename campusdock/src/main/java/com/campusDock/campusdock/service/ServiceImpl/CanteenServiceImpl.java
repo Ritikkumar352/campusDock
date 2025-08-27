@@ -52,7 +52,7 @@ public class CanteenServiceImpl implements CanteenService {
         // save canteen
         Canteen savedCanteen = canteenRepo.save(canteen);
 
-        if (file!=null) {
+        if (file != null) {
             try {
                 MediaFile media = mediaFileServiceImpl.uploadMedia(file);
                 media.setCanteen(savedCanteen);
@@ -66,7 +66,7 @@ public class CanteenServiceImpl implements CanteenService {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
             }
         }
-        response.put("canetten_id",savedCanteen.getId().toString());
+        response.put("canetten_id", savedCanteen.getId().toString());
         return ResponseEntity.ok(response);
     }
 

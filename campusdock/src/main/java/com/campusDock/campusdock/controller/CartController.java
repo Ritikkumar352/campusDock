@@ -1,10 +1,7 @@
 package com.campusDock.campusdock.controller;
 
-import com.campusDock.campusdock.dto.AddToCartRequest;
 import com.campusDock.campusdock.dto.CartDTO;
-import com.campusDock.campusdock.dto.CartResponseDto;
 import com.campusDock.campusdock.dto.CartSyncItemDto;
-import com.campusDock.campusdock.entity.Cart;
 import com.campusDock.campusdock.service.CartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +16,7 @@ import java.util.UUID;
 public class CartController {
 
     private final CartService cartService;
+
     public CartController(CartService cartService) {
         this.cartService = cartService;
     }
@@ -38,8 +36,7 @@ public class CartController {
     public ResponseEntity<?> addItem(
             @RequestParam UUID userId,
             @RequestParam UUID menuItemId,
-            @RequestParam int quantity)
-    {                                                             //Tested and working
+            @RequestParam int quantity) {                                                             //Tested and working
         try {
             CartDTO cart = cartService.addItem(userId, menuItemId, quantity);
             return ResponseEntity.ok(cart);
@@ -55,8 +52,7 @@ public class CartController {
             @RequestParam UUID userId,
             @RequestParam UUID menuItemId,
             @RequestParam int quantity
-    )
-    {                                                             //Tested and TODO-- quantity minus me jaa rahi hai...Fix it with validation
+    ) {                                                             //Tested and TODO-- quantity minus me jaa rahi hai...Fix it with validation
         return cartService.updateQuantity(userId, menuItemId, quantity);
     }
 
@@ -64,8 +60,7 @@ public class CartController {
     public CartDTO removeItem(
             @RequestParam UUID userId,
             @RequestParam UUID menuItemId
-    )
-    {                                                             //Tested and working
+    ) {                                                             //Tested and working
         return cartService.removeItem(userId, menuItemId);
     }
 
@@ -92,7 +87,7 @@ public class CartController {
 //
 //
 //
-//// 1. Get cart of a user (add logged-in user )
+/// / 1. Get cart of a user (add logged-in user )
 //@GetMapping("/{userId}")
 //public ResponseEntity<CartResponseDto> getUserCart(@PathVariable UUID userId) {
 //    return ResponseEntity.ok(cartService.getUserCartDto(userId));

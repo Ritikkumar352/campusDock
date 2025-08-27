@@ -1,22 +1,18 @@
 package com.campusDock.campusdock.service.ServiceImpl;
 
-import com.campusDock.campusdock.dto.OtpResponseStatus;
+import com.campusDock.campusdock.dto.CreateUserDto;
 import com.campusDock.campusdock.dto.UserListDto;
 import com.campusDock.campusdock.entity.College;
-import com.campusDock.campusdock.dto.CreateUserDto;
-//import com.campusDock.campusdock.entity.DTO.UserResponseDto;
 import com.campusDock.campusdock.entity.Enum.UserRole;
 import com.campusDock.campusdock.entity.User;
 import com.campusDock.campusdock.repository.CollegeRepo;
 import com.campusDock.campusdock.repository.UserRepo;
 import com.campusDock.campusdock.service.JwtService;
 import com.campusDock.campusdock.service.UserService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -27,7 +23,8 @@ public class UserServiceImpl implements UserService {
 
     private final AuthServiceImpl authServiceImpl;
     private final JwtService jwtService;
-    public UserServiceImpl(JwtService jwtService,UserRepo userRepo, CollegeRepo collegeRepo,AuthServiceImpl authServiceImpl) {
+
+    public UserServiceImpl(JwtService jwtService, UserRepo userRepo, CollegeRepo collegeRepo, AuthServiceImpl authServiceImpl) {
         this.userRepo = userRepo;
         this.collegeRepo = collegeRepo;
         this.authServiceImpl = authServiceImpl;
@@ -46,7 +43,7 @@ public class UserServiceImpl implements UserService {
         for (User user : users) {
             try {
                 if (user != null && user.getEmail() != null) { // simple validation
-                    UserListDto dto = new UserListDto(user.getId(), user.getName(), user.getEmail(),user.getRole());
+                    UserListDto dto = new UserListDto(user.getId(), user.getName(), user.getEmail(), user.getRole());
                     userListDtos.add(dto);
                 }
             } catch (Exception e) {
@@ -58,13 +55,10 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
-
-
     @Override
     public UserListDto createUser(CreateUserDto createUserDto) {
 
-        String email= createUserDto.getEmail();
+        String email = createUserDto.getEmail();
         String domain = email.substring(email.indexOf("@") + 1);
         College college = collegeRepo.findByDomain(domain)
                 .orElseThrow(() -> new RuntimeException("College not registered for domain: " + domain));
@@ -89,8 +83,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Invalid email format: " + email);
         }
 
-        User saveduser=userRepo.save(user);
-
+        User saveduser = userRepo.save(user);
 
 
         // TODO -> Delete this
@@ -105,7 +98,6 @@ public class UserServiceImpl implements UserService {
                 .build();
 
     }
-
 
 
 }

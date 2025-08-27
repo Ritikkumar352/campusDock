@@ -21,8 +21,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-public class AuthServiceImpl implements AuthService
-{
+public class AuthServiceImpl implements AuthService {
     private final Map<String, String> otpStorage = new ConcurrentHashMap<>();
     private final EmailService emailService;
     private final CollegeRepo collegeRepo;
@@ -56,8 +55,6 @@ public class AuthServiceImpl implements AuthService
     }
 
 
-
-
     @Override
     public ResponseEntity<OtpResponseStatus> verify(String email, String otp) {
         String storedOtp = otpStorage.get(email);
@@ -69,12 +66,9 @@ public class AuthServiceImpl implements AuthService
             Optional<User> existingUser = userRepo.findByEmail(email);
             User user;
 
-            if (existingUser.isPresent())
-            {
+            if (existingUser.isPresent()) {
                 user = existingUser.get();
-            }
-            else
-            {
+            } else {
                 // ➕ Proceed to create a new user
                 String domain = email.substring(email.indexOf("@") + 1);
                 College college = collegeRepo.findByDomain(domain)
@@ -114,9 +108,7 @@ public class AuthServiceImpl implements AuthService
                             .token(token)
                             .build()
             );
-        }
-        else
-        {
+        } else {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(OtpResponseStatus.builder()
@@ -131,7 +123,6 @@ public class AuthServiceImpl implements AuthService
         int otp = new Random().nextInt(9000) + 1000; // 4-digit
         return String.valueOf(otp);
     }
-
 
 
     //  For random email testing

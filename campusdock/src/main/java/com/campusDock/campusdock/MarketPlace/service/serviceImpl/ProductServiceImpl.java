@@ -3,14 +3,14 @@ package com.campusDock.campusdock.MarketPlace.service.serviceImpl;
 import com.campusDock.campusdock.MarketPlace.dto.MediaDetailsDto;
 import com.campusDock.campusdock.MarketPlace.dto.ProductCreateDto;
 import com.campusDock.campusdock.MarketPlace.dto.ProductDetailDto;
-import com.campusDock.campusdock.MarketPlace.entity.Product;
-import com.campusDock.campusdock.MarketPlace.service.ProductService;
 import com.campusDock.campusdock.MarketPlace.dto.ProductDto;
+import com.campusDock.campusdock.MarketPlace.entity.Product;
+import com.campusDock.campusdock.MarketPlace.repository.ProductRepo;
+import com.campusDock.campusdock.MarketPlace.service.ProductService;
 import com.campusDock.campusdock.entity.College;
 import com.campusDock.campusdock.entity.MediaFile;
 import com.campusDock.campusdock.entity.User;
 import com.campusDock.campusdock.repository.CollegeRepo;
-import com.campusDock.campusdock.MarketPlace.repository.ProductRepo;
 import com.campusDock.campusdock.repository.UserRepo;
 import com.campusDock.campusdock.repository.specs.ProductSpecification;
 import com.campusDock.campusdock.service.ServiceImpl.MediaFileServiceImpl;
@@ -188,7 +188,7 @@ public class ProductServiceImpl implements ProductService {
 
         List<String> urls = new ArrayList<>();
 
-       //Loop through the media files and add each URL to the list
+        //Loop through the media files and add each URL to the list
         if (product.getMediaFiles() != null) {
             for (MediaFile mediaFile : product.getMediaFiles()) {
                 urls.add(mediaFile.getUrl());

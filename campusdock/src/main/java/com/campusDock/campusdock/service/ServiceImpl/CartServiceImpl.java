@@ -1,6 +1,8 @@
 package com.campusDock.campusdock.service.ServiceImpl;
 
-import com.campusDock.campusdock.dto.*;
+import com.campusDock.campusdock.dto.CartDTO;
+import com.campusDock.campusdock.dto.CartMapper;
+import com.campusDock.campusdock.dto.CartSyncItemDto;
 import com.campusDock.campusdock.entity.Cart;
 import com.campusDock.campusdock.entity.CartItem;
 import com.campusDock.campusdock.entity.Enum.CartItemStatus;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -25,6 +26,7 @@ public class CartServiceImpl implements CartService {
     private final UserRepo userRepo;
     private final MenuItemsRepo menuItemsRepo;
     private final CartItemRepo cartItemRepo;
+
     public CartServiceImpl(
             CartRepo cartRepo,
             UserRepo userRepo,
@@ -172,7 +174,7 @@ public class CartServiceImpl implements CartService {
 }
 
 //
-//// 1. get user cart
+/// / 1. get user cart
 //@Override
 //public Cart getOrCreateUserCart(UUID userId) {
 //    return cartRepo.findByUserId(userId)

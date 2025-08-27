@@ -3,7 +3,6 @@ package com.campusDock.campusdock.controller;
 import com.campusDock.campusdock.dto.CreateUserDto;
 import com.campusDock.campusdock.dto.UserListDto;
 import com.campusDock.campusdock.entity.Enum.UserRole;
-import com.campusDock.campusdock.entity.User;
 import com.campusDock.campusdock.service.UserService;
 import com.campusDock.campusdock.util.RoleValidator;
 import jakarta.servlet.http.HttpServletRequest;

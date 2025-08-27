@@ -1,16 +1,14 @@
 package com.campusDock.campusdock.controller;
 
 import com.campusDock.campusdock.dto.CollegeNameAndDomainDto;
-import com.campusDock.campusdock.entity.College;
 import com.campusDock.campusdock.dto.CollegeResponseDto;
 import com.campusDock.campusdock.dto.CreateCollegeDto;
+import com.campusDock.campusdock.entity.College;
 import com.campusDock.campusdock.entity.Enum.UserRole;
 import com.campusDock.campusdock.service.CollegeService;
-import com.campusDock.campusdock.service.UserService;
 import com.campusDock.campusdock.util.RoleValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -30,17 +28,15 @@ public class CollegeController {
     }
 
 
-
-    @GetMapping("/checking")  // -> EVERYTING -> college-> student -> canteen-> menu-> menuItem-> menu item detail-> media
-    public List<College> getDetailedInfo()
-    {
+    @GetMapping("/checking")
+    // -> EVERYTING -> college-> student -> canteen-> menu-> menuItem-> menu item detail-> media
+    public List<College> getDetailedInfo() {
         return collegeService.getAll();
     }
 
     //Getting college be CollegeResponseDto
     @GetMapping
-    public List<CollegeResponseDto> getAllCollege()
-    {
+    public List<CollegeResponseDto> getAllCollege() {
         return collegeService.getAll().stream()
                 .map(CollegeResponseDto::new)
                 .collect(Collectors.toList());
@@ -48,8 +44,7 @@ public class CollegeController {
     }
 
     @GetMapping("/name")   //just name and domain
-    public List<CollegeNameAndDomainDto> getAllResgisteredCollegeName()
-    {
+    public List<CollegeNameAndDomainDto> getAllResgisteredCollegeName() {
         return collegeService.getAllCollegeName();
     }
 
@@ -61,7 +56,7 @@ public class CollegeController {
         if (!roleValidator.hasAccess(request, UserRole.SUPER_ADMIN)) {
 //            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
-                // TODO :- Change return response type in Frontend also
+            // TODO :- Change return response type in Frontend also
         }
 
         return collegeService.create(createCollegeDto);

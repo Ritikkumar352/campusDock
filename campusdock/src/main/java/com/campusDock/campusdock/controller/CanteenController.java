@@ -75,7 +75,7 @@ public class CanteenController {
     public ResponseEntity<CanteenDto> toggleCanteenOpen(
             @PathVariable("canteenId") UUID canteenId,
             HttpServletRequest request
-            ) {
+    ) {
         if (!roleValidator.hasAccess(request,
                 UserRole.SUPER_ADMIN,
                 UserRole.ADMIN,
