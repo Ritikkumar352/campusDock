@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
         try {
             String afterFirstDot = email.substring(email.indexOf('.') + 1, email.indexOf('@'));
             if (afterFirstDot.matches(".*\\d.*")) {
-                user.setRole(UserRole.SUPER_ADMIN);
+                user.setRole(UserRole.STUDENT);
             } else {
                 user.setRole(UserRole.FACULTY);
             }

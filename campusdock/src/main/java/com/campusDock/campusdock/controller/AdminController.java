@@ -1,7 +1,10 @@
 package com.campusDock.campusdock.controller;
 
 import com.campusDock.campusdock.dto.CanteenOwnerRegisterDto;
+import com.campusDock.campusdock.entity.Enum.UserRole;
 import com.campusDock.campusdock.service.AdminService;
+import com.campusDock.campusdock.util.RoleValidator;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +19,27 @@ public class AdminController {
 
 
     private final AdminService adminService;
-    public AdminController(AdminService adminService) {
+    private final RoleValidator roleValidator;
+
+    public AdminController(AdminService adminService, RoleValidator roleValidator) {
         this.adminService = adminService;
+        this.roleValidator = roleValidator;
     }
 
     // 1. Canteen Owner registration
     @PostMapping("/owners")
-    public ResponseEntity<?> registerOwner(@RequestBody CanteenOwnerRegisterDto canteenOwner) {
+    public ResponseEntity<?> registerOwner(
+            @RequestBody CanteenOwnerRegisterDto canteenOwner,
+            HttpServletRequest request
+    ) {
+        if (!roleValidator.hasAccess(request,
+                UserRole.SUPER_ADMIN,
+                UserRole.ADMIN
+        )
+        ) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         try {
             String ownerId = adminService.registerOwner(canteenOwner);
 
@@ -43,7 +60,17 @@ public class AdminController {
     }
 
     @GetMapping("/getCanteenOwners/{canteenId}")
-    public ResponseEntity<?> getCanteenOwners(@PathVariable UUID canteenId) {
+    public ResponseEntity<?> getCanteenOwners(
+            @PathVariable UUID canteenId,
+            HttpServletRequest request
+    ) {
+        if (!roleValidator.hasAccess(request,
+                UserRole.SUPER_ADMIN,
+                UserRole.ADMIN
+        )
+        ) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         Map<String, String> ownerInfo = adminService.getCanteenOwner(canteenId);
 
         return ResponseEntity.ok(ownerInfo); // could be null
