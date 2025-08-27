@@ -1,5 +1,6 @@
 package com.campusDock.campusdock.service.ServiceImpl;
 
+import com.campusDock.campusdock.dto.OtpResponseStatus;
 import com.campusDock.campusdock.dto.UserListDto;
 import com.campusDock.campusdock.entity.College;
 import com.campusDock.campusdock.dto.CreateUserDto;
@@ -8,7 +9,9 @@ import com.campusDock.campusdock.entity.Enum.UserRole;
 import com.campusDock.campusdock.entity.User;
 import com.campusDock.campusdock.repository.CollegeRepo;
 import com.campusDock.campusdock.repository.UserRepo;
+import com.campusDock.campusdock.service.JwtService;
 import com.campusDock.campusdock.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,9 +25,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
     private final CollegeRepo collegeRepo;
 
-    public UserServiceImpl(UserRepo userRepo, CollegeRepo collegeRepo) {
+    private final AuthServiceImpl authServiceImpl;
+    private final JwtService jwtService;
+    public UserServiceImpl(JwtService jwtService,UserRepo userRepo, CollegeRepo collegeRepo,AuthServiceImpl authServiceImpl) {
         this.userRepo = userRepo;
         this.collegeRepo = collegeRepo;
+        this.authServiceImpl = authServiceImpl;
+        this.jwtService = jwtService;
     }
 
 //    @Override
@@ -74,7 +81,7 @@ public class UserServiceImpl implements UserService {
         try {
             String afterFirstDot = email.substring(email.indexOf('.') + 1, email.indexOf('@'));
             if (afterFirstDot.matches(".*\\d.*")) {
-                user.setRole(UserRole.STUDENT);
+                user.setRole(UserRole.SUPER_ADMIN);
             } else {
                 user.setRole(UserRole.FACULTY);
             }
@@ -82,7 +89,13 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Invalid email format: " + email);
         }
 
-        userRepo.save(user);
+        User saveduser=userRepo.save(user);
+
+
+
+        // TODO -> Delete this
+        System.out.println(jwtService.generateToken(saveduser));
+
 
         return UserListDto.builder()
                 .id(user.getId())
@@ -90,8 +103,6 @@ public class UserServiceImpl implements UserService {
                 .email(user.getEmail())
                 .role(user.getRole())
                 .build();
-
-
 
     }
 

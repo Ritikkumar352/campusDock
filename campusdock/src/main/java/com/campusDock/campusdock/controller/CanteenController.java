@@ -3,7 +3,10 @@ package com.campusDock.campusdock.controller;
 import com.campusDock.campusdock.dto.CanteenDto;
 import com.campusDock.campusdock.dto.CanteenListDto;
 import com.campusDock.campusdock.dto.CanteenRequestDto;
+import com.campusDock.campusdock.service.JwtService;
 import com.campusDock.campusdock.service.ServiceImpl.CanteenServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,17 +20,38 @@ import java.util.UUID;
 public class CanteenController {
 
     private final CanteenServiceImpl canteenService;
+    private final JwtService jwtService;
 
-    public CanteenController(CanteenServiceImpl canteenService) {
+    public CanteenController(CanteenServiceImpl canteenService,JwtService jwtService) {
         this.canteenService = canteenService;
+        this.jwtService = jwtService;
     }
 
     // 1. Register Canteen  -- Done
     @PostMapping("/{collegeId}/canteens")
-    public ResponseEntity<Map<String, String>> registerCanteen(
+//    public ResponseEntity<Map<String, String>> registerCanteen(
+    public ResponseEntity<?> registerCanteen(
             @RequestPart(value = "canteen", required = false) CanteenRequestDto canteenRequest,
-            @RequestPart(value = "media_file", required = false) MultipartFile file
+            @RequestPart(value = "media_file", required = false) MultipartFile file,
+            HttpServletRequest request
     ) {
+//        String role = (String) request.getAttribute("userRole");
+        // Get Authorization header
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return new ResponseEntity<>("Missing or invalid Authorization header", HttpStatus.UNAUTHORIZED);
+        }
+
+        // Extract JWT
+        String token = authHeader.substring(7);
+
+        // Extract role from JWT
+        String role = jwtService.extractRole(token);
+        System.out.println("YOUR ROLE IS :" + role);
+        if (role == null || (!role.equals("ADMIN") && !role.equals("SUPER_ADMIN") && !role.equals("CANTEEN_OWNER"))) {
+            System.out.println("YOUR ROLE IS :" + role);
+            return new ResponseEntity<>("Access Denied: Insufficient role.", HttpStatus.FORBIDDEN);
+        }
         return canteenService.registerCanteen(canteenRequest, file);
     }
 
