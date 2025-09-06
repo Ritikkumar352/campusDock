@@ -2,6 +2,7 @@ package com.campusDock.campusdock.Socials.DTO;
 import com.campusDock.campusdock.Socials.Entity.Comment;
 import com.campusDock.campusdock.Socials.Entity.Poll;
 import com.campusDock.campusdock.Socials.Entity.Topic;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
@@ -20,6 +21,7 @@ public class PostResponse {
     private String authorAnonymousName;
     private UUID authorId;
     private String topicName; // Will return only the topic name here, not the full Topic object
+    @JsonProperty("isAnonymous")
     private boolean isAnonymous;
     private LocalDateTime createdAt;
     private int upvoteCount;

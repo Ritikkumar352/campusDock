@@ -14,4 +14,6 @@ public interface TopicService {
     Topic createTopic(TopicRequest topicRequest);
 
     List<TopicResponse> getAllTopicsWithPostCount();
+
+    List<TopicResponse> getAllTopicsByCollegeId(UUID collegeId);
 }

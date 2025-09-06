@@ -27,25 +27,26 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<List<PostResponse>> getAllPosts() {
-        List<Post> posts = postService.getAllPosts();
-        List<PostResponse> postResponses = posts.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+        List<PostResponse> postResponses = postService.getAllPosts();
+        return ResponseEntity.ok(postResponses);
+    }
+
+    @GetMapping("/college/{id}")
+    public ResponseEntity<List<PostResponse>> getAllPostsByCollegeId(@PathVariable UUID id) {
+        List<PostResponse> postResponses = postService.getAllPostsByCollegeId(id);
         return ResponseEntity.ok(postResponses);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PostResponse> getPostById(@PathVariable UUID id) {
         return postService.getPostById(id)
-                .map(this::convertToDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ResponseEntity<PostResponse> createPost(@RequestBody PostRequest postRequest) {
-        Post newPost = postService.createPost(postRequest);
-        PostResponse responseDto = convertToDto(newPost);
+        PostResponse responseDto = postService.createPost(postRequest);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
@@ -62,28 +63,4 @@ public class PostController {
         }
     }
 
-    private PostResponse convertToDto(Post post) {
-//        int upvotes = (int) post.getVotes().stream().filter(v -> v.getVoteType() == VoteType.UPVOTE).count();
-//        int downvotes = (int) post.getVotes().stream().filter(v -> v.getVoteType() == VoteType.DOWNVOTE).count();
-
-        int upvotes = (int) (post.getVotes() != null ? post.getVotes().stream().filter(v -> v.getVoteType() == VoteType.UPVOTE).count() : 0);
-        int downvotes = (int) (post.getVotes() != null ? post.getVotes().stream().filter(v -> v.getVoteType() == VoteType.DOWNVOTE).count() : 0);
-
-        String authorDisplayName = post.getIsAnonymous() ? post.getAuthor().getAnonymousName() : post.getAuthor().getName();
-
-
-        return PostResponse.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .imageUrl(post.getImageUrl())
-                .authorName(authorDisplayName)
-                .isAnonymous(post.getIsAnonymous())
-                .topicName(post.getTopic().getName())
-                .createdAt(post.getCreatedAt())
-                .upvoteCount(upvotes)
-                .downvoteCount(downvotes)
-                .commentCount(post.getComments().size())
-                .build();
-    }
 }

@@ -4,6 +4,7 @@ import com.campusDock.campusdock.Socials.Entity.Post;
 import com.campusDock.campusdock.Socials.Entity.Topic;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,4 +16,7 @@ public interface TopicRepo extends JpaRepository<Topic, UUID> {
 
     @Query("SELECT t, COUNT(p) FROM Topic t LEFT JOIN t.posts p GROUP BY t")
     List<Object[]> findAllTopicsWithPostCount();
+
+    @Query("SELECT t, COUNT(p) FROM Topic t LEFT JOIN t.posts p WHERE t.college.id = :collegeId GROUP BY t")
+    List<Object[]> findAllTopicsByCollegeIdWithPostCount(@Param("collegeId") UUID collegeId);
 }

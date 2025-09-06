@@ -27,7 +27,7 @@ public class Post {
     @Column(nullable = false)
     private String title;
 
-    @Lob // For longer text content
+
     @Column(columnDefinition = "TEXT")
     private String content;
 
@@ -78,7 +78,7 @@ public class Post {
         return isAnonymous;
     }
 
-    public void setAnonymous(boolean anonymous) {
-        isAnonymous = anonymous;
+    public void setIsAnonymous(boolean isAnonymous) {
+        this.isAnonymous = isAnonymous;
     }
 }

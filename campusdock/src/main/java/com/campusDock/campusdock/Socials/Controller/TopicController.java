@@ -28,6 +28,12 @@ public class TopicController {
         return ResponseEntity.ok(topicResponses);
     }
 
+    @GetMapping("/college/{collegeId}")
+    public ResponseEntity<List<TopicResponse>> getAllTopicsByCollegeId(@PathVariable UUID collegeId) {
+        List<TopicResponse> topicResponses = topicService.getAllTopicsByCollegeId(collegeId);
+        return ResponseEntity.ok(topicResponses);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<TopicResponse> getTopicById(@PathVariable UUID id) {
         return topicService.getTopicById(id)

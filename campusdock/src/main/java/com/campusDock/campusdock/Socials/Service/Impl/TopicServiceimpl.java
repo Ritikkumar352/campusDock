@@ -76,4 +76,21 @@ public class TopicServiceimpl implements TopicService {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<TopicResponse> getAllTopicsByCollegeId(UUID collegeId) {
+        List<Object[]> results = topicRepo.findAllTopicsByCollegeIdWithPostCount(collegeId);
+        return results.stream()
+                .map(result ->{
+                    Topic topic = (Topic) result[0];
+                    Long postCount = (Long) result[1];
+                    return TopicResponse.builder()
+                            .id(topic.getId())
+                            .name(topic.getName())
+                            .description(topic.getDescription())
+                            .postCount(postCount.intValue())
+                            .build();
+                }).collect(Collectors.toList());
+
+    }
 }

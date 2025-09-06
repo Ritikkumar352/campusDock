@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -105,6 +106,12 @@ public class UserServiceImpl implements UserService {
 
 
     }
+
+    @Override
+    public User getUserById(UUID id) {
+        return userRepo.findById(id).orElseThrow(()->new RuntimeException("User not found with user id:"+id));
+    }
+
     private String generateAnonymousName() {
         String[] adjectives = {"AuraFarming", "BudgetBaba", "Desi", "PhalFruits", "PeecheKa",
                 "Bollywood", "Chillam", "SwagWala", "TotallyPakka", "Mast",

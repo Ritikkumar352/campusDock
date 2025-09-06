@@ -3,6 +3,7 @@ package com.campusDock.campusdock.controller;
 import com.campusDock.campusdock.dto.CreateUserDto;
 import com.campusDock.campusdock.dto.UserListDto;
 import com.campusDock.campusdock.entity.Enum.UserRole;
+import com.campusDock.campusdock.entity.User;
 import com.campusDock.campusdock.service.UserService;
 import com.campusDock.campusdock.util.RoleValidator;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -29,6 +31,12 @@ public class UserController {
 //        List<User> users = userService.getAllUsers();
 //        return new ResponseEntity<>(users, HttpStatus.OK);
 //    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable UUID id) {
+        System.out.println("Inside getUserById , User controller");
+        return ResponseEntity.ok(userService.getUserById(id));
+    }
 
     @GetMapping
     // Get list of all user in a colllege
