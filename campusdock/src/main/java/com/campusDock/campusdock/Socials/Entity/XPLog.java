@@ -1,5 +1,6 @@
 package com.campusDock.campusdock.Socials.Entity;
 
+import com.campusDock.campusdock.Socials.Entity.Enum.ActionType;
 import com.campusDock.campusdock.entity.User;
 import jakarta.persistence.*;
 import lombok.*;

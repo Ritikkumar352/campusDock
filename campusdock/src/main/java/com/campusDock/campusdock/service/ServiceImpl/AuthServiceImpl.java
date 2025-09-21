@@ -81,6 +81,7 @@ public class AuthServiceImpl implements AuthService {
                 user.setPassword("otp-login"); // TODO: Handle securely later
                 user.setEmail(email);
                 user.setCollege(college);
+                user.setAnonymousName(generateAnonymousName());
 
                 // Determine role based on second part of email
                 try {
@@ -122,6 +123,41 @@ public class AuthServiceImpl implements AuthService {
     private String generateOtp() {
         int otp = new Random().nextInt(9000) + 1000; // 4-digit
         return String.valueOf(otp);
+    }
+
+    private String generateAnonymousName() {
+        String[] adjectives = {"AuraFarming", "BudgetBaba", "Desi", "PhalFruits", "PeecheKa",
+                "Bollywood", "Chillam", "SwagWala", "TotallyPakka", "Mast",
+                "AndazApna", "Thalaivar", "KahaniMein", "Jugaadu", "Sanskari",
+                "Skibidi", "Delulu", "Brainrot", "Chill", "Dank",
+                "Sigma", "NPC", "Based", "Goated", "Epic","Jugaadu", "SwagWala", "Mast", "Sanskari", "Bindaas", "Dhaasu",
+                "Fadu", "Khatarnak", "Awaara", "Tirchi", "Ghumantu", "Baadshah",
+                "Desi", "Chill", "Delulu", "Based", "Goated", "Epic",
+                "Turbo", "Quantum", "Cosmic", "Shadow", "Mythic", "Divine",
+                "Celestial", "Spicy", "Wobbly", "Zesty", "Whistling", "Blazing",
+                "Digital", "Astra", "Vedic",
+                "Phantom", "Eternal", "Silent", "Infernal", "Sacred"};
+
+
+        String[] nouns = {
+                "Shaktimaan", "Naagraj",
+                "Arjuna", "Karna", "Yodha",
+                "Asura", "Rakshasa", "Garuda", "Trishul", "Chakra",
+                "DramaKing", "BollywoodHero", "Mogambo", "Thakur", "Basanti","NPC", "System32", "404Error", "Memelord",
+                "SigmaMale","Jalebi", "VadaPav", "Biskut", "Chai", "Coffee",
+                "Robot", "Glitch", "Pixel", "ChillGuy", "Brainrotter", "DeluluKing", "AuraFarmer",
+                "Goat", "NPCBot", "MemeRaja", "CryptoSadhu", "Techie",
+                "BabaOP", "RickRoll", "BollywoodHero", "DramaKing", "Thalaivar",
+                "SinghIsKing",  "NimbooWarrior", "Techie",
+                "CoderYodha", "CryptoSadhu", "BollywoodDon", "MemeRaja",
+                "DesiLegend", "404NotFound"};
+        Random random = new Random();
+
+        String adjective = adjectives[random.nextInt(adjectives.length)];
+        String noun = nouns[random.nextInt(nouns.length)];
+        int randomNumber = 100 + random.nextInt(900); // Generates a number between 100 and 999
+
+        return adjective + noun + randomNumber;
     }
 
 

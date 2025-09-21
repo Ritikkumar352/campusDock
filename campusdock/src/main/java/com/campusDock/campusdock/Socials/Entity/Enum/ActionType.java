@@ -1,4 +1,4 @@
-package com.campusDock.campusdock.Socials.Entity;
+package com.campusDock.campusdock.Socials.Entity.Enum;
 
 public enum ActionType {       //Factors on which we will reward
     NEW_POST,
