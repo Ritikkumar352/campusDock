@@ -63,4 +63,12 @@ public class PostController {
         }
     }
 
+
+    @GetMapping("college/{id}/trending")
+    public ResponseEntity<List<PostResponse>> getTrendingPostsByCollegeId(@PathVariable UUID id){
+        List<PostResponse> postResponses = postService.getTopTrendingPostsByCollegeId(id);
+        return ResponseEntity.ok(postResponses);
+
+    }
+
 }

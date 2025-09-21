@@ -15,6 +15,7 @@ import com.campusDock.campusdock.entity.User;
 import com.campusDock.campusdock.repository.CollegeRepo;
 import com.campusDock.campusdock.repository.UserRepo;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
@@ -139,6 +140,13 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<PostResponse> getTopTrendingPostsByCollegeId(UUID collegeId) {
+        PageRequest pageable = PageRequest.of(0, 5);
+        return postRepo.findTrendingByCollegeId(collegeId, pageable).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
 
 
     private PostResponse convertToDto(Post post) {
