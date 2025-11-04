@@ -1,6 +1,8 @@
 package com.campusDock.campusdock.service.ServiceImpl;
 
 import com.campusDock.campusdock.dto.CreateUserDto;
+import com.campusDock.campusdock.dto.LoginRequestDto;
+import com.campusDock.campusdock.dto.LoginResponseDto;
 import com.campusDock.campusdock.dto.OtpResponse;
 import com.campusDock.campusdock.dto.OtpResponseStatus;
 import com.campusDock.campusdock.entity.College;
@@ -117,6 +119,61 @@ public class AuthServiceImpl implements AuthService {
                             .message("Invalid or expired OTP")
                             .build()
                     );
+        }
+    }
+
+    @Override
+    public ResponseEntity<LoginResponseDto> login(LoginRequestDto request) {
+        Optional<User> userOptional = userRepo.findByEmail(request.getEmail());
+
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(LoginResponseDto.builder()
+                            .success(false)
+                            .message("Invalid email or password")
+                            .build());
+        }
+
+        User user = userOptional.get();
+
+        if (user.getRole() != UserRole.CANTEEN_OWNER && user.getRole() != UserRole.ADMIN) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(LoginResponseDto.builder()
+                            .success(false)
+                            .message("Access denied for role: " + user.getRole())
+                            .build());
+        }
+
+        if (!user.getPassword().equals(request.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(LoginResponseDto.builder()
+                            .success(false)
+                            .message("Invalid email or password")
+                            .build());
+        }
+
+        if (user.getCollege() == null && user.getCanteenOwner() != null && user.getCanteenOwner().getCollege() != null) {
+            user.setCollege(user.getCanteenOwner().getCollege());
+            userRepo.save(user);
+        }
+
+        try {
+            String token = jwtService.generateToken(user);
+            return ResponseEntity.ok(
+                    LoginResponseDto.builder()
+                            .success(true)
+                            .message("Login successful")
+                            .token(token)
+                            .role(user.getRole().name())
+                            .userId(user.getId().toString())
+                            .build()
+            );
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(LoginResponseDto.builder()
+                            .success(false)
+                            .message("Failed to generate token")
+                            .build());
         }
     }
 

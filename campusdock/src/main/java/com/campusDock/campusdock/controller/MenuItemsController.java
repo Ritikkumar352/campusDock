@@ -3,10 +3,7 @@ package com.campusDock.campusdock.controller;
 import com.campusDock.campusdock.dto.DetailedMenuItemDto;
 import com.campusDock.campusdock.dto.MenuItemDto;
 import com.campusDock.campusdock.dto.MenuItemRequestDto;
-import com.campusDock.campusdock.entity.Enum.UserRole;
 import com.campusDock.campusdock.service.ServiceImpl.MenuItemServiceImpl;
-import com.campusDock.campusdock.util.RoleValidator;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +19,8 @@ import java.util.UUID;
 public class MenuItemsController {
 
     private final MenuItemServiceImpl menuItemService;
-    private final RoleValidator roleValidator;
 
-    public MenuItemsController(MenuItemServiceImpl menuItemService, RoleValidator roleValidator) {
-        this.roleValidator = roleValidator;
+    public MenuItemsController(MenuItemServiceImpl menuItemService) {
         this.menuItemService = menuItemService;
     }
 
@@ -35,16 +30,8 @@ public class MenuItemsController {
     public ResponseEntity<Map<String, Object>> addMenuItem(
             @PathVariable UUID canteenId,
             @RequestPart("menuItem") MenuItemRequestDto dto,
-            @RequestPart(value = "files", required = false) List<MultipartFile> files,
-            HttpServletRequest request
+            @RequestPart(value = "files", required = false) List<MultipartFile> files
     ) {
-        // Not allowed if not Admin or Super Admin
-        if (!roleValidator.hasAccess(request,
-                UserRole.SUPER_ADMIN,
-                UserRole.ADMIN)
-        ) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
         return menuItemService.addMenuItem(canteenId, dto, files);
     }
 

@@ -1,6 +1,8 @@
 package com.campusDock.campusdock.controller;
 
 import com.campusDock.campusdock.dto.CreateUserDto;
+import com.campusDock.campusdock.dto.LoginRequestDto;
+import com.campusDock.campusdock.dto.LoginResponseDto;
 import com.campusDock.campusdock.dto.OtpResponse;
 import com.campusDock.campusdock.dto.OtpResponseStatus;
 import com.campusDock.campusdock.service.AuthService;
@@ -27,6 +29,11 @@ public class AuthController {
     @PostMapping("/verifyOTP")
     public ResponseEntity<OtpResponseStatus> verifyOtp(@RequestParam String email, @RequestParam String otp) {
         return authService.verify(email, otp);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto request) {
+        return authService.login(request);
     }
 
 
