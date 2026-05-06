@@ -12,7 +12,7 @@ public class HealthController {
 //        return "Campus Dock first prototype " +
 //                "\n Everything's working " +
 //                "\n Go To v0/devs-->new app";
-        return "Watch Tower on ec2";
+        return "Watch Tower on ec2-no RV";
     }
 
     @GetMapping("v0/devs")
