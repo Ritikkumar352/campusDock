@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
@@ -100,36 +101,42 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void voteOnPost(UUID postId, UUID userId, VoteType voteType) {
+    public PostResponse voteOnPost(UUID postId, UUID userId, VoteType voteType) {
+        if (voteType == null) {
+            throw new IllegalArgumentException("Vote type is required");
+        }
+
         Post post = postRepo.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+                .orElseThrow(() -> new NoSuchElementException("Post not found with id: " + postId));
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        VoteType voteEnum = voteType;
+                .orElseThrow(() -> new NoSuchElementException("User not found with id: " + userId));
 
         // Check if the user has already voted on this post
-        Vote existingVote = voteRepo.findByPostAndUser(post, user);
+        Optional<Vote> existingVote = voteRepo.findByPostAndUser(post, user);
 
-        if (existingVote != null) {
-            if (existingVote.getVoteType() == voteEnum) {
+        if (existingVote.isPresent()) {
+            Vote vote = existingVote.get();
+            if (vote.getVoteType() == voteType) {
                 // Same vote type, so remove the vote (un-vote)
-                voteRepo.delete(existingVote);
+                voteRepo.delete(vote);
             } else {
                 // Different vote type, so update the existing vote
-                existingVote.setVoteType(voteEnum);
-                voteRepo.save(existingVote);
+                vote.setVoteType(voteType);
+                voteRepo.save(vote);
             }
         } else {
             // New vote
             Vote newVote = Vote.builder()
                     .post(post)
                     .user(user)
-                    .voteType(voteEnum)
+                    .voteType(voteType)
                     .build();
             voteRepo.save(newVote);
         }
 
-
+        Post updatedPost = postRepo.findById(postId)
+                .orElseThrow(() -> new NoSuchElementException("Post not found with id: " + postId));
+        return convertToDto(updatedPost);
     }
 
     @Override
@@ -173,6 +180,9 @@ public class PostServiceImpl implements PostService {
                 .content(post.getContent())
                 .imageUrl(post.getImageUrl())
                 .authorName(authorDisplayName)
+                .authorProfilePicUrl(post.getAuthor().getProfilePicUrl())
+                .authorAnonymousName(post.getAuthor().getAnonymousName())
+                .authorId(post.getAuthor().getId())
                 .isAnonymous(post.getIsAnonymous())
                 .topicName(post.getTopic().getName())
                 .createdAt(post.getCreatedAt())
