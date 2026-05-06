@@ -4,6 +4,8 @@ import com.campusDock.campusdock.dto.CreateUserDto;
 //import com.campusDock.campusdock.entity.DTO.UserResponseDto;
 import com.campusDock.campusdock.dto.UserListDto;
 import com.campusDock.campusdock.entity.User;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -18,4 +20,8 @@ public interface UserService {
     UserListDto createUser(CreateUserDto createUserDto);
 
     User getUserById(UUID id);
+
+    String uploadProfilePic(UUID userId, MultipartFile file);
+
+    String getProfilePicUrl(UUID userId);
 }

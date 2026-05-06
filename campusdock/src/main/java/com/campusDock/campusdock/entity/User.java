@@ -130,6 +130,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "profile_pic_url")
+    private String profilePicUrl;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
