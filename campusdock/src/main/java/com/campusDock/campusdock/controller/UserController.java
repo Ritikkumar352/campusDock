@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @RestController
@@ -30,9 +31,18 @@ public class UserController {
 //    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable UUID id) {
+    public ResponseEntity<UserListDto> getUserById(@PathVariable UUID id) {
         System.out.println("Inside getUserById , User controller");
-        return ResponseEntity.ok(userService.getUserById(id));
+        User user = userService.getUserById(id);
+        UserListDto userDto = UserListDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .anonymousName(user.getAnonymousName())
+                .profilePicUrl(user.getProfilePicUrl())
+                .role(user.getRole())
+                .build();
+        return ResponseEntity.ok(userDto);
     }
 
     @GetMapping
@@ -59,11 +69,29 @@ public class UserController {
             ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
-        } catch (RuntimeException e) {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Failed to upload profile picture"));
+                    .body(Map.of("error", "Failed to upload profile picture: " + e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/profile-pic")
+    public ResponseEntity<?> updateProfilePic(@PathVariable UUID id, @RequestParam("file") MultipartFile file) {
+        try {
+            String profilePicUrl = userService.updateProfilePic(id, file);
+            return ResponseEntity.ok(Map.of(
+                    "message", "Profile picture updated successfully",
+                    "profilePicUrl", profilePicUrl
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to update profile picture: " + e.getMessage()));
         }
     }
 
@@ -72,7 +100,7 @@ public class UserController {
         try {
             String profilePicUrl = userService.getProfilePicUrl(id);
             return ResponseEntity.ok(Map.of("profilePicUrl", profilePicUrl));
-        } catch (RuntimeException e) {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

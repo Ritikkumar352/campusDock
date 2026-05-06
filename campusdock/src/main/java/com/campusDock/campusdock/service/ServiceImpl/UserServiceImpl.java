@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -137,7 +138,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with user id:" + userId));
+                .orElseThrow(() -> new NoSuchElementException("User not found with user id:" + userId));
 
         MediaFile uploadedMedia = mediaFileServiceImpl.uploadMedia(file);
         user.setProfilePicUrl(uploadedMedia.getUrl());
@@ -146,12 +147,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String updateProfilePic(UUID userId, MultipartFile file) {
+        return uploadProfilePic(userId, file);
+    }
+
+    @Override
     public String getProfilePicUrl(UUID userId) {
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with user id:" + userId));
+                .orElseThrow(() -> new NoSuchElementException("User not found with user id:" + userId));
 
         if (user.getProfilePicUrl() == null || user.getProfilePicUrl().isBlank()) {
-            throw new RuntimeException("Profile picture not found for user id:" + userId);
+            throw new NoSuchElementException("Profile picture not found for user id:" + userId);
         }
 
         return user.getProfilePicUrl();

@@ -23,5 +23,7 @@ public interface UserService {
 
     String uploadProfilePic(UUID userId, MultipartFile file);
 
+    String updateProfilePic(UUID userId, MultipartFile file);
+
     String getProfilePicUrl(UUID userId);
 }
