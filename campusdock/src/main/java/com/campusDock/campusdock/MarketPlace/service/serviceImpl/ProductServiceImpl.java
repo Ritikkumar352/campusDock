@@ -54,6 +54,12 @@ public class ProductServiceImpl implements ProductService {
             ProductCreateDto productDto,
             List<MultipartFile> productFiles
     ) {
+        boolean hasAtLeastOneValidFile = productFiles != null
+                && productFiles.stream().anyMatch(file -> file != null && !file.isEmpty());
+        if (!hasAtLeastOneValidFile) {
+            throw new IllegalArgumentException("At least one product image is required");
+        }
+
         User user = userRepo.findById(productDto.getUserId())
                 .orElseThrow(() -> new NoSuchElementException("User with id:- " + productDto.getUserId() + " not found"));
 
@@ -79,20 +85,24 @@ public class ProductServiceImpl implements ProductService {
         //  Process media files (NO save inside uploadMedia!)
         if (productFiles != null && !productFiles.isEmpty()) {
             for (MultipartFile file : productFiles) {
-                if (file != null && !file.isEmpty()) {
-                    try {
-                        MediaFile mediaFile = mediaFileServiceImpl.uploadMedia(file);
+                if (file == null || file.isEmpty()) {
+                    continue;
+                }
+                try {
+                    MediaFile mediaFile = mediaFileServiceImpl.uploadMedia(file);
 
-                        //  set both sides of relationship
-                        mediaFile.setProduct(product);
-                        mediaFileServiceImpl.save(mediaFile);
-                        product.getMediaFiles().add(mediaFile);
-
-                    } catch (Exception e) {
-                        System.err.println("Media upload failed: " + e.getMessage());
-                    }
+                    //  set both sides of relationship
+                    mediaFile.setProduct(product);
+                    mediaFileServiceImpl.save(mediaFile);
+                    product.getMediaFiles().add(mediaFile);
+                } catch (Exception e) {
+                    throw new IllegalArgumentException("Media upload failed: " + e.getMessage());
                 }
             }
+        }
+
+        if (product.getMediaFiles().isEmpty()) {
+            throw new IllegalArgumentException("At least one product image is required");
         }
 
         //  only save product (cascade saves media too)

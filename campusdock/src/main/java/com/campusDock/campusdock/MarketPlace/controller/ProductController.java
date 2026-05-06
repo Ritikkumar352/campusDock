@@ -7,6 +7,7 @@ import com.campusDock.campusdock.MarketPlace.service.ProductService;
 import com.campusDock.campusdock.MarketPlace.dto.ProductDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,10 +28,10 @@ public class ProductController {
     }
 
     // 1. Post item
-    @PostMapping
-    public ResponseEntity<?> createProduct(
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createProductMultipart(
             @RequestPart("product") ProductCreateDto productDto,
-            @RequestPart(value = "files", required = false) List<MultipartFile> productFiles   // require at leas one img ??
+            @RequestPart(value = "files") List<MultipartFile> productFiles
             ) {
         try {
             ProductDetailDto response = productService.createProduct(productDto,productFiles);
