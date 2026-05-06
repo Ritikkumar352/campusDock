@@ -1,0 +1,183 @@
+{
+  "canteens": [
+    {
+      "canteenId": "CANTEEN_001",
+      "name": "North Campus Canteen",
+      "college": "ABC Engineering College",
+      "location": "Block A",
+      "rating": 4.2
+    },
+    {
+      "canteenId": "CANTEEN_002",
+      "name": "Tech Park Food Court",
+      "college": "ABC Engineering College",
+      "location": "Block D",
+      "rating": 3.9
+    }
+  ],
+
+  "menuItems": [
+    {
+      "itemId": "ITEM_001",
+      "name": "Masala Tea",
+      "category": "Breakfast",
+      "isVeg": true,
+      "basePrice": 45,
+      "prepTimeMin": 8,
+      "calories": 320
+    },
+    {
+      "itemId": "ITEM_002",
+      "name": "Idli Sambar",
+      "category": "Breakfast",
+      "isVeg": true,
+      "basePrice": 30,
+      "prepTimeMin": 5,
+      "calories": 210
+    },
+    {
+      "itemId": "ITEM_003",
+      "name": "Paneer Roll",
+      "category": "Snacks",
+      "isVeg": true,
+      "basePrice": 60,
+      "prepTimeMin": 7,
+      "calories": 420
+    },
+    {
+      "itemId": "ITEM_004",
+      "name": "Chicken Roll",
+      "category": "Snacks",
+      "isVeg": false,
+      "basePrice": 75,
+      "prepTimeMin": 9,
+      "calories": 480
+    },
+    {
+      "itemId": "ITEM_005",
+      "name": "Veg Thali",
+      "category": "Lunch",
+      "isVeg": true,
+      "basePrice": 90,
+      "prepTimeMin": 12,
+      "calories": 650
+    },
+    {
+      "itemId": "ITEM_006",
+      "name": "Chicken Biryani",
+      "category": "Lunch",
+      "isVeg": false,
+      "basePrice": 120,
+      "prepTimeMin": 15,
+      "calories": 780
+    },
+    {
+      "itemId": "ITEM_007",
+      "name": "Cold Coffee",
+      "category": "Beverage",
+      "isVeg": true,
+      "basePrice": 50,
+      "prepTimeMin": 3,
+      "calories": 250
+    },
+    {
+      "itemId": "ITEM_008",
+      "name": "Samosa",
+      "category": "Snacks",
+      "isVeg": true,
+      "basePrice": 20,
+      "prepTimeMin": 4,
+      "calories": 180
+    }
+  ],
+
+  "dailyMenus": [
+    {
+      "date": "2026-03-01",
+      "canteenId": "CANTEEN_001",
+      "availableItems": [
+        { "itemId": "ITEM_001", "price": 45, "stock": 120 },
+        { "itemId": "ITEM_002", "price": 30, "stock": 200 },
+        { "itemId": "ITEM_005", "price": 90, "stock": 80 },
+        { "itemId": "ITEM_007", "price": 50, "stock": 150 }
+      ]
+    },
+    {
+      "date": "2026-03-01",
+      "canteenId": "CANTEEN_002",
+      "availableItems": [
+        { "itemId": "ITEM_003", "price": 60, "stock": 100 },
+        { "itemId": "ITEM_004", "price": 75, "stock": 90 },
+        { "itemId": "ITEM_006", "price": 120, "stock": 70 },
+        { "itemId": "ITEM_008", "price": 20, "stock": 220 }
+      ]
+    }
+  ],
+
+  "ordersHistoryMock": [
+    {
+      "orderId": "ORD_1001",
+      "userId": "USER_001",
+      "canteenId": "CANTEEN_001",
+      "items": [
+        { "itemId": "ITEM_001", "qty": 1 },
+        { "itemId": "ITEM_007", "qty": 1 }
+      ],
+      "totalAmount": 95,
+      "orderTime": "2026-03-01T09:12:00",
+      "dayOfWeek": "Monday",
+      "isPeakHour": true,
+      "paymentMode": "UPI"
+    },
+    {
+      "orderId": "ORD_1002",
+      "userId": "USER_023",
+      "canteenId": "CANTEEN_002",
+      "items": [
+        { "itemId": "ITEM_004", "qty": 2 }
+      ],
+      "totalAmount": 150,
+      "orderTime": "2026-03-01T13:40:00",
+      "dayOfWeek": "Monday",
+      "isPeakHour": true,
+      "paymentMode": "Cash"
+    },
+    {
+      "orderId": "ORD_1003",
+      "userId": "USER_078",
+      "canteenId": "CANTEEN_001",
+      "items": [
+        { "itemId": "ITEM_005", "qty": 1 }
+      ],
+      "totalAmount": 90,
+      "orderTime": "2026-03-01T14:05:00",
+      "dayOfWeek": "Monday",
+      "isPeakHour": false,
+      "paymentMode": "UPI"
+    }
+  ],
+
+  "userPreferencesMock": [
+    {
+      "userId": "USER_001",
+      "preferredCategories": ["Breakfast", "Beverage"],
+      "isVeg": true,
+      "avgSpend": 70,
+      "visitFrequencyPerWeek": 4
+    },
+    {
+      "userId": "USER_023",
+      "preferredCategories": ["Snacks", "Lunch"],
+      "isVeg": false,
+      "avgSpend": 120,
+      "visitFrequencyPerWeek": 2
+    },
+    {
+      "userId": "USER_078",
+      "preferredCategories": ["Lunch"],
+      "isVeg": true,
+      "avgSpend": 95,
+      "visitFrequencyPerWeek": 3
+    }
+  ]
+}
