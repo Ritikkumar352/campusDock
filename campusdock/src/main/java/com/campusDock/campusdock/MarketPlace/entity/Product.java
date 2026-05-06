@@ -43,7 +43,9 @@ public class Product {
 
     private boolean isServie=true;
 
-    // Many-to-one relationship with the User who listed the product
+    /**
+     * Product owner (seller). Profile fields such as {@link User#getProfilePicUrl()} live on {@link User}.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false) // user_id is the foreign key column
     private User user;

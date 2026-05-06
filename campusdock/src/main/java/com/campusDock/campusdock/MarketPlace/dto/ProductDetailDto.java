@@ -22,5 +22,7 @@ public class ProductDetailDto {
     private LocalDateTime listedOn;
     private boolean isServie;
     private String userName;
+    private UUID userId;
+    private ProductOwnerProfileDto ownerProfile;
     private List<MediaDetailsDto> mediaFiles;
 }
