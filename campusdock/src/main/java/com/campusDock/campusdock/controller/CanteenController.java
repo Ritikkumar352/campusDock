@@ -3,11 +3,7 @@ package com.campusDock.campusdock.controller;
 import com.campusDock.campusdock.dto.CanteenDto;
 import com.campusDock.campusdock.dto.CanteenListDto;
 import com.campusDock.campusdock.dto.CanteenRequestDto;
-import com.campusDock.campusdock.entity.Enum.UserRole;
-import com.campusDock.campusdock.service.JwtService;
 import com.campusDock.campusdock.service.ServiceImpl.CanteenServiceImpl;
-import com.campusDock.campusdock.util.RoleValidator;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +18,9 @@ import java.util.UUID;
 public class CanteenController {
 
     private final CanteenServiceImpl canteenService;
-    private final RoleValidator roleValidator;
 
-    public CanteenController(CanteenServiceImpl canteenService, JwtService jwtService, RoleValidator roleValidator) {
+    public CanteenController(CanteenServiceImpl canteenService) {
         this.canteenService = canteenService;
-        this.roleValidator = roleValidator;
     }
 
     // 1. Register Canteen  -- Done
@@ -34,16 +28,8 @@ public class CanteenController {
 //    public ResponseEntity<Map<String, String>> registerCanteen(
     public ResponseEntity<?> registerCanteen(
             @RequestPart(value = "canteen", required = false) CanteenRequestDto canteenRequest,
-            @RequestPart(value = "media_file", required = false) MultipartFile file,
-            HttpServletRequest request
+            @RequestPart(value = "media_file", required = false) MultipartFile file
     ) {
-        // Not allowed if not Admin or Super Admin
-        if (!roleValidator.hasAccess(request,
-                UserRole.SUPER_ADMIN,
-                UserRole.ADMIN)
-        ) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
         return canteenService.registerCanteen(canteenRequest, file);
     }
 
@@ -73,16 +59,8 @@ public class CanteenController {
     // Not allowed if not Admin or Super Admin OR Canteen Owner
     @PatchMapping("/{canteenId}/toggle-open")
     public ResponseEntity<CanteenDto> toggleCanteenOpen(
-            @PathVariable("canteenId") UUID canteenId,
-            HttpServletRequest request
+            @PathVariable("canteenId") UUID canteenId
     ) {
-        if (!roleValidator.hasAccess(request,
-                UserRole.SUPER_ADMIN,
-                UserRole.ADMIN,
-                UserRole.CANTEEN_OWNER)
-        ) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
         // TODO :- implement this
         return null;
     }
@@ -91,16 +69,8 @@ public class CanteenController {
     // Not allowed if not Admin or Super Admin OR Canteen Owner
     @PutMapping("/{canteenId}")
     public ResponseEntity<CanteenDto> updateCanteen(
-            CanteenRequestDto canteenRequestDto,
-            HttpServletRequest request
+            CanteenRequestDto canteenRequestDto
     ) {
-        if (!roleValidator.hasAccess(request,
-                UserRole.SUPER_ADMIN,
-                UserRole.ADMIN,
-                UserRole.CANTEEN_OWNER)
-        ) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
         // TODO :- implement this
         return null;
     }

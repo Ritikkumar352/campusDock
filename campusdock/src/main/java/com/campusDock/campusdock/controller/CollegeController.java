@@ -4,10 +4,7 @@ import com.campusDock.campusdock.dto.CollegeNameAndDomainDto;
 import com.campusDock.campusdock.dto.CollegeResponseDto;
 import com.campusDock.campusdock.dto.CreateCollegeDto;
 import com.campusDock.campusdock.entity.College;
-import com.campusDock.campusdock.entity.Enum.UserRole;
 import com.campusDock.campusdock.service.CollegeService;
-import com.campusDock.campusdock.util.RoleValidator;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,11 +16,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/colleges")
 public class CollegeController {
 
-    private final RoleValidator roleValidator;
     private final CollegeService collegeService;
 
-    public CollegeController(RoleValidator roleValidator, CollegeService collegeService) {
-        this.roleValidator = roleValidator;
+    public CollegeController(CollegeService collegeService) {
         this.collegeService = collegeService;
     }
 
@@ -50,15 +45,8 @@ public class CollegeController {
 
     @PostMapping
     public College createCollege(
-            @RequestBody CreateCollegeDto createCollegeDto,
-            HttpServletRequest request
+            @RequestBody CreateCollegeDto createCollegeDto
     ) {
-        if (!roleValidator.hasAccess(request, UserRole.SUPER_ADMIN)) {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied");
-            // TODO :- Change return response type in Frontend also
-        }
-
         return collegeService.create(createCollegeDto);
     }
 }
