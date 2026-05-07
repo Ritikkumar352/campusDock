@@ -17,13 +17,15 @@ public class UserListDto {
     private String name;
     private String email;
     private String anonymousName;
+    private String profilePicUrl;
     private UserRole role;
 
-    public UserListDto(String anonymousName, String email, UUID id, String name, UserRole role) {
+    public UserListDto(String anonymousName, String email, UUID id, String name, String profilePicUrl, UserRole role) {
         this.anonymousName = anonymousName;
         this.email = email;
         this.id = id;
         this.name = name;
+        this.profilePicUrl = profilePicUrl;
         this.role = role;
     }
 }

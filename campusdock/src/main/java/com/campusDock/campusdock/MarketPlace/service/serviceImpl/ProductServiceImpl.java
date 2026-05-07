@@ -4,6 +4,7 @@ import com.campusDock.campusdock.MarketPlace.dto.MediaDetailsDto;
 import com.campusDock.campusdock.MarketPlace.dto.ProductCreateDto;
 import com.campusDock.campusdock.MarketPlace.dto.ProductDetailDto;
 import com.campusDock.campusdock.MarketPlace.dto.ProductDto;
+import com.campusDock.campusdock.MarketPlace.dto.ProductOwnerProfileDto;
 import com.campusDock.campusdock.MarketPlace.entity.Product;
 import com.campusDock.campusdock.MarketPlace.repository.ProductRepo;
 import com.campusDock.campusdock.MarketPlace.service.ProductService;
@@ -54,6 +55,12 @@ public class ProductServiceImpl implements ProductService {
             ProductCreateDto productDto,
             List<MultipartFile> productFiles
     ) {
+        boolean hasAtLeastOneValidFile = productFiles != null
+                && productFiles.stream().anyMatch(file -> file != null && !file.isEmpty());
+        if (!hasAtLeastOneValidFile) {
+            throw new IllegalArgumentException("At least one product image is required");
+        }
+
         User user = userRepo.findById(productDto.getUserId())
                 .orElseThrow(() -> new NoSuchElementException("User with id:- " + productDto.getUserId() + " not found"));
 
@@ -79,20 +86,24 @@ public class ProductServiceImpl implements ProductService {
         //  Process media files (NO save inside uploadMedia!)
         if (productFiles != null && !productFiles.isEmpty()) {
             for (MultipartFile file : productFiles) {
-                if (file != null && !file.isEmpty()) {
-                    try {
-                        MediaFile mediaFile = mediaFileServiceImpl.uploadMedia(file);
+                if (file == null || file.isEmpty()) {
+                    continue;
+                }
+                try {
+                    MediaFile mediaFile = mediaFileServiceImpl.uploadMedia(file);
 
-                        //  set both sides of relationship
-                        mediaFile.setProduct(product);
-                        mediaFileServiceImpl.save(mediaFile);
-                        product.getMediaFiles().add(mediaFile);
-
-                    } catch (Exception e) {
-                        System.err.println("Media upload failed: " + e.getMessage());
-                    }
+                    //  set both sides of relationship
+                    mediaFile.setProduct(product);
+                    mediaFileServiceImpl.save(mediaFile);
+                    product.getMediaFiles().add(mediaFile);
+                } catch (Exception e) {
+                    throw new IllegalArgumentException("Media upload failed: " + e.getMessage());
                 }
             }
+        }
+
+        if (product.getMediaFiles().isEmpty()) {
+            throw new IllegalArgumentException("At least one product image is required");
         }
 
         //  only save product (cascade saves media too)
@@ -111,6 +122,8 @@ public class ProductServiceImpl implements ProductService {
                 .listedOn(savedProduct.getListedOn())
                 .isServie(savedProduct.isServie())
                 .userName(user.getName())
+                .userId(user.getId())
+                .ownerProfile(toOwnerProfile(user))
                 .mediaFiles(uploadedMediaList)
                 .build();
     }
@@ -136,6 +149,7 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("Product with id:- " + id + "not found");
         }
         Product product = foundProduct.get();
+        User owner = product.getUser();
         ProductDetailDto productDetailDto = ProductDetailDto.builder()
                 .id(product.getId())
                 .name(product.getName())
@@ -143,7 +157,9 @@ public class ProductServiceImpl implements ProductService {
                 .price(product.getPrice())
                 .listedOn(product.getListedOn())
                 .isServie(product.isServie())
-                .userName(product.getUser().getName())
+                .userName(owner.getName())
+                .userId(owner.getId())
+                .ownerProfile(toOwnerProfile(owner))
                 .build();
         return productDetailDto;
     }
@@ -196,15 +212,29 @@ public class ProductServiceImpl implements ProductService {
         }
 
 
+        User owner = product.getUser();
         return new ProductDto(
                 product.getName(),
                 product.getDescription(),
                 product.getPrice(),
                 product.getListedOn(),
-                product.getUser().getName(),
-                product.getUser().getId(),
-                urls // ⚠️
+                owner.getName(),
+                owner.getId(),
+                toOwnerProfile(owner),
+                urls
         );
+    }
+
+    private static ProductOwnerProfileDto toOwnerProfile(User user) {
+        if (user == null) {
+            return null;
+        }
+        return ProductOwnerProfileDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .anonymousName(user.getAnonymousName())
+                .profilePicUrl(user.getProfilePicUrl())
+                .build();
     }
 
 

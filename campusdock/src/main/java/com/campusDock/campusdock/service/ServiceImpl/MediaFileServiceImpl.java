@@ -9,6 +9,7 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -31,6 +32,9 @@ public class MediaFileServiceImpl {
         if (file.isEmpty()) throw new IllegalArgumentException("File is empty");
 
         String originalName = file.getOriginalFilename();
+        if (originalName == null || !originalName.contains(".")) {
+            throw new IllegalArgumentException("Invalid file name");
+        }
         String ext = originalName.substring(originalName.lastIndexOf('.'));
         String uniqueName = originalName.replace(ext, "") + "-" + UUID.randomUUID() + ext;
         String contentType = file.getContentType();
@@ -58,8 +62,26 @@ public class MediaFileServiceImpl {
             return mediaFileRepo.save(mediaFile);
 
         } catch (Exception e) {
+            if (isCausedByUnknownHost(e)) {
+                throw new RuntimeException(
+                        "Upload failed: unable to reach AWS S3 endpoint. " +
+                                "Please verify S3_REGION/S3_BUCKET and network DNS access.",
+                        e
+                );
+            }
             throw new RuntimeException("Upload failed: " + e.getMessage());
         }
+    }
+
+    private boolean isCausedByUnknownHost(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof UnknownHostException) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 
 

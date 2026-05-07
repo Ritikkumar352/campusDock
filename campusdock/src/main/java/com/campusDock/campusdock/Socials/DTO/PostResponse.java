@@ -18,6 +18,7 @@ public class PostResponse {
     private String content;
     private String imageUrl;
     private String authorName; // Will return only the name here, not the full User object
+    private String authorProfilePicUrl;
     private String authorAnonymousName;
     private UUID authorId;
     private String topicName; // Will return only the topic name here, not the full Topic object

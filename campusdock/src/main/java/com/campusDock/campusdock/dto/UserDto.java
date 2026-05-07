@@ -14,10 +14,12 @@ import java.util.UUID;
 public class UserDto {
     private UUID id;
     private String name;
+    private String profilePicUrl;
 
     // Constructor to map from the User entity
     public UserDto(User user) {
         this.id = user.getId();
         this.name = user.getName();
+        this.profilePicUrl = user.getProfilePicUrl();
     }
 }

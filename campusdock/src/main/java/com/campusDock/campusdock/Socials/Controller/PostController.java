@@ -4,15 +4,15 @@ package com.campusDock.campusdock.Socials.Controller;
 import com.campusDock.campusdock.Socials.DTO.PostRequest;
 import com.campusDock.campusdock.Socials.DTO.PostResponse;
 import com.campusDock.campusdock.Socials.Entity.Enum.VoteType;
-import com.campusDock.campusdock.Socials.Entity.Post;
 import com.campusDock.campusdock.Socials.Service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/posts")
@@ -51,15 +51,19 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/vote")
-    public ResponseEntity<Void> voteOnPost(@PathVariable UUID postId,
-                                           @RequestParam UUID userId,
-                                           @RequestParam String voteType) {
+    public ResponseEntity<?> voteOnPost(@PathVariable UUID postId,
+                                        @RequestParam UUID userId,
+                                        @RequestParam String voteType) {
         try {
             VoteType vote = VoteType.valueOf(voteType.toUpperCase());
-            postService.voteOnPost(postId, userId, vote);
-            return ResponseEntity.ok().build();
+            PostResponse updatedPost = postService.voteOnPost(postId, userId, vote);
+            return ResponseEntity.ok(updatedPost);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Invalid voteType. Use UPVOTE or DOWNVOTE"));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", e.getMessage()));
         }
     }
 

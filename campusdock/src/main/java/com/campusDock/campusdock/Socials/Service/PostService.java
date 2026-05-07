@@ -14,7 +14,7 @@ public interface PostService {
     List<PostResponse> getAllPosts();
     Optional<PostResponse> getPostById(UUID id);
     PostResponse createPost(PostRequest postRequest);
-    void voteOnPost(UUID postId, UUID userId, VoteType voteType);
+    PostResponse voteOnPost(UUID postId, UUID userId, VoteType voteType);
     List<PostResponse> getAllPostsByCollegeId(UUID collegeId);
 
     List<PostResponse> getTopTrendingPostsByCollegeId(UUID collegeId);

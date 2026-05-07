@@ -21,6 +21,8 @@ public class ProductDto {
     private LocalDateTime listedOn;
     private String userName;
     private UUID userId;    // to navigate to the user profile
+    /** Owner / seller profile (name, avatar, etc.) */
+    private ProductOwnerProfileDto ownerProfile;
     private List<String> urls;
 
 

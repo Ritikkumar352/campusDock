@@ -3,6 +3,7 @@ package com.campusDock.campusdock.service.ServiceImpl;
 import com.campusDock.campusdock.dto.CreateUserDto;
 import com.campusDock.campusdock.dto.UserListDto;
 import com.campusDock.campusdock.entity.College;
+import com.campusDock.campusdock.entity.MediaFile;
 import com.campusDock.campusdock.entity.Enum.UserRole;
 import com.campusDock.campusdock.entity.User;
 import com.campusDock.campusdock.repository.CollegeRepo;
@@ -10,9 +11,11 @@ import com.campusDock.campusdock.repository.UserRepo;
 import com.campusDock.campusdock.service.JwtService;
 import com.campusDock.campusdock.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,12 +29,20 @@ public class UserServiceImpl implements UserService {
 
     private final AuthServiceImpl authServiceImpl;
     private final JwtService jwtService;
+    private final MediaFileServiceImpl mediaFileServiceImpl;
 
-    public UserServiceImpl(JwtService jwtService, UserRepo userRepo, CollegeRepo collegeRepo, AuthServiceImpl authServiceImpl) {
+    public UserServiceImpl(
+            JwtService jwtService,
+            UserRepo userRepo,
+            CollegeRepo collegeRepo,
+            AuthServiceImpl authServiceImpl,
+            MediaFileServiceImpl mediaFileServiceImpl
+    ) {
         this.userRepo = userRepo;
         this.collegeRepo = collegeRepo;
         this.authServiceImpl = authServiceImpl;
         this.jwtService = jwtService;
+        this.mediaFileServiceImpl = mediaFileServiceImpl;
     }
 
 //    @Override
@@ -47,7 +58,14 @@ public class UserServiceImpl implements UserService {
             try {
                 if (user != null && user.getEmail() != null) { // simple validation
                     //UserListDto dto = new UserListDto(user.getId(), user.getName(), user.getEmail(),user.getRole());
-                    UserListDto dto=new UserListDto(user.getAnonymousName(),user.getEmail(),user.getId(),user.getName(),user.getRole());
+                    UserListDto dto = new UserListDto(
+                            user.getAnonymousName(),
+                            user.getEmail(),
+                            user.getId(),
+                            user.getName(),
+                            user.getProfilePicUrl(),
+                            user.getRole()
+                    );
                     userListDtos.add(dto);
                 }
             } catch (Exception e) {
@@ -101,6 +119,7 @@ public class UserServiceImpl implements UserService {
                 .email(user.getEmail())
                 .role(user.getRole())
                 .anonymousName(user.getAnonymousName())
+                .profilePicUrl(user.getProfilePicUrl())
                 .build();
 
 
@@ -110,6 +129,38 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(UUID id) {
         return userRepo.findById(id).orElseThrow(()->new RuntimeException("User not found with user id:"+id));
+    }
+
+    @Override
+    public String uploadProfilePic(UUID userId, MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Profile picture file is required");
+        }
+
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found with user id:" + userId));
+
+        MediaFile uploadedMedia = mediaFileServiceImpl.uploadMedia(file);
+        user.setProfilePicUrl(uploadedMedia.getUrl());
+        userRepo.save(user);
+        return uploadedMedia.getUrl();
+    }
+
+    @Override
+    public String updateProfilePic(UUID userId, MultipartFile file) {
+        return uploadProfilePic(userId, file);
+    }
+
+    @Override
+    public String getProfilePicUrl(UUID userId) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found with user id:" + userId));
+
+        if (user.getProfilePicUrl() == null || user.getProfilePicUrl().isBlank()) {
+            throw new NoSuchElementException("Profile picture not found for user id:" + userId);
+        }
+
+        return user.getProfilePicUrl();
     }
 
     private String generateAnonymousName() {

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -42,7 +43,9 @@ public class Product {
 
     private boolean isServie=true;
 
-    // Many-to-one relationship with the User who listed the product
+    /**
+     * Product owner (seller). Profile fields such as {@link User#getProfilePicUrl()} live on {@link User}.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false) // user_id is the foreign key column
     private User user;
@@ -55,6 +58,7 @@ public class Product {
     // photos of the product to ssell or service
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @Default
     private List<MediaFile> mediaFiles = new ArrayList<>();
 
 }
